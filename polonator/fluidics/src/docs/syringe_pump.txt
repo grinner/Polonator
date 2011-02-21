@@ -1,0 +1,50 @@
+Help on module syringe_pump:
+
+NAME
+    syringe_pump
+
+FILE
+    /home/pirimidi/Desktop/Church_lab/Prototype/G.007/mirko/revisions/fluidics_rev25/syringe_pump.py
+
+DESCRIPTION
+    -------------------------------------------------------------------------------- 
+     Author: Richard Terry.
+     Date: February 12, 2008.
+     Modified by: Mirko Palla
+     Date: March 5, 2008.
+    
+     For: G.007 polony sequencer design [fluidics software] at the Church Lab - 
+     Genetics Department, Harvard Medical School.
+     
+     Purpose: This program contains the complete code for class Syringe_pump, 
+     containing Cavro XCalibur syringe pump communication subroutines in Python.
+    
+     This software may be used, modified, and distributed freely, but this
+     header may not be modified and must appear at the top of this file. 
+    -------------------------------------------------------------------------------
+
+CLASSES
+    Syringe_pump
+    
+    class Syringe_pump
+     |  Methods defined here:
+     |  
+     |  __init__(self, config, serial_port, logger=None)
+     |      Initialize Cavro XCalibur syringe pump object with default parameters
+     |  
+     |  initialize_syringe(self)
+     |      Initializes syringe pump with default operation settings
+     |  
+     |  set_absolute_volume(self, absolute_volume)
+     |      Sets syringe pump absolute volume (an integer) in ragne of 0-1000, where 0 is
+     |      the syringe initial position and the maximum filling volume is the stroke of 
+     |      the syringe (1000 ul)
+     |  
+     |  set_speed(self, speed)
+     |      Sets syringe pump move speed (an integer) in range of 0-40, where the 
+     |      maximum speed is 0 equivalent to 1.25 strokes/second = 1250 ul/s
+     |  
+     |  set_valve_position(self, valve_position)
+     |      Sets to given syringe pump valve position, an integer
+
+

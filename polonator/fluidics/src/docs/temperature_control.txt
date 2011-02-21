@@ -1,0 +1,47 @@
+Help on module temperature_control:
+
+NAME
+    temperature_control
+
+FILE
+    /home/pirimidi/Desktop/Church_lab/Prototype/G.007/mirko/revisions/fluidics_rev25/temperature_control.py
+
+DESCRIPTION
+    -------------------------------------------------------------------------------- 
+     Author: Richard Terry.
+     Date: February 12, 2008.
+     Modified by: Mirko Palla
+     Date: March 5, 2008.
+    
+     For: G.007 polony sequencer design [fluidics software] at the Church Lab - 
+     Genetics Department, Harvard Medical School.
+     
+     Purpose: This program contains the complete code for class Temperature_control, 
+     containing temperature controller communication subroutines in Python.
+    
+     This software may be used, modified, and distributed freely, but this
+     header may not be modified and must appear at the top of this file. 
+    -------------------------------------------------------------------------------
+
+CLASSES
+    Temperature_control
+    
+    class Temperature_control
+     |  Methods defined here:
+     |  
+     |  __init__(self, config, serial_port, logger=None)
+     |      Initialize PR-59 temperature controller object with default parameters
+     |  
+     |  get_temperature(self)
+     |      Gets temperature sensor 1 reading, a float - register [100]
+     |  
+     |  set_control_off(self)
+     |      Clears RUN flag in regulator, so main output is blocked
+     |  
+     |  set_control_on(self)
+     |      Sets RUN flag in regulator, so main output is opened
+     |  
+     |  set_temperature(self, temperature)
+     |      Sets main temperature reference (C), a float - register [0]
+
+

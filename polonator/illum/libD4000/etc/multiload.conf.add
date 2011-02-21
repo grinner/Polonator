@@ -1,0 +1,12 @@
+
+
+
+#
+# TI DLP Discovery D4000 (TI Explorer V1)
+#
+device 0x451/0xaf30/0x001
+
+ic 	CYPFX2
+block	INTERNAL IHEX, /lib/firmware/ezusb-a3load.hex
+block	INTERNAL IHEX, /lib/firmware/D4000_usb.hex
+

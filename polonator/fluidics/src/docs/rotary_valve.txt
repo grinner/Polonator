@@ -1,0 +1,38 @@
+Help on module rotary_valve:
+
+NAME
+    rotary_valve
+
+FILE
+    /home/pirimidi/Desktop/Church_lab/Prototype/G.007/mirko/revisions/fluidics_rev25/rotary_valve.py
+
+DESCRIPTION
+    -------------------------------------------------------------------------------- 
+     Author: Rich Terry.
+     Date: February 12, 2008.
+     Modified by: Mirko Palla
+     Date: March 5, 2008.
+    
+     For: G.007 polony sequencer design [fluidics software] at the Church Lab - 
+     Genetics Department, Harvard Medical School.
+     
+     Purpose: This program contains the complete code for class Rotary_valve, 
+     containing rotary valve communication subroutines in Python.
+    
+     This software may be used, modified, and distributed freely, but this
+     header may not be modified and must appear at the top of this file. 
+    -------------------------------------------------------------------------------
+
+CLASSES
+    Rotary_valve
+    
+    class Rotary_valve
+     |  Methods defined here:
+     |  
+     |  __init__(self, config, serial_port, logger=None)
+     |      Initialize Rheodyne rotary valve object with default parameters
+     |  
+     |  set_valve_position(self, valve_position)
+     |      Switch valve to given port on rotary valve, an integer
+
+

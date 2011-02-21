@@ -1,0 +1,59 @@
+%% =============================================================================
+%% 
+%% Polonator G.007 Image Processing Software
+%%
+%% disp_tetra.mtemplate: template .m file to graph normalized data from basecaller
+%% and save to image files in QC directory; do not execute this directly -- this
+%% file is used by disp_tetra.pl to generate disp_tetra.m; execute disp_tetra.pl
+%% instead
+%% 
+%% Church Lab, Harvard Medical School
+%% Written by Greg Porreca
+%%
+%% Release 1.0 -- 04-25-2008
+%%
+%% This software may be modified and re-distributed, but this header must appear
+%% at the top of the file.
+%%
+%% =============================================================================
+%%
+
+%filename is inserted above by perl script
+%frame to view is inserted above by perl script
+
+							     function disp_tetra(filename, frame, outputfilename)
+data = load(filename);
+frame_num = str2num(frame);
+frame_data = data(find(data(:,3)==frame_num),:);
+
+tetcoor = [0 0 1; 0 0.9428 -0.3333; -0.8165 -0.4714 -0.3333; 0.8165 -0.4714 -0.3333];
+
+num_beads = size(frame_data, 1)
+num_bases = (size(frame_data,2)-4) / 10
+
+for(i=1:num_bases)
+xyz = zeros(num_beads, 3);
+for(j=1:4)
+A = frame_data(:,10+((i-1)*10)+j);
+B = tetcoor(j,:);
+xyz = xyz + B(ones(num_beads, 1),:) .* A(:,ones(3,1));
+end
+
+figure, plot3(xyz(find(frame_data(:,5+(10*(i-1)))==0),1),xyz(find(frame_data(:,5+(10*(i-1)))==0),2),xyz(find(frame_data(:,5+(10*(i-1)))==0),3),'.r');
+hold on;
+plot3(xyz(find(frame_data(:,5+(10*(i-1)))==1),1),xyz(find(frame_data(:,5+(10*(i-1)))==1),2),xyz(find(frame_data(:,5+(10*(i-1)))==1),3),'.g');
+plot3(xyz(find(frame_data(:,5+(10*(i-1)))==2),1),xyz(find(frame_data(:,5+(10*(i-1)))==2),2),xyz(find(frame_data(:,5+(10*(i-1)))==2),3),'.b');
+plot3(xyz(find(frame_data(:,5+(10*(i-1)))==3),1),xyz(find(frame_data(:,5+(10*(i-1)))==3),2),xyz(find(frame_data(:,5+(10*(i-1)))==3),3),'.k');
+title(['Cycle ' num2str(i)]);
+saveas(gcf, ['QC/' outputfilename '-cycle' sprintf('%02d', i) '.png'], 'png');
+
+figure, hist(frame_data(:,6+(10*(i-1))), 25);
+v=axis;
+axis([0 1 v(:,3:4)]);
+clear v;
+title(['Cycle ' num2str(i)]);
+saveas(gcf, ['QC/' outputfilename 'hist-cycle' sprintf('%02d', i) '.png'], 'png');
+
+end
+
+exit;

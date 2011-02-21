@@ -1,0 +1,3 @@
+# rules for TI DLP/DLi D4000 development kit
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device",SYSFS{idVendor}=="0451" , SYSFS{idProduct}=="af31", MODE="0666"
+

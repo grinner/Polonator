@@ -1,0 +1,221 @@
+#--------------------------------------------------------------------------------------#
+#				    DEVICE COMMUNICATION                               #
+#--------------------------------------------------------------------------------------#
+
+[communication]
+
+serial_port = /dev/ttyS0
+timeout = 0.05
+
+read_length = 1024
+sleep_time = 0.005
+
+temperature_control_baud = 115200
+syringe_pump_baud = 9600 
+rotary_valve_baud = 19200
+
+home_dir = /home/polonator/G.007/G.007_fluidics/src/
+log_dir = /home/polonator/G.007/G.007_fluidics/logs/
+
+#--------------------------------------------------------------------------------------#
+#			           TUBING CONFIGURATION                                #
+#--------------------------------------------------------------------------------------#
+
+[tube_constants]
+
+syringe_dead_volume = 48
+multi_dead_volume = 25
+discrete_dead_volume = 0
+rotary_dead_volume = 0
+  
+#channel_volume = 120
+#flowcell_volume = 185
+
+channel_volume = 120
+flowcell_volume = 140
+
+
+dH2O_to_V4 = 356
+wash1_to_V = 424
+V_to_V4 = 33
+V4_to_T = 31
+V5_to_T = 18
+ligase_to_V5 = 24
+T_to_Y = 258
+Y_to_FC = 13
+FC_to_syringe = 192
+
+well_to_V = 26
+NaOH_to_V4 = 162
+guadinine_to_V4 = 162
+
+#--------------------------------------------------------------------------------------#
+#			        REAGENT BLOCK CONFIGURATION                                #
+#--------------------------------------------------------------------------------------#
+
+[block_constants]
+
+primer_chamber_volume = 500
+nonamer_chamber_volume = 500
+spare_chamber_volume = 500
+ligase_chamber_volume = 500
+buffer_chamber_volume = 500
+A5_chamber_volume = 500
+A6_chamber_volume = 500
+
+#--------------------------------------------------------------------------------------#
+#				   SYRINGE CONFIGURATION                               #
+#--------------------------------------------------------------------------------------#
+
+[syringe_constants]
+
+full_stroke = 1000
+
+pull_speed = 29
+slow_speed = 29
+fast_speed = 29
+critical_speed = 29
+final_pull_speed = 29
+empty_speed = 0
+mixer_empty_speed = 29
+
+#--------------------------------------------------------------------------------------#
+#                               COMMON BIOCHEM. PARAMETER(S)			       #
+#--------------------------------------------------------------------------------------#
+
+[biochem_parameters]
+
+stage_temp = 4
+room_temp = 28
+temp_tolerance = 2
+
+air_gap = 0
+front_gap = 0
+middle_gap = 0
+back_gap = 0
+ 
+time_limit = 2
+mixer_iter = 1
+syringe_iter = 1
+slow_push_volume = 0
+
+#--------------------------------------------------------------------------------------#
+#                            ENZYMATIC REACTION PARAMETER(S)			       #
+#--------------------------------------------------------------------------------------#
+
+[exo_parameters]
+
+exo_volume = 278
+exo_temp = 37
+exo_set_temp = 44
+exo_poll_temp = 36 
+exo_time = 1
+
+exo_extra = 0
+
+#--------------------------------------------------------------------------------------#
+#                            CHEMICAL STRIPPING PARAMETER(S)			       #
+#--------------------------------------------------------------------------------------#
+
+[stripping_parameters]
+
+guadinine_volume = 300
+NaOH_volume = 300
+dH2O_volume = 278
+
+guadinine_time = 0
+NaOH_time = 0
+
+guadinine_extra = 0
+NaOH_extra = 0
+
+#--------------------------------------------------------------------------------------#
+#                               HYBRIDIZATION PARAMETER(S)			       #
+#--------------------------------------------------------------------------------------#
+
+[hyb_parameters]
+
+primer_volume = 325
+
+
+hyb_temp1 = 48
+hyb_set_temp1 = 48
+hyb_poll_temp1 = 44
+hyb_time1 = 2
+
+hyb_temp2 = 42
+hyb_set_temp2 = 42
+hyb_poll_temp2 = 45
+hyb_time2 = 4
+
+hyb_extra = 0
+
+#--------------------------------------------------------------------------------------#
+#                            STEPUP PEG LIGATION PARAMETER(S)			       #
+#--------------------------------------------------------------------------------------#
+
+[lig_parameters]
+
+buffer_volume = 325
+ligase_volume = 11
+nonamer_volume = 325
+#ligase_volume = 1
+#nonamer_volume = 278
+
+lig_step1 = 22
+lig_set_step1 = 22
+lig_poll_step1 = 24
+lig_time1 = 4
+
+lig_step2 = 25
+lig_set_step2 = 25 
+lig_poll_step2 = 24 
+lig_time2 = 7
+
+lig_step3 = 30
+lig_set_step3 = 31 
+lig_poll_step3 = 29
+lig_time3 = 10
+
+lig_step4 = 35
+lig_set_step4 = 36 
+lig_poll_step4 = 34 
+lig_time4 = 10
+#
+#lig_step1 = 37
+#lig_set_step1 = 45
+#lig_poll_step1 = 34
+#lig_time1 = 1
+#
+#lig_step2 = 37
+#lig_set_step2 = 45 
+#lig_poll_step2 = 34 
+#lig_time2 = 1
+#
+#lig_step3 = 37
+#lig_set_step3 = 45 
+#lig_poll_step3 = 34
+#lig_time3 = 1
+#
+#lig_step4 = 37
+#lig_set_step4 = 45 
+#lig_poll_step4 = 34 
+#lig_time4 = 1
+
+mix_time = 1
+lig_extra = 0
+
+#--------------------------------------------------------------------------------------#
+#                                   CYCLE CONSTANTS	     	                       #
+#--------------------------------------------------------------------------------------#
+
+[cycle_constants]
+
+# M7: M6 nonamer, 1N anchor
+
+
+port_scheme = {"AM1" : ['V3', 1,'V1',1], "AM2" : ['V3', 1,'V1',2], "AM3" : ['V3',1,'V1',3], "AM4" : ['V3', 1,'V1',4], "AM5" : ['V3',1,'V1',5], "AM6" : ['V3',1,'V1',6], "AM7" : ['V3',5,'V1',6], "AM8" : ['V3',5,'V1',7],
+	    "AP1" : ['V3', 2,'V2',1], "AP2" : ['V3', 2,'V2',2], "AP3" : ['V3',2,'V2',3], "AP4" : ['V3', 2,'V2',4], "AP5" : ['V3',2,'V2',5], "AP6" : ['V3',2,'V2',6],
+	    "BM1" : ['V3', 3, 'V1', 1], "BM2" : ['V3', 3, 'V1', 2], "BM3" : ['V3', 3, 'V1', 3], "BM4" : ['V3', 3, 'V1', 4], "BM5" : ['V3', 3, 'V1', 5], "BM6" : ['V3', 3, 'V1', 6], "BM7": ['V3', 6, 'V1', 6], "BM8": ['V3', 6, 'V1', 7], 
+	    "BP1" : ['V3', 4,'V2',1], "BP2" : ['V3', 4,'V2',2], "BP3" : ['V3',4,'V2',3], "BP4" : ['V3', 4,'V2',4], "BP5" : ['V3',4,'V2',5], "BP6" : ['V3',4,'V2',6]}
+

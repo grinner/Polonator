@@ -1,0 +1,8 @@
+libD4000 is a share library providing a low-level interface to the TI/DLi Discovery D4000 
+DMD Development kit.  In order to function correctly, the library requires the following
+additional components:
+
+- libusb0.1 : a library for communicating with usb devices in user space
+- multiload or fxload : a tools for programming Cypress FX2 USB chips
+- ezusb_a3load.hex, D4000_usb.hex & D4000_usb.bin : D4000 firmware files
+

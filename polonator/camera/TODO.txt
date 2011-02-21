@@ -1,0 +1,10 @@
+This should be broken down to python modules by frame grabber.
+Frame grabber modules should take specific camera arguments at run time to configure the grabber
+For a particular camera ie.
+
+AS_Phoenix.py --> Hammatsu.cfg, other_cam.cfg
+other_grabber.py --> Hammatsu.cfg, other_Cam.cfg
+
+The same camera cfg file should feed all image processing stuff as well.
+
+-Nick 11/30/2010

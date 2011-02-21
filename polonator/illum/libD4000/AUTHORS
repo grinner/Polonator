@@ -1,0 +1,26 @@
+////////////////////////
+libD4000 - Shared library/device driver for TI/DLi DMD Discovery D4000 kit
+////////////////////////
+
+Ported to Linux (and other *nix) via libusb0.1 with permission from TI 
+by Dr. Daniel Levner, Church Lab, Harvard Medical School
+Copyright Daniel Levner & Texas Instruments, Inc. (c) 2009
+
+Original copyright by Texas Instruments (see below)
+
+///////////////////////////////////////////////////////////////////////
+//
+//            Copyright: Texas Instruments, Inc. (c) 2008
+//
+//                   TI Proprietary Information
+//                         Internal Data
+//
+//   DESIGN NAME      DDC4000
+//
+//   FILE NAME        DDC4000_usb.h 
+//
+//   DESCRIPTION      DDC4000_usb.cpp Header File
+//
+//   Engineer:        Benjamin Lee
+//
+///////////////////////////////////////////////////////////////////////

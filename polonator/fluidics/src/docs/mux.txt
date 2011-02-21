@@ -1,0 +1,90 @@
+Help on module mux:
+
+NAME
+    mux
+
+FILE
+    /home/pirimidi/Desktop/Church_lab/Prototype/G.007/mirko/revisions/fluidics_rev25/mux.py
+
+DESCRIPTION
+    -------------------------------------------------------------------------------- 
+     Author: Mirko Palla.
+     Date: February 19, 2008.
+     Modified: Richard Terry
+     Date: March 5, 2008.
+     For: G.007 polony sequencer design [fluidics software] at the Church Lab - 
+     Genetics Department, Harvard Medical School.
+     
+     Purpose: This program contains the complete code for class Mux, containing
+     multiplexer communication subroutines in Python.
+    
+     This software may be used, modified, and distributed freely, but this
+     header may not be modified and must appear at the top of this file. 
+    -------------------------------------------------------------------------------
+
+CLASSES
+    Mux
+    
+    class Mux
+     |  Methods defined here:
+     |  
+     |  __del__(self)
+     |  
+     |  __init__(self, logger=None)
+     |      Initialize Ultimac Mux R/P PCB mux object with default parameters
+     |  
+     |  discrete_valve4_close(self)
+     |      Sets valve V4 to OFF state
+     |  
+     |  discrete_valve4_open(self)
+     |      Sets valve V4 to ON state
+     |  
+     |  discrete_valve5_close(self)
+     |      Sets valve V5 to OFF state
+     |  
+     |  discrete_valve5_open(self)
+     |      Sets valve V5 to ON state
+     |  
+     |  discrete_valve6_close(self)
+     |      Sets valve V6 to OFF state
+     |  
+     |  discrete_valve6_open(self)
+     |      Sets valve V6 to ON state
+     |  
+     |  discrete_valve7_close(self)
+     |      Sets valve V7 to OFF state
+     |  
+     |  discrete_valve7_open(self)
+     |      Sets valve V7 to ON state
+     |  
+     |  mixer_OFF(self)
+     |      Mixing in mixer: OFF
+     |  
+     |  mixer_ON(self)
+     |      Mixing in mixer: ON
+     |  
+     |  set_to_reagent_block_cooler(self)
+     |      Communication channel set to reagent block cooler
+     |  
+     |  set_to_rotary_valve1(self)
+     |      Communication channel set to rotary valve 1
+     |  
+     |  set_to_rotary_valve2(self)
+     |      Communication channel set to rotary valve 2
+     |  
+     |  set_to_rotary_valve3(self)
+     |      Communication channel set to rotary valve 3
+     |  
+     |  set_to_syringe_pump(self)
+     |      Communication channel set to syringe pump
+     |  
+     |  set_to_temperature_control1(self)
+     |      Communication channel set to temperature controller 1
+     |  
+     |  set_to_temperature_control2(self)
+     |      Communication channel set to temperature controller 2
+
+DATA
+    mux_state_00 = [0, 0, 0, 0, 0]
+
+
