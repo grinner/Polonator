@@ -398,10 +398,10 @@ void stagealign(int fcnum, int lane_num, int initialize){
   /* DID THE MOVE WORK? */
   if(((abs(pixel_offset_x)>successful_move_threshold) || (abs(pixel_offset_y)>successful_move_threshold)) && (!initialize)){
     sprintf(log_string, "ERROR:\tPolonator-stagealign: one or more offsets are greater that the %d-pixel maximum; X:%d, Y:%d", 
-	    successful_move_threshold,
-	    pixel_offset_x,
-	    pixel_offset_y);
-    p_log(log_string);
+        successful_move_threshold,
+        pixel_offset_x,
+        pixel_offset_y);
+        p_log(log_string);
     
     fprintf(offsetfp, "*"); /* mark current line in offsetlog, since offsets found will not be the offsets stored on the controller */
 
@@ -604,10 +604,10 @@ void flatten_image(int* orig_image,
     *(index3) = (int)new_val;
     if(rescale){
       if(*(index3) > new_max){
-	new_max = *(index3);
+        new_max = *(index3);
       }
       if(*(index3) < new_min){
-	new_min = *(index3);
+        new_min = *(index3);
       }
     }
   }

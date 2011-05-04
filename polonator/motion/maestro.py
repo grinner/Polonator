@@ -1,24 +1,25 @@
-## ========================================================================================
-##
-## Polonator G.007 Image Acquisition Software
-##
-## Church Lab, Harvard Medical School
-## Written by Greg Porreca
-## modified by Nick Conway Wyss Institute
-##
-## renamed to maestro.py by Nick Conway 09-20-2010
-## from MaestroFunctions.py: python maestro functionality; includes an interface to 
-## polonator_maestro.c (through SWIG- generated polonator_maestro.py)
-##
-## Release 1.0 -- 04-15-2008
-## Release 2.0 -- 12-02-2008 Modified for PolonatorScan [GP]
-## Release 3.0 -- 09-29-2010 Modified for locking filter wheel and renamed [NC]
-##
-## This software may be modified and re-distributed, but this header must appear
-## at the top of the file.
-##
-## ========================================================================================
-##
+"""
+================================================================================
+
+Polonator G.007 Image Acquisition Software
+
+Church Lab, Harvard Medical School
+Written by Greg Porreca
+modified by Nick Conway Wyss Institute
+
+renamed to maestro.py by Nick Conway 09-20-2010
+from MaestroFunctions.py: python maestro functionality; includes an interface to 
+polonator_maestro.c (through SWIG- generated polonator_maestro.py)
+
+Release 1.0 -- 04-15-2008
+Release 2.0 -- 12-02-2008 Modified for PolonatorScan [GP]
+Release 3.0 -- 09-29-2010 Modified for locking filter wheel and renamed [NC]
+
+This software may be modified and re-distributed, but this header must appear
+at the top of the file.
+
+================================================================================
+"""
 
 
 import maestroFunctions
@@ -29,7 +30,7 @@ import os
 
 class MaestroFunctions:
     """
-        class for 
+    class for 
     """
     global col  #controller object, for accessing C maestro functions
     global TS   #for python telnet session
@@ -52,20 +53,31 @@ class MaestroFunctions:
        
     def __init__(self):
         if True:    # fix this with a static isDeclared variable
-            MaestroFunctions.device_filters = {'fam': '1', 'cy3': '0', 'cy5': '3', 'txred': '2', 'spare': '5', 'none': '4'}
-            MaestroFunctions.col = maestroFunctions           # ALIAS for the module
+            MaestroFunctions.device_filters = {'fam': '1', 'cy3': '0', \
+                                               'cy5': '3', 'txred': '2', \
+                                                'spare': '5', 'none': '4'}
+            MaestroFunctions.col = maestroFunctions   # ALIAS for the module
             MaestroFunctions.col.py_maestro_open('controller', 23)
             MaestroFunctions.TS = tel_net.Tel_net()
             MaestroFunctions.declared = True
         #end if
 
 
-    #################  MOTION CONTROL FUNCTIONS
-    #
-    def setup_imaging(self,fluor, integration_time, num_imgs, num_lanes, fcnum, shutter_flag, TDI_flag):
+    """
+    MOTION CONTROL FUNCTIONS
+    """
+    def setup_imaging(self,fluor, \ 
+                            integration_time, \
+                            num_imgs, num_lanes, \
+                            fcnum, shutter_flag, \
+                            TDI_flag):
         # this is done by C code through SWIG
         MaestroFunctions.TS.parse_read_string('x.iprdy=0', '>')
-        MaestroFunctions.col.py_maestro_setupimaging(int(MaestroFunctions.device_filters[fluor]), integration_time, num_imgs, num_lanes, fcnum, shutter_flag, TDI_flag)
+        MaestroFunctions.col.py_maestro_setupimaging( \
+            int(MaestroFunctions.device_filters[fluor]), \
+                integration_time, num_imgs, num_lanes, \ 
+                fcnum, shutter_flag, \ 
+                TDI_flag)
         self.stage_waitformotioncomplete()
 
     def go_to_image(self,flowcell,lane,image_number):
@@ -120,8 +132,9 @@ class MaestroFunctions:
     def filter_unlock(self):
         MaestroFunctions.col.py_maestro_unlocktheta()
     # end def
-    #################  ELECTRONIC CONTROL FUNCTIONS
-    #    
+    """
+    ELECTRONIC CONTROL FUNCTIONS
+    """    
     def darkfield_on(self):
         MaestroFunctions.col.py_maestro_darkfield_on()
 
