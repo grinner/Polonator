@@ -1,28 +1,28 @@
 """
- =============================================================================
+=============================================================================
 
- Polonator G.007 Selective Illuminate Software
+Polonator G.007 Selective Illuminate Software
 
- Wyss Institute
- Written by Nick Conway
+Wyss Institute
+Written by Nick Conway
 
- mapping.py
- handles coordinate-system transformations between camera
- and illuminate hardware, as well as helps determine this transformation
+mapping.py
+handles coordinate-system transformations between camera
+and illuminate hardware, as well as helps determine this transformation
 
- Original version -- 07-29-2009 [DL]
- Ported to python from c and extended -- 12-12-2009 [Nick Conway]
- Updated and renamed 09-20-2010 [Nick Conway]
+Original version -- 07-29-2009 [DL]
+Ported to python from c and extended -- 12-12-2009 [Nick Conway]
+Updated and renamed 09-20-2010 [Nick Conway]
 
- This software may be modified and re-distributed, but this header must appear
- at the top of the file.
+This software may be modified and re-distributed, but this header must appear
+at the top of the file.
 
-    1) move to spot with global offset
-    2) take image
-    3) send image to processing
-    4) receive from processing the offset and list of points
-    5) perform release on offset
-     
+1) move to spot with global offset
+2) take image
+3) send image to processing
+4) receive from processing the offset and list of points
+5) perform release on offset
+    
 =============================================================================
 The Python Imaging Library (PIL) is
 
@@ -54,8 +54,8 @@ class MappingFunctions:
     
     def __init__(self):
         """
-            This configures the class by loading key parameters from a
-            configuration file
+        This configures the class by loading key parameters from a
+        configuration file
 
         """
         # read in the config file.  must be formated correctly
@@ -74,15 +74,24 @@ class MappingFunctions:
             print "No main"
             self.defaultConfigFile()
         # end elif
-        MappingFunctions.IlluminateWidth = int(MappingFunctions.config.get(   'Main', 'IlluminateWidth'))
-        MappingFunctions.IlluminateHeight = int(MappingFunctions.config.get(  'Main', 'IlluminateHeight'))
-        MappingFunctions.CameraWidth = int(MappingFunctions.config.get(       'Main',  'CameraWidth'))
-        MappingFunctions.CameraHeight = int(MappingFunctions.config.get(      'Main', 'CameraHeight'))
-        MappingFunctions.ImageExposure = float(MappingFunctions.config.get(   'Main', 'ImageExposure'))
-        MappingFunctions.ImageGain = int(MappingFunctions.config.get(         'Main', 'ImageGain'))
-        MappingFunctions.ImageColor = MappingFunctions.config.get(            'Main', 'ImageColor')
-        MappingFunctions.ImageFilename = MappingFunctions.config.get(         'Main', 'ImageFilename')
-        MappingFunctions.ImageCCD_BytesPerPixel = int(MappingFunctions.config.get('Main', 'ImageCCD_BytesPerPixel'))
+        MappingFunctions.IlluminateWidth = \
+            int(MappingFunctions.config.get(  'Main', 'IlluminateWidth'))
+        MappingFunctions.IlluminateHeight = \
+            int(MappingFunctions.config.get(  'Main', 'IlluminateHeight'))
+        MappingFunctions.CameraWidth = \
+            int(MappingFunctions.config.get(  'Main',  'CameraWidth'))
+        MappingFunctions.CameraHeight = \
+            int(MappingFunctions.config.get(  'Main', 'CameraHeight'))
+        MappingFunctions.ImageExposure = \
+            float(MappingFunctions.config.get('Main', 'ImageExposure'))
+        MappingFunctions.ImageGain = \
+            int(MappingFunctions.config.get(  'Main', 'ImageGain'))
+        MappingFunctions.ImageColor = \
+            MappingFunctions.config.get(      'Main', 'ImageColor')
+        MappingFunctions.ImageFilename = \
+            MappingFunctions.config.get(      'Main', 'ImageFilename')
+        MappingFunctions.ImageCCD_BytesPerPixel = \
+            int(MappingFunctions.config.get(  'Main', 'ImageCCD_BytesPerPixel'))
         MappingFunctions.MaestroF = PM.MaestroFunctions()
         MappingFunctions.mask_number0 = 0
         MappingFunctions.mask_radius0 = 1
@@ -99,7 +108,7 @@ class MappingFunctions:
 
     def parseConfigSplitLine(self,array, field_string, field_var):
         """
-            Parses a tab delimited config file that is split into an array 
+        Parses a tab delimited config file that is split into an array 
         """
         ind = 0
         if (array[ind] == field_string):
@@ -114,8 +123,8 @@ class MappingFunctions:
 
     def mapReinit(self):
         """
-            This configures the class by loading key parameters from a
-            configuration file
+        This configures the class by loading key parameters from a
+        configuration file
         
         """
         MF = MappingFunctions
@@ -135,57 +144,56 @@ class MappingFunctions:
             print "No main"
             MF.defaultConfigFile()
         # end elif
-        MF.IlluminateWidth = int(MF.config.get(   'Main', \
-                                                    'IlluminateWidth'))
-        MF.IlluminateHeight = int(MF.config.get(  'Main', \
-                                                    'IlluminateHeight'))
-        MF.CameraWidth = int(MF.config.get(       'Main', \
-                                                    'CameraWidth'))
-        MF.CameraHeight = int(MF.config.get(      'Main', \
-                                                    'CameraHeight'))
-        MF.ImageExposure = float(MF.config.get(   'Main', \
-                                                    'ImageExposure'))
-        MF.ImageGain = int(MF.config.get(         'Main', \
-                                                    'ImageGain'))
-        MF.ImageColor = MF.config.get(            'Main', \
-                                                    'ImageColor')
-        MF.ImageFilename = MF.config.get(         'Main', \
-                                                    'ImageFilename')
-        MF.ImageCCD_BytesPerPixel = int(MF.config.get('Main', \
-                                                        'ImageCCD_BytesPerPixel'))
+        MF.IlluminateWidth = int(MF.config.get( 'Main', \
+                                                'IlluminateWidth'))
+        MF.IlluminateHeight = int(MF.config.get('Main', \
+                                                'IlluminateHeight'))
+        MF.CameraWidth = int(MF.config.get(     'Main', \
+                                                'CameraWidth'))
+        MF.CameraHeight = int(MF.config.get(    'Main', \
+                                                'CameraHeight'))
+        MF.ImageExposure = float(MF.config.get( 'Main', \
+                                                'ImageExposure'))
+        MF.ImageGain = int(MF.config.get(       'Main', \
+                                                'ImageGain'))
+        MF.ImageColor = MF.config.get(          'Main', \
+                                                'ImageColor')
+        MF.ImageFilename = MF.config.get(       'Main', \
+                                                'ImageFilename')
+        MF.ImageCCD_BytesPerPixel = \
+            int(MF.config.get('Main', 'ImageCCD_BytesPerPixel'))
     # end def
         
     def generateMapping( self, \
-                                points_found_x, \
-                                points_found_y, \
-                                points_to_illum_x, \
-                                points_to_illum_y, \
-                                num_coords):
+                         points_found_x, \
+                         points_found_y, \
+                         points_to_illum_x, \
+                         points_to_illum_y, \
+                         num_coords):
         """
+        takes a list of of coordinates and returns the mapping based on the
+        penrose inverse
+
+            alignment parameters are enumerated as follows:
+
+        [illuminate_x]     [ A0 ]     [A2  A3]   [Cam_x - A6]     [ A8 ]
+        [     ]         =  [    ]  +  [      ] * [          ]  +  [    ]
+        [illuminate_y]     [ A1 ]     [A4  A5]   [Cam_y - A7]     [ A9 ]
+
+        ==> R_bar = Q*A_map
+        A_map = ([A0, A1, A2, A3, A4, A5]') = Q_inv*R_bar
         
-            takes a list of of coordinates and returns the mapping based on the
-            penrose inverse
+        This parameters A7 to A10 have predetermined values corresponding to:
+
+        (A6, A7) = Center of camera image in x and y, respectively
+        (A8, A9) = Center of illuminate image in x and y, respectively
+
+        The additive parameters (A0, A1, A6, A7, A8 & A9) are given in
+        sub-bit resolution (defined in Release_common.h)
+        The multiplicative parameters (A2, A3, A4 & A5) are in
+        1 / (1 << ALIGNMENT_PARAM_PADBITS) units (see below)
         
-             alignment parameters are enumerated as follows:
-
-            [illuminate_x]     [ A0 ]     [A2  A3]   [Cam_x - A6]     [ A8 ]
-            [     ]         =  [    ]  +  [      ] * [          ]  +  [    ]
-            [illuminate_y]     [ A1 ]     [A4  A5]   [Cam_y - A7]     [ A9 ]
-
-            ==> R_bar = Q*A_map
-            A_map = ([A0, A1, A2, A3, A4, A5]') = Q_inv*R_bar
-            
-            This parameters A7 to A10 have predetermined values corresponding to:
-
-            (A6, A7) = Center of camera image in x and y, respectively
-            (A8, A9) = Center of illuminate image in x and y, respectively
-
-            The additive parameters (A0, A1, A6, A7, A8 & A9) are given in
-            sub-bit resolution (defined in Release_common.h)
-            The multiplicative parameters (A2, A3, A4 & A5) are in
-            1 / (1 << ALIGNMENT_PARAM_PADBITS) units (see below)
-            
-            We need to solve for A0, A1, A2, A3, A4, and A5
+        We need to solve for A0, A1, A2, A3, A4, and A5
         """
         MF = MappingFunctions
         
@@ -300,10 +308,10 @@ class MappingFunctions:
     # end def
     def ccd_to_dmd(self,x,y):
         """
-            Individual point transform
-            [illuminate_x]     [ A0 ]     [A2  A3]   [Cam_x - A6]     [ A8 ]
-            [     ]         =  [    ]  +  [      ] * [          ]  +  [    ]
-            [illuminate_y]     [ A1 ]     [A4  A5]   [Cam_y - A7]     [ A9 ]
+        Individual point transform
+        [illuminate_x]     [ A0 ]     [A2  A3]   [Cam_x - A6]     [ A8 ]
+        [     ]         =  [    ]  +  [      ] * [          ]  +  [    ]
+        [illuminate_y]     [ A1 ]     [A4  A5]   [Cam_y - A7]     [ A9 ]
         """
         A = MappingFunctions.A_map
         x_out = A[0]+A[8] \
@@ -319,10 +327,10 @@ class MappingFunctions:
 
     def n_ccd_to_dmd(self,array_x,array_y):
         """
-           Use 1-D numpy arrays to calculate transforms in parallel
-            [illuminate_x]     [ A0 ]     [A2  A3]   [Cam_x - A6]     [ A8 ]
-            [     ]         =  [    ]  +  [      ] * [          ]  +  [    ]
-            [illuminate_y]     [ A1 ]     [A4  A5]   [Cam_y - A7]     [ A9 ]
+        Use 1-D numpy arrays to calculate transforms in parallel
+        [illuminate_x]     [ A0 ]     [A2  A3]   [Cam_x - A6]     [ A8 ]
+        [     ]         =  [    ]  +  [      ] * [          ]  +  [    ]
+        [illuminate_y]     [ A1 ]     [A4  A5]   [Cam_y - A7]     [ A9 ]
         """
         A = MappingFunctions.A_map
         x_out = A[0]+A[8] \
@@ -337,9 +345,9 @@ class MappingFunctions:
     
     def getCameraImage(self):
         """
-            Causes a camera snap event to happen and returns the pointer to a
-            image copied from the frame buffer
-            skips loading from a file.
+        Causes a camera snap event to happen and returns the pointer to a
+        image copied from the frame buffer
+        skips loading from a file.
         """
         MF = MappingFunctions
         return PC.snapPtr( MF.ImageExposure,\
@@ -354,36 +362,36 @@ class MappingFunctions:
     
     def mapGen(self, test_me = False):
         """
-            This function generates the mapping it:
-            1)  loads the points to illuminate
-            2)  generates a image for the DMD based on said coordinates
-            3)  illuminates the image
-            4) takes a picture
-            5) copies the picture from the frame buffer
-            6) finds the illuminated points in the camera coordinates
-            7) generates a mapping to the DMD using a pseudoinverse
-            8) writes the mapping to class memory
-            9) writes the mapping to file
-        
-            Polonator_IlluminateFunctions is SWIGed as follows
-            Illuminate and Hardware coordinates are mapped using the SWIG 
-            This allows you to access an array of Coordinates in C and python
-            as follows once the IlluminateCoords_type struct is also interfaced
-            in SWIG :
+        This function generates the mapping it:
+        1)  loads the points to illuminate
+        2)  generates a image for the DMD based on said coordinates
+        3)  illuminates the image
+        4) takes a picture
+        5) copies the picture from the frame buffer
+        6) finds the illuminated points in the camera coordinates
+        7) generates a mapping to the DMD using a pseudoinverse
+        8) writes the mapping to class memory
+        9) writes the mapping to file
     
-            new_coordArray(int size) -- creates an array of size
-            delete_coordArray(IlluminateCoords_type * arry) -- deletes and array
-            coordArray_get_x(IlluminateCoords_type *c_xy, int i)  -- gets an value
-            coordArray_set_x(IlluminateCoords_type *c_xy, int i, signed short
-            int val) -- sets a value
-            ptr_coordArray(IlluminateCoords_type *c_xy, int i)  returns a
-            pointer to an index
+        Polonator_IlluminateFunctions is SWIGed as follows
+        Illuminate and Hardware coordinates are mapped using the SWIG 
+        This allows you to access an array of Coordinates in C and python
+        as follows once the IlluminateCoords_type struct is also interfaced
+        in SWIG :
+
+        new_coordArray(int size) -- creates an array of size
+        delete_coordArray(IlluminateCoords_type * arry) -- deletes and array
+        coordArray_get_x(IlluminateCoords_type *c_xy, int i)  -- gets an value
+        coordArray_set_x(IlluminateCoords_type *c_xy, int i, signed short
+        int val) -- sets a value
+        ptr_coordArray(IlluminateCoords_type *c_xy, int i)  returns a
+        pointer to an index
         """
         """
-            get points for bitmap and load them SWIG style
-            mapping_basis is just a list of points to to illuminate to
-            generate a good and sufficient mapping basis coordinates are given
-            as a range from -1 to 1 with 0,0 being the image center
+        get points for bitmap and load them SWIG style
+        mapping_basis is just a list of points to to illuminate to
+        generate a good and sufficient mapping basis coordinates are given
+        as a range from -1 to 1 with 0,0 being the image center
         """
         MF = MappingFunctions
         print("STATUS:\tMappingFunctions: opening frame buffer\n")
@@ -391,24 +399,31 @@ class MappingFunctions:
         print(  "STATUS:\tMappingFunctions: getting list of points \
                 to illuminate from file\n")
         idx = -1
-        num_points = 0                            
+        num_points = 0
         for line in mapping_basis:
-            if line[0] != '#':                                      # '#' is reserved for comments on a separate line
-                basis_coordinate = line.split()                     # tab delimited fields
+            if line[0] != '#':   
+                # '#' is reserved for comments on a separate line
+                basis_coordinate = line.split()  # tab delimited fields
                 print(basis_coordinate)
-                if basis_coordinate[0] == 'number':                 # this is the number of basis points we need to illuminate
+                if basis_coordinate[0] == 'number':  
+                    # this is the number of basis points we need to illuminate
                     num_points = int(basis_coordinate[1])
                     idx = num_points 
-                    points_to_illum_x = numpy.empty(idx, dtype=numpy.int32)   # this creates the array of coordinates to illuminate
-                    points_found_x = numpy.empty(idx, dtype=numpy.int32)      # this is the array containing the found points on the CCD
+                    # this creates the array of coordinates to illuminate
+                    points_to_illum_x = numpy.empty(idx, dtype=numpy.int32)
+                    # this is the array containing the found points on the CCD
+                    points_found_x = numpy.empty(idx, dtype=numpy.int32)
                     points_to_illum_y = numpy.empty(idx, dtype=numpy.int32)
                     points_found_y = numpy.empty(idx, dtype=numpy.int32)
-                    idx = idx - 1                                   # write coordinates in reverse
+                    # write coordinates in reverse
+                    idx = idx - 1
                     print("number of Points to Illuminate: " + str(num_points))
-                elif (basis_coordinate[0] == 'XY') and (idx > -1):  # make sure its tagged as a coordinate and the index is positive
+                elif (basis_coordinate[0] == 'XY') and (idx > -1):
+                # make sure its tagged as a coordinate and the index is positive
+                    # scale to dimensions of the DMD
                     bc_x = int( float(MF.IlluminateWidth)/2 \
                                 *float(basis_coordinate[1]) ) \
-                                + (float(MF.IlluminateWidth)-1)/2     # scale to dimensions of the DMD
+                                + (float(MF.IlluminateWidth)-1)/2
                     bc_y = int( float(MF.IlluminateHeight)/2 \
                                 *float(basis_coordinate[2]) ) \
                                 + (float(MF.IlluminateHeight)-1)/2
@@ -447,14 +462,16 @@ class MappingFunctions:
             PI.py_clear_framebuffer()
             print("STATUS:\tMappingFunctions: creating mask\n")
             
-            print("STATUS:\tMappingFunctions: generating one image of with one pixel\n")
+            print("STATUS:\tMappingFunctions: generating one image of with ' + \
+                    'one pixel\n")
             PI.py_illuminate_point( int(points_to_illum_x[idx]),\
                                     int(points_to_illum_y[idx]),\
                                     MF.mask_number0)
             # illuminate just ONE spot
             print("STATUS:\tMappingFunctions: illuminating one point\n")
-            print("illuminating (%d,%d)\n" % (int(points_to_illum_x[idx]), int(points_to_illum_y[idx])))
-            PI.py_illuminate_expose()                           # turn on the frame buffer
+            print("illuminating (%d,%d)\n" % \
+                    (int(points_to_illum_x[idx]), int(points_to_illum_y[idx])))
+            PI.py_illuminate_expose()    # turn on the frame buffer
             #time.sleep(1)
 
             # analyze image for centroid
@@ -466,18 +483,21 @@ class MappingFunctions:
             frames = 5
             for i in range(frames): 
                 PC.py_snapPtr(img_array, MF.expose,MF.gain,"spare")
-                img_array_float += img_array.astype(numpy.float)   # sum accumulator
+                # sum accumulator
+                img_array_float += img_array.astype(numpy.float) 
             # end for
-            img_array_out = (img_array_float/frames).astype(numpy.uint16) # average over frames
+            # average over frames
+            img_array_out = (img_array_float/frames).astype(numpy.uint16) 
             img_array_float *= 0 # reset accumulator
             
-            self.convertPicPNG(img_array_out,points_to_illum_x[idx],points_to_illum_y[idx])
-            
+            self.convertPicPNG(img_array_out, \
+                                points_to_illum_x[idx], points_to_illum_y[idx])
             # read in the config file.  must be formated correctly
             print("STATUS:\tMappingFunctions: find illuminated point\n")
 
             # SWIGged function for finding the centroid
-            # doing array[x:x+1] returns a pointer to an index x in an array essentially in numpy
+            # doing array[x:x+1] returns a pointer to an index x in an array 
+            # essentially in numpy
             a = points_found_x[idx:idx+1]
             b = points_found_y[idx:idx+1]
             max_val = PI.py_illuminate_spot_find(img_array_out,a,b)
@@ -486,7 +506,8 @@ class MappingFunctions:
                 num_sub += 1
             # end if
             else:
-                print("found(%d,%d)" % (points_found_x[idx],points_found_y[idx]) )
+                print("found(%d,%d)" % \ 
+                        (points_found_x[idx],points_found_y[idx]) )
             # end else
             
             # free up memory
@@ -499,10 +520,12 @@ class MappingFunctions:
         # perform mapping operation
         print("STATUS:\tMappingFunctions: generating mapping\n")
         PC.cameraClose() # also frees up image buffer memory
-        self.generateMapping(points_found_x, points_found_y, points_to_illum_x, points_to_illum_y, num_points)
+        self.generateMapping(points_found_x, points_found_y, \
+            points_to_illum_x, points_to_illum_y, num_points)
         self.writeMappingFile()
         for i in range(num_points):
-            print("illuminated(%d,%d)" % (points_to_illum_x[i],points_to_illum_y[i]) )
+            print("illuminated(%d,%d)" % \
+                    (points_to_illum_x[i],points_to_illum_y[i]) )
             print("found(%d,%d)" % (points_found_x[i],points_found_y[i]) )
             print(" ")
         # end for
@@ -515,10 +538,10 @@ class MappingFunctions:
     
     def snapImageAndSave(self):
         """
-            A wrapper function that allows MappingFunctions.py to snap and
-            save an image
-            MappingFunctions hould be instantiated before this gets called by
-            calling illumInit()
+        A wrapper function that allows MappingFunctions.py to snap and
+        save an image
+        MappingFunctions hould be instantiated before this gets called by
+        calling illumInit()
         
         """
         MF = MappingFunctions
@@ -531,10 +554,10 @@ class MappingFunctions:
     
     def snapImage(self):
         """
-            A wrapper function that allows MappingFunctions.py to snap and
-            save an image
-            MappingFunctions should be instantiated before this gets called
-            by calling illumInit()
+        A wrapper function that allows MappingFunctions.py to snap and
+        save an image
+        MappingFunctions should be instantiated before this gets called
+        by calling illumInit()
         """
         # snap an image with settings from the config file
         MF = MappingFunctions
@@ -545,16 +568,16 @@ class MappingFunctions:
     
     def defaultConfigFile(self, date_string = "NC 08/07/2010"):
         """
-            Create a default mapping config file
+        Create a default mapping config file
 
-            # When adding sections or items, add them in the reverse order of
-            # how you want them to be displayed in the actual file.
-            # In addition, please note that using RawConfigParser's and the raw
-            # mode of ConfigParser's respective set functions, you can assign
-            # non-string values to keys internally, but will receive an error
-            # when attempting to write to a file or when you get it in non-raw
-            # mode. SafeConfigParser does not allow such assignments to
-            # take place.
+        When adding sections or items, add them in the reverse order of
+        how you want them to be displayed in the actual file.
+        In addition, please note that using RawConfigParser's and the raw
+        mode of ConfigParser's respective set functions, you can assign
+        non-string values to keys internally, but will receive an error
+        when attempting to write to a file or when you get it in non-raw
+        mode. SafeConfigParser does not allow such assignments to
+        take place.
         """
         MF = MappingFunctions
         MF.config.add_section('Main')
@@ -611,11 +634,12 @@ class MappingFunctions:
         del pix_copy2
     # end def 
     
-
-    #Begin the Illumination interface
-    #This wraps the illuminate functions such that more than one module calling the
-    #illumination functions will always use the same hooks so long as they go through this module  
-     
+    """
+    Begin the Illumination interface
+    This wraps the illuminate functions such that more than one module 
+    calling the illumination functions will always use the same hooks so long 
+    as they go through this module  
+    """
     def illumInit(self):
         """
             initialize the illumination system for use in the mapping process   
@@ -673,11 +697,11 @@ class MappingFunctions:
         if spot_size == 1:
             PI.py_illuminate_vector(a,b, MF.mask_number2, num_points)
         elif spot_size == 2:
-            PI.py_illuminate_vector(a,b, MF.mask_number3, num_points)      
+            PI.py_illuminate_vector(a,b, MF.mask_number3, num_points)
         else:
             PI.py_illuminate_vector(a,b, MF.mask_number1, num_points)
         
-        PI.py_illuminate_expose()                   # turn on the frame buffer
+        PI.py_illuminate_expose() # turn on the frame buffer
     # end def
 
     def pointTransform(self,x,y, check=0):
@@ -689,7 +713,8 @@ class MappingFunctions:
         MF = MappingFunctions
         coord = self.ccd_to_dmd(x,y)
         # TODO:
-        # multiplying by 4 because of confusing SUBPIXEL stuff fix in image generator
+        # multiplying by 4 because of confusing SUBPIXEL stuff fix in image 
+        # generator
         # do all floats in FUTURE
         PI.py_illuminate_enable()
         PI.py_clear_framebuffer()
@@ -713,8 +738,8 @@ class MappingFunctions:
 
     def bitmap(self,transform=1):
         """
-            illuminates a single point while performing a mapping transform
-            function exists primarily for testing
+        illuminates a single point while performing a mapping transform
+        function exists primarily for testing
 
         """
         MF = MappingFunctions
@@ -739,14 +764,15 @@ class MappingFunctions:
         #print("transformed")
 
         PI.py_illuminate_enable()
-        PI.py_illuminate_vector(points_illum[0],points_illum[1], MF.mask_number1, points_illum[0].size)
+        PI.py_illuminate_vector(points_illum[0],points_illum[1], \
+                                MF.mask_number1, points_illum[0].size)
         PI.py_illuminate_expose()
     # end def
     
     def wyss(self,inverse=0,decimate=0):
         """
-            illuminates a single point while performing a mapping transform
-            function exists primarily for testing
+        illuminates a single point while performing a mapping transform
+        function exists primarily for testing
 
         """
         MF = MappingFunctions
@@ -781,14 +807,15 @@ class MappingFunctions:
         points_illum = self.n_ccd_to_dmd(itemind[1],itemind[0])
 
         PI.py_illuminate_enable()
-        PI.py_illuminate_vector(points_illum[0],points_illum[1], MF.mask_number1, points_illum[0].size)
+        PI.py_illuminate_vector(points_illum[0],points_illum[1], \
+                                MF.mask_number1, points_illum[0].size)
         PI.py_illuminate_expose()
     # end def
     
     def george(self,inverse=0,decimate=0):
         """
-            illuminates a single point while performing a mapping transform
-            function exists primarily for testing
+        illuminates a single point while performing a mapping transform
+        function exists primarily for testing
 
         """
         MF = MappingFunctions
@@ -806,14 +833,15 @@ class MappingFunctions:
         points_illum = self.n_ccd_to_dmd(itemind[1],itemind[0])
 
         PI.py_illuminate_enable()
-        PI.py_illuminate_vector(points_illum[0],points_illum[1], MF.mask_number1, points_illum[0].size)
+        PI.py_illuminate_vector(points_illum[0],points_illum[1], \ 
+                                MF.mask_number1, points_illum[0].size)
         PI.py_illuminate_expose()
     # end def    
     
     def grid(self,grid_spacing=10, square_size=1):
         """
-            illuminates a single point while performing a mapping transform
-            function exists primarily for testing
+        illuminates a single point while performing a mapping transform
+        function exists primarily for testing
 
         """
         MF = MappingFunctions
@@ -838,6 +866,7 @@ class MappingFunctions:
         points_illum = self.n_ccd_to_dmd(itemind[1],itemind[0])
 
         PI.py_illuminate_enable()
-        PI.py_illuminate_vector(points_illum[0],points_illum[1], MF.mask_number1, points_illum[0].size)
+        PI.py_illuminate_vector(points_illum[0],points_illum[1], \
+                                MF.mask_number1, points_illum[0].size)
         PI.py_illuminate_expose()
     # end def
