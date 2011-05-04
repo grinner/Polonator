@@ -17,19 +17,22 @@
 """
 
 import sys
-from biochem import Biochem		# Import biochecmistry class.
+from biochem import Biochem	    # Import biochecmistry class.
 
-#--------------------------- Configuration input handling ------------------------------
+#--------------------------- Configuration input handling ----------------------
 
 if len(sys.argv) < 3:
-	print '\n--> Error: not correct input!\n--> Usage: python polony_sequencing.py cycle-name flowcell-number\n'
-	sys.exit()
+    print '\n--> Error: not correct input!\n--> Usage: python ' + \
+            'polony_sequencing.py cycle-name flowcell-number\n'
+    sys.exit()
 
-#--------------------- G.007 fluidics sub-system initialization ------------------------
+#--------------------- G.007 fluidics sub-system initialization ----------------
 
-t0 = time.time()					# Get current time.
-biochem = Biochem(sys.argv[1], int(sys.argv[2]))	# Initialize biochemistry object - cycle-name and flowcell-number need to be passed.
+t0 = time.time()        # Get current time.
+# Initialize biochemistry object - cycle-name and flowcell-number need to 
+# be passed.
+biochem = Biochem(sys.argv[1], int(sys.argv[2]))
 
-#-------------------------- Alternating cycle iterations -------------------------------
+#-------------------------- Alternating cycle iterations -----------------------
 
-biochem.run()						# Run polony sequencing cycle(s).
+biochem.run()   # Run polony sequencing cycle(s).

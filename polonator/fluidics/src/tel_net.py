@@ -19,31 +19,43 @@ import telnetlib
 
 class Tel_net:
 
-	global telnet_session
+    global telnet_session
 
-	def __init__(self, logger=None):
-		"Initialize telnet connection object with default parameters"
+    def __init__(self, logger=None):
+        """
+        Initialize telnet connection object with default parameters
+        """
 
-		if logger is not None:			# if defined, place logger into Tel_net
-			self.logging = logger
+        if logger is not None:  # if defined, place logger into Tel_net
+            self.logging = logger
 
-		maestro_address = '10.0.0.56'
-		self.telnet_session = telnetlib.Telnet(maestro_address)
-		m = self.telnet_session.read_until('>')	# search return string for maestro prompt
-		self.telnet_session.write('\r')
-		d = self.telnet_session.read_until('>')	# search return string for > 
+        maestro_address = '10.0.0.56'
+        self.telnet_session = telnetlib.Telnet(maestro_address)
+        # search return string for maestro prompt
+        m = self.telnet_session.read_until('>')
+        self.telnet_session.write('\r')
+        # search return string for > 
+        d = self.telnet_session.read_until('>')
 
-		if logger:
-			self.logging.info("---\t-\t--> Initialized telnet connection to address %s" % maestro_address)
+        if logger:
+            self.logging.info( \
+                "---\t-\t--> Initialized telnet connection to address %s" % \
+                maestro_address)
 
-	def parse_read_string(self, write_string, find_string):
-		"Will read and parse string responses which return program code from the device"
-		
-		self.telnet_session.write(write_string + '\r')
-		read_string = self.telnet_session.read_until(find_string)	# search return string for > 
+    def parse_read_string(self, write_string, find_string):
+        """
+        Will read and parse string responses which return program code from 
+        the device
+        """
+        
+        self.telnet_session.write(write_string + '\r')
+        # search return string for > 
+        read_string = self.telnet_session.read_until(find_string)
                 return read_string
                 
-	def __del__(self):
-		"Destructs telnet conncetion object - it closes any open session"
-		self.telnet_session.close()
+    def __del__(self):
+        """
+        Destructs telnet conncetion object - it closes any open session
+        """
+        self.telnet_session.close()
 
