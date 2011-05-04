@@ -1,10 +1,6 @@
 #!/usr/bin/python
-
 """
-The Python Imaging Library (PIL) is
 
-    Copyright © 1997-2006 by Secret Labs AB
-    Copyright © 1995-2006 by Fredrik Lundh 
 """
   
 import numpy as np
@@ -94,9 +90,12 @@ def snapPicPNG(exposure, gain, color, filename):
     im.save(filename + ".png", "png")
     
     if num_beads != 0 and my_color == color:
-        print("value at 1st point: %d" % img_array_out[beadpos_xcol[0]+1000*beadpos_yrow[0]])
-        print("value at 2nd point: %d" % img_array_out[beadpos_xcol[1]+1000*beadpos_yrow[1]])
-        print("value at 3rd point: %d" % img_array_out[beadpos_xcol[2]+1000*beadpos_yrow[2]])
+        print("value at 1st point: %d" % \
+               img_array_out[beadpos_xcol[0]+1000*beadpos_yrow[0]])
+        print("value at 2nd point: %d" % \
+               img_array_out[beadpos_xcol[1]+1000*beadpos_yrow[1]])
+        print("value at 3rd point: %d" % \
+                img_array_out[beadpos_xcol[2]+1000*beadpos_yrow[2]])
     # end if    
     del img_array_out
     del image_8bit
@@ -211,7 +210,10 @@ def find():
     time.sleep(1)
     
     for i in range(frames): 
-        PC.py_snapPtr(img_array,  exposures[my_color_ind], gains[my_color_ind] ,my_color)
+        PC.py_snapPtr(img_array, \
+                        exposures[my_color_ind], \
+                        gains[my_color_ind] , \
+                        my_color)
         img_array_float += img_array.astype(np.float)
     # end for
     
@@ -221,14 +223,23 @@ def find():
     #invert for images where beads are lighter than background
     IT.flatten_image(1000, 1000, img_array_out, img_array_flat,1)
     img_array_flat = 16383 - img_array_flat # invert the 14 bit image
-    num_beads = FO.find_objects(1000, 1000, img_array_flat, beadpos_xcol, beadpos_yrow, segmask_image)
+    num_beads = FO.find_objects(1000, 1000, \
+                                img_array_flat, \
+                                beadpos_xcol, beadpos_yrow, \
+                                segmask_image)
     print("The number of beads found: %d" % num_beads)
     MapFunc.convertPicPNG2(16383-img_array_flat,0,1)
     MapFunc.convertPicPNG2(segmask_image*65535, 0,2)
     print("phase ONE complete!!!!!!!!!!!!!")
-    print("value at 1st point: %d at point %d, %d" % (img_array_out[beadpos_xcol[0]+1000*beadpos_yrow[0]], beadpos_xcol[0], beadpos_yrow[0]))
-    print("value at 2nd point: %d at point %d, %d" % (img_array_out[beadpos_xcol[1]+1000*beadpos_yrow[1]], beadpos_xcol[1], beadpos_yrow[1]))
-    print("value at 3rd point: %d at point %d, %d" % (img_array_out[beadpos_xcol[2]+1000*beadpos_yrow[2]], beadpos_xcol[2], beadpos_yrow[2]))
+    print("value at 1st point: %d at point %d, %d" % \
+           (img_array_out[beadpos_xcol[0]+1000*beadpos_yrow[0]], \
+            beadpos_xcol[0], beadpos_yrow[0]))
+    print("value at 2nd point: %d at point %d, %d" % \ 
+            (img_array_out[beadpos_xcol[1]+1000*beadpos_yrow[1]], \
+             beadpos_xcol[1], beadpos_yrow[1]))
+    print("value at 3rd point: %d at point %d, %d" % \
+            (img_array_out[beadpos_xcol[2]+1000*beadpos_yrow[2]], \
+            beadpos_xcol[2], beadpos_yrow[2]))
     #PC.cameraClose() # also frees up image buffer memory
     stop_release()
     """
@@ -263,8 +274,12 @@ def find():
     # end for
     # R = cy5, G = cy3, B = txRed
     # yellow = fam ==> RGB:255,255,0
-    img_total = (img_1D_list[1]+img_1D_list[2]+img_1D_list[3]).clip(min=None,max=16383).astype(np.uint16)
-    img_3D = np.dstack([img_total,16383*segmask_image.reshape(shape),img_1D_list[my_color_ind]])
+    img_total = (img_1D_list[1] + \
+                img_1D_list[2] + \
+                img_1D_list[3]).clip(min=None,max=16383).astype(np.uint16)
+    img_3D = np.dstack([img_total, \
+                        16383*segmask_image.reshape(shape), \
+                        img_1D_list[my_color_ind]])
     img_8bit = (img_3D >> 6).astype(np.uint8)
     
     #im = Image.fromarray(img_8bit.reshape(-1,1000*3),'RGB')
@@ -340,7 +355,9 @@ def overlayPNG(prefix,suffix):
     # end for
     # R = cy5, G = cy3, B = txRed
     # yellow = fam ==> RGB:255,255,0
-    image_3D = np.dstack([image_1D_list[1]+image_1D_list[3],image_1D_list[0]+image_1D_list[3],image_1D_list[2]])
+    image_3D = np.dstack([image_1D_list[1] + image_1D_list[3], \
+                          image_1D_list[0]+image_1D_list[3], \
+                          image_1D_list[2]])
     image_8bit = (image_3D >> 6).astype(np.uint8)
     
     #im = Image.fromarray(image_8bit.reshape(-1,1000*3),'RGB')

@@ -1,6 +1,5 @@
 """
-## ========================================================================================
-##
+## ============================================================================
 ## Polonator G.007 Selective Illuminate Software
 ##
 ## Wyss Institute
@@ -21,7 +20,7 @@
 ##    4) receive from processing the offset and list of points
 ##    5) perform release on offset
 ##     
-## ========================================================================================
+## ============================================================================
 ##
 """
 
@@ -39,17 +38,19 @@ DEFAULT_TDI = 0
 # show usage instructions
 def show_usage():
     print "ReleaseFocus <int. time> <EM gain> [filter] [TDI_flag]\n"
-    print "    int. time  -  integration time in seconds (floating point number)\n"
+    print "    int. time  -  integration time in seconds (floating point " \
+          + "number)\n"
     print "    EM gain    -  gain for electron-multiplied camera\n"
     print "    filter     -  name of filter cube to be used (string)\n"
-    print "    TDI_flag   -  0 = no TDI (default), 1-2 = TDI, defined by Polonator_live.c\n"
+    print "    TDI_flag   -  0 = no TDI (default), 1-2 = TDI, defined by " \
+          + "Polonator_live.c\n"
 # end def
 
 
 def main(argv=None):
     
     """
-        Process command line
+    Process command line
     """
     IlluminateWidth = 1920
     IlluminateHeight = 1080
@@ -108,7 +109,10 @@ def main(argv=None):
 
     # initialize the release system 
     print "Initializing release system\n"
-    #if PI.py_illuminate_init(IlluminateWidth, IlluminateHeight, CameraWidth, CameraHeight) < 0:
+    # if PI.py_illuminate_init( IlluminateWidth, \
+    #                           IlluminateHeight, \
+    #                           CameraWidth, \
+    #                           CameraHeight) < 0:
      #   sys.exit(-1)
     #end if
  

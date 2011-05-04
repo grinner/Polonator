@@ -1,26 +1,26 @@
 """
-## ========================================================================================
-##
-## Polonator G.007 Selective Illuminate Software
-##
-## Wyss Institute
-## Written by Nick Conway
-##
-## testPAcq.py: this script takes the the SWIGed version of 
-##    Polonator-acquirer.c and tests the communications interface with the 
-##    processing machine
-##
-## Original version -- 2-2-2010 [NC]
-##
-##     BEFORE running 
-## ssh to the processing machine 
-##
-##    ssh -X proc
-## password is "polonator" 
-##    goto directory home/polonator/POLONATOR_DATE/DMD_test/
-##    and run ./processor.pl
-## ========================================================================================
-##
+=============================================================================
+
+Polonator G.007 Selective Illuminate Software
+
+Wyss Institute
+Written by Nick Conway
+
+testPAcq.py: this script takes the the SWIGed version of 
+Polonator-acquirer.c and tests the communications interface with the 
+processing machine
+
+Original version -- 2-2-2010 [NC]
+
+    BEFORE running 
+ssh to the processing machine 
+
+ssh -X proc
+password is "polonator" 
+goto directory home/polonator/POLONATOR_DATE/DMD_test/
+and run ./processor.pl
+=============================================================================
+
 """
 
 import sys
@@ -38,7 +38,7 @@ def main(argv=None):
     
     """
     
-        Initial values of variables
+    Initial values of variables
     
     """
     ImageExposure = 0.001

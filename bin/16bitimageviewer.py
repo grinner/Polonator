@@ -1,3 +1,9 @@
+
+"""
+Many global variables still exist for coding simplicity, they will be removed 
+in the future once all object relationships are finalized
+"""
+
 import os, sys, math, numpy, ui_16bitimagewindow #,png, itertools
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -10,9 +16,7 @@ lastcircle = []
 global lastline
 lastline = None
 
-"""
-Many global variables still exist for coding simplicity, they will be removed in the future once all object relationships are finalized
-"""
+
 
 class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
     def __init__(self, parent=None):

@@ -1,22 +1,25 @@
 
 """
-        Nick Conway Wyss Institute  02-02-2010
-        
-        Parses a basecall file
-        
-        The basecall file is parsed as follows since it is a tab delimited text file
-        FLOWCELL#    LANE#      IMAGE#    BEAD#    N    Xtab        FLAG
-        0            1            2        3                        length-1
-        
-        one basecall file per lane
-        
-        N is the read sequence of a bead containing X bases
-        Xtab indicates that X tabbed fields exist for a given read
-        
-        the number of beads flagged per lane in a given basecall file is in the *.hit_summary file
-        in a tab delimited fashion
-        
-        Since each basecall file is for a given lane of a given flowcell, searching is simple
+Nick Conway Wyss Institute  02-02-2010
+
+Parses a basecall file
+
+The basecall file is parsed as follows since it is a tab delimited text 
+file
+FLOWCELL#    LANE#      IMAGE#    BEAD#    N    Xtab        FLAG
+0            1            2        3                        length-1
+
+one basecall file per lane
+
+N is the read sequence of a bead containing X bases
+Xtab indicates that X tabbed fields exist for a given read
+
+the number of beads flagged per lane in a given basecall file is in the 
+*.hit_summary file
+in a tab delimited fashion
+
+Since each basecall file is for a given lane of a given flowcell, 
+searching is simple
 """
 
 class BaseCall:
@@ -56,7 +59,8 @@ class BaseCall:
         basecall_line = self.file.readline()
         basecall_columns = basecall_line.split()
         self.EOF = not (len(basecall_columns))
-        if (self.EOF):   # breaks the loop when a line length is zero indicating EOF
+        if (self.EOF):   # breaks the loop when a line length is zero 
+                         # indicating EOF
             #print 'breaking'
             #print 'a'+ base_call_line + 'b'
             print('STATUS: reached end of basescall file, line of zero length')

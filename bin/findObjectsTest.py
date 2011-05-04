@@ -1,10 +1,7 @@
 #!/usr/bin/python
 """
-    The Python Imaging Library (PIL) is
 
-    Copyright © 1997-2006 by Secret Labs AB
-    Copyright © 1995-2006 by Fredrik Lundh 
-"""  
+"""
 import numpy as np
 from PIL import Image
 import polonator.image.findObjects as FO
@@ -27,7 +24,10 @@ binary_object_mask = im[2000000:3000000]
 print("The size is %d" % binary_object_mask.size)
 objects_found_old = np.where(binary_object_mask==1)[0].size
 print("Chao found %d objects" % objects_found_old)
-num_beads = FO.find_objects(1000, 1000, raw_image, beadpos_xcol, beadpos_yrow, segmask_image)
+num_beads = FO.find_objects(1000, 1000, \ 
+                            raw_image, \
+                            beadpos_xcol, beadpos_yrow, \
+                            segmask_image)
 print("I found %d objects" % num_beads)
 
 binary_object_mask = binary_object_mask*65535

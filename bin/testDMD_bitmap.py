@@ -1,29 +1,29 @@
 """
- ========================================================================================
+===============================================================================
 
- Polonator G.007 Selective Illuminate Software
+Polonator G.007 Selective Illuminate Software
 
- Wyss Institute
- Written by Nick Conway
+Wyss Institute
+Written by Nick Conway
 
- testDMD.py: Test script to determine if SWIG handles 
- for imaging, maestro, and DMD work
+testDMD.py: Test script to determine if SWIG handles 
+for imaging, maestro, and DMD work
 
- Ported to python from c and extended from Daniel Levner's
-    ReleaseFocus.c -- 1-9-2010 [Nick Conway]
+Ported to python from c and extended from Daniel Levner's
+ReleaseFocus.c -- 1-9-2010 [Nick Conway]
 
- This software may be modified and re-distributed, but this header must appear
- at the top of the file.
+This software may be modified and re-distributed, but this header must appear
+at the top of the file.
 
-    1) move to spot with global offset
-    2) take image
-    3) send image to processing
-    4) receive from processing the offset and list of points
-    5) perform release on offset
-     Need 0.06 220 for Fluorecense
-      Need .001 30 + for general illumination 
-    python testDMD_bitmap.py 0.06 220 spare 0
-========================================================================================
+1) move to spot with global offset
+2) take image
+3) send image to processing
+4) receive from processing the offset and list of points
+5) perform release on offset
+    Need 0.06 220 for Fluorecense
+    Need .001 30 + for general illumination 
+python testDMD_bitmap.py 0.06 220 spare 0
+================================================================================
 The Python Imaging Library (PIL) is
 
     Copyright © 1997-2006 by Secret Labs AB
@@ -48,7 +48,8 @@ def show_usage():
     print "    int. time  -  integration time in seconds (floating point number)\n"
     print "    EM gain    -  gain for electron-multiplied camera\n"
     print "    filter     -  name of filter cube to be used (string)\n"
-    print "    TDI_flag   -  0 = no TDI (default), 1-2 = TDI, defined by Polonator_live.c\n"
+    print "    TDI_flag   -  0 = no TDI (default), 1-2 = TDI, defined by " + \
+          "Polonator_live.c\n"
 # end def
 
 
@@ -114,7 +115,8 @@ def main(argv=None):
     # initialize the release system 
     print "Initializing release system\n"
     PI.py_clear_memory();
-    if PI.py_illuminate_init(IlluminateWidth, IlluminateHeight, CameraWidth, CameraHeight) < 0:
+    if PI.py_illuminate_init(IlluminateWidth, IlluminateHeight, \
+                            CameraWidth, CameraHeight) < 0:
         sys.exit(-1)
     #end if
  
@@ -155,7 +157,7 @@ def main(argv=None):
     x_step = 1 
     #PI.py_clear_mask(mask_number)
     PI.py_clear_framebuffer()
-    #PI.py_clear_memory()        # must run this or you will get line artifacts!!!!
+    #PI.py_clear_memory()    # must run this or you will get line artifacts!!!!
   
     PI.py_illum_mask_radius_dmd(0,mask_number)
         

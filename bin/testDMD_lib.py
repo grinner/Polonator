@@ -1,29 +1,29 @@
 """
-========================================================================================
+================================================================================
 
- Polonator G.007 Selective Illuminate Software
+Polonator G.007 Selective Illuminate Software
 
- Wyss Institute
- Written by Nick Conway
+Wyss Institute
+Written by Nick Conway
 
- testDMD_lib.py: Test script to determine if SWIG handles
- for imaging, maestro, and DMD work
+testDMD_lib.py: Test script to determine if SWIG handles
+for imaging, maestro, and DMD work
 
- Ported to python from c and extended from Daniel Levner's
-    ReleaseFocus.c -- 1-9-2010 [Nick Conway]
+Ported to python from c and extended from Daniel Levner's
+ReleaseFocus.c -- 1-9-2010 [Nick Conway]
 
- This software may be modified and re-distributed, but this header must appear
- at the top of the file.
+This software may be modified and re-distributed, but this header must appear
+at the top of the file.
 
-    1) move to spot with global offset
-    2) take image
-    3) send image to processing
-    4) receive from processing the offset and list of points
-    5) perform release on offset
-     Need 0.06 220 for Fluorecense
-      Need .001 30 + for general illumination
-    python testDMD_bitmap.py 0.06 220 spare 0
- ========================================================================================
+1) move to spot with global offset
+2) take image
+3) send image to processing
+4) receive from processing the offset and list of points
+5) perform release on offset
+    Need 0.06 220 for Fluorecense
+    Need .001 30 + for general illumination
+python testDMD_bitmap.py 0.06 220 spare 0
+ ===============================================================================
 The Python Imaging Library (PIL) is
 
     Copyright © 1997-2006 by Secret Labs AB
@@ -50,14 +50,15 @@ def show_usage():
     print "    int. time  -  integration time in seconds (floating point number)\n"
     print "    EM gain    -  gain for electron-multiplied camera\n"
     print "    filter     -  name of filter cube to be used (string)\n"
-    print "    TDI_flag   -  0 = no TDI (default), 1-2 = TDI, defined by Polonator_live.c\n"
+    print "    TDI_flag   -  0 = no TDI (default), 1-2 = TDI, defined by " + \
+            "Polonator_live.c\n"
 # end def
 
 
 def thing(expos=0.008, gain=2, mycube='spare', TDI_flag = 0):
 
     """
-        Process command line
+    Process command line
     """
     IlluminateWidth = 1920
     IlluminateHeight = 1080
@@ -73,7 +74,7 @@ def thing(expos=0.008, gain=2, mycube='spare', TDI_flag = 0):
 
 
     """
-        Set up imaging
+    Set up imaging
     """
 
     MF.darkfield_off()
@@ -83,7 +84,7 @@ def thing(expos=0.008, gain=2, mycube='spare', TDI_flag = 0):
 
 
     """
-        set up release hardware
+    set up release hardware
     """
 
     # initialize the release system
@@ -131,7 +132,7 @@ def thing(expos=0.008, gain=2, mycube='spare', TDI_flag = 0):
     x_step = 1
     #PI.py_clear_mask(mask_number)
     PI.py_clear_framebuffer()
-    #PI.py_clear_memory()        # must run this or you will get line artifacts!!!!
+    #PI.py_clear_memory()    # must run this or you will get line artifacts!!!!
 
     PI.py_illum_mask_radius_dmd(0,mask_number)
     #done = 0
@@ -185,8 +186,8 @@ def on():
 
 def snapPicPNG(exposure, gain, color, filename):
     """
-        snaps an image and saves the 14bit image as an 8 bit greyscale PNG
-        by shifting out 6 bits
+    snaps an image and saves the 14bit image as an 8 bit greyscale PNG
+    by shifting out 6 bits
     """
     temp = PC.snap(exposure, gain, color, filename + ".raw")
     im = Image.new('L', (1000,1000))

@@ -1,28 +1,28 @@
 """
-## ========================================================================================
-##
-## Polonator G.007 Selective Illuminate Software
-##
-## Wyss Institute
-## Written by Nick Conway
-##
-## testDMD.py: Test script to determine if SWIG handles 
-## for imaging, maestro, and DMD work
-##
-## Ported to python from c and extended from Daniel Levner's
-##    ReleaseFocus.c -- 1-9-2010 [Nick Conway]
-##
-## This software may be modified and re-distributed, but this header must appear
-## at the top of the file.
-##
-##    1) move to spot with global offset
-##    2) take image
-##    3) send image to processing
-##    4) receive from processing the offset and list of points
-##    5) perform release on offset
-##     
-## ========================================================================================
-##
+================================================================================
+
+Polonator G.007 Selective Illuminate Software
+
+Wyss Institute
+Written by Nick Conway
+
+testDMD.py: Test script to determine if SWIG handles 
+for imaging, maestro, and DMD work
+
+Ported to python from c and extended from Daniel Levner's
+ReleaseFocus.c -- 1-9-2010 [Nick Conway]
+
+This software may be modified and re-distributed, but this header must appear
+at the top of the file.
+
+1) move to spot with global offset
+2) take image
+3) send image to processing
+4) receive from processing the offset and list of points
+5) perform release on offset
+    
+================================================================================
+
 """
 
 import sys
@@ -42,7 +42,8 @@ def show_usage():
     print "    int. time  -  integration time in seconds (floating point number)\n"
     print "    EM gain    -  gain for electron-multiplied camera\n"
     print "    filter     -  name of filter cube to be used (string)\n"
-    print "    TDI_flag   -  0 = no TDI (default), 1-2 = TDI, defined by Polonator_live.c\n"
+    print "    TDI_flag   -  0 = no TDI (default), 1-2 = TDI, defined by " + \
+          "Polonator_live.c\n"
 # end def
 
 
@@ -108,7 +109,8 @@ def main(argv=None):
 
     # initialize the release system 
     print "Initializing release system\n"
-    if PI.py_illuminate_init(IlluminateWidth, IlluminateHeight, CameraWidth, CameraHeight) < 0:
+    if PI.py_illuminate_init(IlluminateWidth, IlluminateHeight, \
+                            CameraWidth, CameraHeight) < 0:
         sys.exit(-1)
     #end if
  
@@ -117,7 +119,7 @@ def main(argv=None):
 
     # enable release hardware 
     PI.py_illuminate_enable()
-    PI.py_clear_memory()        # must run this or you will get line artifacts!!!!
+    PI.py_clear_memory()    # must run this or you will get line artifacts!!!!
     # generate an image 
     PI.generate_image()
     
