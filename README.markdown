@@ -43,5 +43,5 @@ often looks like this::
 
 ## Links
 
-* [Image ingestion simulator](https://github.com/grinner/PolonatorProcessorSim) - a hack of the image ingestion system to create a standalone simulator for developing new image processing and basecalling algorithms
+* [Image ingestion simulator](https://github.com/grinner/PolonatorProcessorSim) - a hack of the G.007 image ingestion system to create a standalone simulator for developing new image processing and basecalling algorithms for DNA sequencing
 * http://polonator.org , it's true the site needs updating
