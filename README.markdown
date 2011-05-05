@@ -7,7 +7,7 @@ MIT license on everything
 ## Release Background
 
 [The Wyss Institute](http://wyss.harvard.edu) is funding improvements to the Polonator source.
-The Polonator was originally a rush job, so the code a bit rough around the edges.
+The Polonator was originally a rush job, so the code is a bit rough around the edges.
 As a commitment to the project, and generally building open software and hardware
 I'm majorly refactoring the code base.  
 This is the start of an organization process of the code, which has been slowly accumulating
@@ -31,7 +31,7 @@ For now all I have is the source, this will change as updates proceed
 
 Polonator will be an installable python module. You might find
 it most useful for tasks involving DNA sequencing. Typical usage
-often looks like this::
+often looks like this:
 
     #!/usr/bin/env python
 
