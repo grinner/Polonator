@@ -15,15 +15,7 @@ ReleaseFocus.c -- 1-9-2010 [Nick Conway]
 This software may be modified and re-distributed, but this header must appear
 at the top of the file.
 
-1) move to spot with global offset
-2) take image
-3) send image to processing
-4) receive from processing the offset and list of points
-5) perform release on offset
-    Need 0.06 220 for Fluorecense
-    Need .001 30 + for general illumination
-python testDMD_bitmap.py 0.06 220 spare 0
- ===============================================================================
+===============================================================================
 The Python Imaging Library (PIL) is
 
     Copyright © 1997-2006 by Secret Labs AB
@@ -41,24 +33,23 @@ import polonator.camera.asPhoenix as PC
 import polonator.motion.maestro as maestro
 from PIL import Image
 
-DEFAULT_CUBE = "spare"
+DEFAULT_CUBE = "spare"  # this is the filter wheel hard coded position
 DEFAULT_TDI = 0
 
 # show usage instructions
 def show_usage():
     print "ReleaseFocus <int. time> <EM gain> [filter] [TDI_flag]\n"
-    print "    int. time  -  integration time in seconds (floating point number)\n"
-    print "    EM gain    -  gain for electron-multiplied camera\n"
-    print "    filter     -  name of filter cube to be used (string)\n"
-    print "    TDI_flag   -  0 = no TDI (default), 1-2 = TDI, defined by " + \
+    print " int. time  -  integration time in seconds (floating point number)\n"
+    print " EM gain    -  gain for electron-multiplied camera\n"
+    print " filter     -  name of filter cube to be used (string)\n"
+    print " TDI_flag   -  0 = no TDI (default), 1-2 = TDI, defined by " + \
             "Polonator_live.c\n"
 # end def
 
 
 def thing(expos=0.008, gain=2, mycube='spare', TDI_flag = 0):
-
     """
-    Process command line
+    Process command line.  This is used 
     """
     IlluminateWidth = 1920
     IlluminateHeight = 1080
@@ -90,7 +81,8 @@ def thing(expos=0.008, gain=2, mycube='spare', TDI_flag = 0):
     # initialize the release system
     print "Initializing release system\n"
     PI.py_clear_memory();
-    if PI.py_illuminate_init(IlluminateWidth, IlluminateHeight, CameraWidth, CameraHeight) < 0:
+    if PI.py_illuminate_init(IlluminateWidth, IlluminateHeight, \
+                                            CameraWidth, CameraHeight) < 0:
         sys.exit(-1)
     #end if
 

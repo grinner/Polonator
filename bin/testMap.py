@@ -8,6 +8,10 @@ Written by Nick Conway
 
 testMap.py:
 
+This script exists to quickly from the command line:
+1) calibrate the DMD
+2) show some test images to verify the mapping
+
 
 Release 1.0 -- 09-15-2010
 ================================================================================

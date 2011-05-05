@@ -672,6 +672,9 @@ class MappingFunctions:
     # end def
     
     def closeDMD(self):
+        """
+        Float the DMD and clear the frame buffer
+        """
         PI.py_illuminate_float()
         PI.py_clear_framebuffer()
     #end def

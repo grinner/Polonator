@@ -1,6 +1,16 @@
 #!/usr/bin/python
 """
+findBeadsTest.py
+5/5/2011
+This is used to test the bead finding algorithms
+The primary use of this script is to scan a flowcell and position by position:
+1) "Before" find all objects of a particular color, save image
+2) Release all objects of a particular color
+3) "After" take a 2nd picture and overlay it on the first with the object 
+    centroids to verify graphically release efficiency
+4) Create multicolor overlays of the before and after images
 
+This script is not intended to sequence. 
 """
   
 import numpy as np
@@ -13,6 +23,7 @@ import polonator.image.imgTools as IT
 import time
 import sys
 
+# assumes we've alreay created a mapping file
 MapFunc = PM.MappingFunctions()
 MapFunc.readMappingFile()
 
@@ -58,8 +69,8 @@ num_beads = 0
     
 def snapPicPNG(exposure, gain, color, filename):
     """
-        snaps an image and saves the 14bit image as an 8 bit greyscale PNG
-        by shifting out 6 bits
+    snaps an image and saves the 14bit image as an 8 bit greyscale PNG
+    by shifting out 6 bits
     """
     global img_array
     global img_array_float
@@ -105,8 +116,8 @@ def snapPicPNG(exposure, gain, color, filename):
 
 def snapAllPics(exposure, gain,suffix):
     """
-        exposure and gain are lists
-        also creates an RGB overlay image
+    exposure and gain are lists
+    also creates an RGB overlay image
     """
     global exposures
     global gains
@@ -150,6 +161,10 @@ def snapAllPics(exposure, gain,suffix):
 # end def
 
 def release(mode=0,inverse=0,decimate=0,spot_size=0):
+    """
+    Releases the last found bead positions, or can illuminate a predetermined
+    Set of bitmaps
+    """
     global beadpos_xcol
     global beadpos_yrow
     global num_beads
@@ -172,15 +187,40 @@ def release(mode=0,inverse=0,decimate=0,spot_size=0):
 # end def
 
 def stop_release():
+    """
+    Convenience command for command line
+    Turns the DMD array entirely off by:
+    1) floating the pixels
+    2) clears the framebuffer
+    3) closes the shutter
+    """
     MapFunc.closeDMD()
     MaestroF.shutter_close()
 # end def
 
 def on():
+    """
+    Convenience command for command line
+    Turns the DMD array entirely on pixel position
+    """
     MapFunc.lightAll()
 #end def
 
 def find():
+    """
+    This function:
+    1) Takes all images, saves with labels "_before" for all
+    2) Then finds all the objects of one color "mycolor", 
+        a) takes the images averaging over "frames" images
+        a) finds all objects
+        b) prints out a bunch of bead position values found in the image
+    3) creates an overlay image putting the "mycolor" object centroids on top 
+        of the raw images of the composite of all colors and saves a png
+        of 'colorsnap-'+'find_overlay_' + my_color +'_before' + ".png
+        
+    """
+    
+    # declare all globals for function
     global img_array
     global img_array_float
     global img_array_flat
@@ -202,6 +242,12 @@ def find():
     
     num_beads = 0
     MaestroF.darkfield_off()
+    
+    """
+    DO NOT Home the filter wheel!!! In between sequencing and releasing 
+    This destroys the mapping, since the filter whell cannot reapeatedly home
+    To the same postion
+    """
     #MaestroF.filter_home()
     
     snapAllPics(exposures, gains, "_before")
@@ -259,8 +305,8 @@ def find():
     """
     
     """
-        snaps an image and saves the 14bit image as an 8 bit greyscale PNG
-        by shifting out 6 bits
+    saves the pretaken raw 14bit image as an 8 bit greyscale PNG
+    by shifting out 6 bits
     """
     shape = (1000, 1000)
     img_1D_list = []
@@ -299,6 +345,12 @@ def find():
 
 
 def collect():
+    """
+    1) Snaps 4 pictures at the "exposures" and "gains" settings
+    2) saves them to the "_after" image files
+    3) closes the camera and the DMD
+    4) creates an overlay png image for evaluation
+    """
     global exposures
     global gains
     global my_color
@@ -311,7 +363,7 @@ def collect():
     stop_release()
     
     imR = Image.open("map_0_1" +".png") # just beads
-    imG = Image.open("colorsnap-" + my_color+ "_after" + ".png") # just beads
+    imG = Image.open("colorsnap-" + my_color + "_after" + ".png") # just beads
     imB = Image.open("map_0_2" +".png") # the found beads
     im = Image.new('RGB', (1000,1000))
     pix = im.load()
@@ -321,12 +373,13 @@ def collect():
 
     for i in range(1000):
         for j in range(1000):
-            pix[i,j] = (0,pixG[i,j],pixB[i,j]) #px = -238501 
-            #pix[i,j] = (pixR[i,j],pixG[i,j],pixB[i,j]) #px = -238501 
+            #pix[i,j] = (0,pixG[i,j],pixB[i,j]) #px = -238501 
+            pix[i,j] = (pixR[i,j],pixG[i,j],pixB[i,j]) #px = -238501 
         # end for
     # end for
     im.save("color_overlay_current" +".png", "png")
     
+    # free up the allocated memory
     del imR
     del imG
     del imB
@@ -340,8 +393,8 @@ def collect():
 
 def overlayPNG(prefix,suffix):
     """
-        snaps an image and saves the 14bit image as an 8 bit greyscale PNG
-        by shifting out 6 bits
+    snaps an image and saves the 14bit image as an 8 bit greyscale PNG
+    by shifting out 6 bits
     """
     global colors
     shape = (1000, 1000)
@@ -378,8 +431,8 @@ def avgAndStd(filename, x=0,y=0):
 
 def snapUVPNG(exposure, gain,filename):
     """
-        snaps an image and saves the 14bit image as an 8 bit greyscale PNG
-        by shifting out 6 bits
+    snaps an image and saves the 14bit image as an 8 bit greyscale PNG
+    by shifting out 6 bits
     """
     global img_array
     global img_array_float
@@ -412,10 +465,10 @@ def snapUVPNG(exposure, gain,filename):
 
 def overlay3(fileA, fileB):
     """
-        overlays layers
+    overlays layers from a PNG file and a raw file
     """
     shape = (1000, 1000)
-    image_fileA =Image.open(fileA +".png")
+    image_fileA = Image.open(fileA +".png")
     image_fileB = open(fileB +'.raw', 'rb')
     # load a 1000000 length array
     pixB16 = (np.fromfile(file=image_fileB, dtype=np.uint16)).reshape(shape)
@@ -437,6 +490,12 @@ def overlay3(fileA, fileB):
 # end def
 
 def laneProcess(flowcell,lane,column):
+    """
+    process a "lane" 
+    a "column" at a time at a "flowcell"
+    Does all 218 images in a lane
+    This can by used to release all beads that have mycolor
+    """
     global MapFunc
     global MaestroF
     global num_beads
