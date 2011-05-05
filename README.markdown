@@ -6,7 +6,7 @@ MIT license on everything
 
 ## Release Background
 
-Wyss Institute is funding improvements to the Polonator source.
+[The Wyss Institute](http://wyss.harvard.edu) is funding improvements to the Polonator source.
 The fundamental things is that we are doing:
 
 1. More Python
