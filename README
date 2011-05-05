@@ -1,7 +1,7 @@
 ===========
 Polonator
 ===========
-The Polonator Source is going open source.  This week I should slap 
+The Polonator Source is going github. 
 MIT license on everything
 
 
@@ -17,30 +17,5 @@ often looks like this::
     if camera.isReady():
         print "Taking another photo:", maestro.snap()
 
-(Note the double-colon and 4-space indent formatting above.)
 
-Paragraphs are separated by blank lines. *Italics*, **bold**,
-and ``monospace`` look like this.
-
-
-Usage
-=========
-
-Lists look like this:
-
-* First
-
-* Second. Can be multiple lines
-  but must be indented properly.
-
-A Sub-Section
--------------
-
-Numbered lists look like you'd expect:
-
-1. hi there
-
-2. must be going
-
-Urls are http://like.this and links can be
-written `like this <http://www.example.com/foo/bar>`_.
+http://polonator.org , it's true the site needs updating
