@@ -9,9 +9,9 @@ MIT license on everything
 Wyss Institute is funding improvements to the Polonator source.
 The fundamental things is that we are doing:
 
-    1. More Python
-    2. Python get's access to C data structures through [swig](http://www.swig.org/)'d [numpy](http://numpy.scipy.org) arrays
-    3. The result is a more scriptable automated microscope
+1. More Python
+2. Python get's access to C data structures through [swig](http://www.swig.org/)'d [numpy](http://numpy.scipy.org) arrays
+3. The result is a more scriptable automated microscope
      
 
 ## Installation
