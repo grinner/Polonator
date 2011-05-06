@@ -18,6 +18,14 @@ import java.lang.Process;
  *
  * @author  polonator
  */
+ 
+
+// Build with:
+// javac -Xlint:unchecked PolonatorAcquisitionControl.java
+// echo Main-Class: PolonatorAcquisitionControl >manifest.txt
+// jar cvfm PolonatorAcquisitionControl.jar manifest.txt *.class
+// rm *.class
+
 public class PolonatorAcquisitionControl extends javax.swing.JFrame {
 
     Vector acqUtilsButtons = new Vector();
