@@ -1,8 +1,14 @@
 # Badass Makefile for the G.007 Polonator
 # Nick Conway 12 2010 Wyss Institute 
+# FYI:
 # -L is a root directory for a library, -l is off a root directory
 # -I is an include directory
-BASE_DIR = /home/polonator/Dropbox/release_code_check_11292010/Polonator/polonator
+# Edit this file for pointing to locations of
+# SWIG, python, numpy, and the phoenix frame grabber libraries
+
+# commented out the absolute path of the base directory
+#BASE_DIR = /home/polonator/Dropbox/release_code_check_11292010/Polonator/polonator
+BASE_DIR = ../polonator
 
 # general include and compiler optimizations
 CFLAGS = -I$(BASE_DIR) -O3
