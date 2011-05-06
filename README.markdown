@@ -26,6 +26,12 @@ If you want to contact me mail: nick.conway at wyss.harvard.edu
 ## Installation
 
 For now all I have is the source, this will change as updates proceed
+The dependencies are:
+1. [SWIG](http://www.swig.org/)
+2. Python 2.X, v2.5 or greater
+3. Perl
+4. [Numpy](http://numpy.scipy.org) 
+5. Open source Phoenix drivers v5.59 for the [Phoenix](http://www.activesilicon.com/products_fg_phx.htm) frame grabber from [Active Silicon](http://www.activesilicon.com/)
 
 ## Usage
 
