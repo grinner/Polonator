@@ -34,6 +34,7 @@ The dependencies are:
 3. Perl
 4. [Numpy](http://numpy.scipy.org), [license](http://numpy.scipy.org/license.html#license) BSD
 5. Open source Phoenix drivers v5.59 for the [Phoenix](http://www.activesilicon.com/products_fg_phx.htm) frame grabber from [Active Silicon](http://www.activesilicon.com/)
+6. Java, and even Netbeans for reviewing the old GUI
 
 ## Usage
 
