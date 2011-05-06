@@ -233,9 +233,9 @@ python_img_tools: $(IMGTOOLS_DEP) $(IMG_DIR)/img_tools.i
     #rm *.o
 
 clean :
-	-rm -f *.o *_wrap.c *.so *.pyc
-	-rm -f ../Polonator-stagealign
-	-rm -f ../PolonatorUtils
-	-rm -f ../Polonator-acquirer
+	-rm -r -f *.o *_wrap.c *.so *.pyc
+	-rm -f ../bin/Polonator-stagealign
+	-rm -f ../bin/PolonatorUtils
+	-rm -f ../bin/Polonator-acquirer
 # EOF
 
