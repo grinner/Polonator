@@ -6,7 +6,6 @@
 *.dylib
 *.o
 *.com
-*.class
 PolonatorUtils
 Polonator-stagealign
 
@@ -35,6 +34,11 @@ Thumbs.db
 *.pyc
 *.app
 *.raw
+
+# java stuff
+*.class
+*.form-backup
+*.java-backup
 
 # polonator stuff
 0*
