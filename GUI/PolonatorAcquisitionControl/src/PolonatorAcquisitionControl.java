@@ -34,7 +34,7 @@ public class PolonatorAcquisitionControl extends javax.swing.JFrame {
     // except for maybe the matlab_runtime_dir
     String matlab_runtime_dir = "/opt/MATLAB/MATLAB_Component_Runtime/v77/";
     String base_dir = "/home/polonator/G.007";
-    String acqbase_dir = base_dir + "/G.007_acquisition/";
+    String acqbase_dir = base_dir + "/G.007_acquisition";
     String fluidicsbase_dir = "/home/polonator/G.007/G.007_fluidics";
     String stagealign_dir = acqbase_dir + "/stagealign";
     Vector polonatorCycleListVector = new Vector();
