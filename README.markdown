@@ -19,6 +19,7 @@ The fundamental things is that we are doing:
 2. Python gets access to C data structures through [swig](http://www.swig.org/)'d [numpy](http://numpy.scipy.org) arrays (open to anyone changing this, to Boost.Python, or whatever)
 3. The result is a more scriptable automated microscope
 4. Accelerating and multithreading the image processing and basecalling
+5. Updating the user interface.
      
 If you want to contact me mail: nick.conway at wyss.harvard.edu
 
@@ -28,10 +29,10 @@ If you want to contact me mail: nick.conway at wyss.harvard.edu
 For now all I have is the source, this will change as updates proceed
 The dependencies are:
 
-1. [SWIG](http://www.swig.org/)
+1. [SWIG](http://www.swig.org/) [license](http://www.swig.org/legal.html) whatever license you like for redistribution
 2. Python 2.X, v2.5 or greater
 3. Perl
-4. [Numpy](http://numpy.scipy.org) 
+4. [Numpy](http://numpy.scipy.org) [license](http://numpy.scipy.org/license.html#license) BSD
 5. Open source Phoenix drivers v5.59 for the [Phoenix](http://www.activesilicon.com/products_fg_phx.htm) frame grabber from [Active Silicon](http://www.activesilicon.com/)
 
 ## Usage
