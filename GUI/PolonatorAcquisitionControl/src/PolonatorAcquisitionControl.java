@@ -30,7 +30,13 @@ public class PolonatorAcquisitionControl extends javax.swing.JFrame {
     int stagealign_fcnum;
     boolean flUtilUseBuffer;
     JFrame jf = this;
-    String stagealign_dir = "/home/polonator/G.007/G.007_acquisition/stagealign/";
+    // use the convention that directory strings omit tailing '/'
+    // except for maybe the matlab_runtime_dir
+    String matlab_runtime_dir = "/opt/MATLAB/MATLAB_Component_Runtime/v77/";
+    String base_dir = "/home/polonator/G.007";
+    String acqbase_dir = base_dir + "/G.007_acquisition/";
+    String fluidicsbase_dir = "/home/polonator/G.007/G.007_fluidics";
+    String stagealign_dir = acqbase_dir + "/stagealign";
     Vector polonatorCycleListVector = new Vector();
     String currentVersion = "Version 1.71";
     String currentDate = "February 13 2009";
@@ -40,7 +46,7 @@ public class PolonatorAcquisitionControl extends javax.swing.JFrame {
         int focusval;
 
         initComponents();
-        SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils getfocus", utilsTextArea, "focus");
+        SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils getfocus", utilsTextArea, "focus");
         worker.execute();
         aboutVersion.setText(currentVersion);
         aboutDate.setText(currentDate);
@@ -2486,61 +2492,61 @@ public class PolonatorAcquisitionControl extends javax.swing.JFrame {
 
 private void utilsStatusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilsStatusButtonActionPerformed
     disableAllAcqUtilButtons();
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils status", utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils status", utilsTextArea, "acqUtils");
     worker.execute();
 }//GEN-LAST:event_utilsStatusButtonActionPerformed
 
 private void utilsHomeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilsHomeButtonActionPerformed
     disableAllAcqUtilButtons();
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils reset", utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils reset", utilsTextArea, "acqUtils");
     worker.execute();
 }//GEN-LAST:event_utilsHomeButtonActionPerformed
 
 private void utilsUnlockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilsUnlockButtonActionPerformed
     disableAllAcqUtilButtons();
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils unlock", utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils unlock", utilsTextArea, "acqUtils");
     worker.execute();
 }//GEN-LAST:event_utilsUnlockButtonActionPerformed
 
 private void utilsLockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilsLockButtonActionPerformed
     disableAllAcqUtilButtons();
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils lock", utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils lock", utilsTextArea, "acqUtils");
     worker.execute();
 }//GEN-LAST:event_utilsLockButtonActionPerformed
 
 private void utilsThetahomeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilsThetahomeButtonActionPerformed
     disableAllAcqUtilButtons();
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils hometheta", utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils hometheta", utilsTextArea, "acqUtils");
     worker.execute();
 }//GEN-LAST:event_utilsThetahomeButtonActionPerformed
 
 private void utilsPoweronButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilsPoweronButtonActionPerformed
     disableAllAcqUtilButtons();
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils power-on", utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils power-on", utilsTextArea, "acqUtils");
     worker.execute();
 }//GEN-LAST:event_utilsPoweronButtonActionPerformed
 
 private void utilsPoweroffButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilsPoweroffButtonActionPerformed
     disableAllAcqUtilButtons();
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils power-off", utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils power-off", utilsTextArea, "acqUtils");
     worker.execute();
 }//GEN-LAST:event_utilsPoweroffButtonActionPerformed
 
 private void utilsDarkfieldonButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilsDarkfieldonButtonActionPerformed
     disableAllAcqUtilButtons();
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils darkfield-on", utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils darkfield-on", utilsTextArea, "acqUtils");
     worker.execute();
 }//GEN-LAST:event_utilsDarkfieldonButtonActionPerformed
 
 private void utilsDarkfieldoffButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilsDarkfieldoffButtonActionPerformed
     disableAllAcqUtilButtons();
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils darkfield-off", utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils darkfield-off", utilsTextArea, "acqUtils");
     worker.execute();
 }//GEN-LAST:event_utilsDarkfieldoffButtonActionPerformed
 
 private void utilsCompletescanButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilsCompletescanButtonActionPerformed
     disableAllAcqUtilButtons();
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils complete-scan", utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils complete-scan", utilsTextArea, "acqUtils");
     worker.execute();
 }//GEN-LAST:event_utilsCompletescanButtonActionPerformed
 
@@ -2548,7 +2554,7 @@ private void utilsLiveButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
     disableAllAcqUtilsCameraButtons();
     
     String commandArgs = ""+((float)((Integer)utilsLiveExp.getValue()) / 1000) + " " + (Integer)utilsLiveGain.getValue()+" "+(String)utilsLiveFilterList.getSelectedValue();
-    SwingWorker<Integer, String> worker2 = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils live_new " + commandArgs, utilsTextArea, "acqUtilsLive");
+    SwingWorker<Integer, String> worker2 = createWorker(acqbase_dir + "/PolonatorUtils live_new " + commandArgs, utilsTextArea, "acqUtilsLive");
     worker2.execute();
 
     utilFocusBar.setEnabled(true);
@@ -2559,7 +2565,7 @@ private void utilsLiveButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 
 private void utilsViewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilsViewButtonActionPerformed
 
-    SwingWorker<Integer, String> worker2 = createWorker("/home/polonator/G.007/G.007_acquisition/run_load_raw.sh /opt/MATLAB/MATLAB_Component_Runtime/v77/ snap-image.raw", utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker2 = createWorker(acqbase_dir + "/run_load_raw.sh " + matlab_runtime_dir + " snap-image.raw", utilsTextArea, "acqUtils");
     worker2.execute();  
 }//GEN-LAST:event_utilsViewButtonActionPerformed
 
@@ -2567,12 +2573,12 @@ private void utilsSnapButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
    String commandArgs = "" + (String)utilsSnapFilterList.getSelectedValue() + " " + 
            ((float)((Integer)utilsSnapExp.getValue()) / 1000) + " " + (Integer)utilsSnapGain.getValue();
     System.out.println(commandArgs);
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils snap " + commandArgs, utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils snap " + commandArgs, utilsTextArea, "acqUtils");
     worker.execute();
 }//GEN-LAST:event_utilsSnapButtonActionPerformed
 
 private void flUtilPrimeFlowcellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flUtilPrimeFlowcellActionPerformed
-    String command = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl " + 
+    String command = fluidicsbase_dir + "/src/biochem_utils.pl " + 
             Integer.toString(flUtilsFCNum) + 
             " flush_flowcell";
     
@@ -2594,7 +2600,7 @@ private void flUtilFlowcell1ActionPerformed(java.awt.event.ActionEvent evt) {//G
 }//GEN-LAST:event_flUtilFlowcell1ActionPerformed
 
 private void flUtilInitializeSyringeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flUtilInitializeSyringeActionPerformed
-    String command = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl " + 
+    String command = fluidicsbase_dir + "/src/biochem_utils.pl " + 
             Integer.toString(flUtilsFCNum) + 
             " syringe_pump_init";
     
@@ -2611,7 +2617,7 @@ private void flUtilPrimeReagentBlockActionPerformed(java.awt.event.ActionEvent e
     else{
         primeV4 = "0";
     }
-    String command = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl " + 
+    String command = fluidicsbase_dir + "/src/biochem_utils.pl " + 
             Integer.toString(flUtilsFCNum) + 
             " prime_reagent_block " + 
             primeV4;
@@ -2622,7 +2628,7 @@ private void flUtilPrimeReagentBlockActionPerformed(java.awt.event.ActionEvent e
 }//GEN-LAST:event_flUtilPrimeReagentBlockActionPerformed
 
 private void flUtilStartStripActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flUtilStartStripActionPerformed
-    String command = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl " + 
+    String command = fluidicsbase_dir + "/src/biochem_utils.pl " + 
             Integer.toString(flUtilsFCNum) + 
             " strip_chem " + 
             (String)flUtilStripValve.getSelectedItem();
@@ -2633,7 +2639,7 @@ private void flUtilStartStripActionPerformed(java.awt.event.ActionEvent evt) {//
 }//GEN-LAST:event_flUtilStartStripActionPerformed
 
 private void flUtilStartHybActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flUtilStartHybActionPerformed
-    String command = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl " + 
+    String command = fluidicsbase_dir + "/src/biochem_utils.pl " + 
             Integer.toString(flUtilsFCNum) + 
             " hyb " + 
             (String)flUtilHybValve.getSelectedItem() + 
@@ -2646,7 +2652,7 @@ private void flUtilStartHybActionPerformed(java.awt.event.ActionEvent evt) {//GE
 }//GEN-LAST:event_flUtilStartHybActionPerformed
 
 private void flUtilStartLigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flUtilStartLigActionPerformed
-    String command = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl " + 
+    String command = fluidicsbase_dir + "/src/biochem_utils.pl " + 
             Integer.toString(flUtilsFCNum) + 
             " lig_stepup_peg " + 
             (String)flUtilLigValve.getSelectedItem() + 
@@ -2701,7 +2707,7 @@ private void flUtilStartReactActionPerformed(java.awt.event.ActionEvent evt) {//
                 (String)flUtilReactBufferVolume.getText();
     }
     
-    String command = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl " + 
+    String command = fluidicsbase_dir + "/src/biochem_utils.pl " + 
             Integer.toString(flUtilsFCNum) + 
             " react " + 
             (String)flUtilReactValve.getSelectedItem() + 
@@ -2760,7 +2766,7 @@ private void acqDarkfieldScanActionPerformed(java.awt.event.ActionEvent evt) {//
         cyclename = "WL2";
         flowcell = "3";
     }
-    String command = "/home/polonator/G.007/G.007_acquisition/src/manual_image.pl " + 
+    String command = acqbase_dir + "/src/manual_image.pl " + 
             cyclename +
             " " +
             flowcell;
@@ -2771,7 +2777,7 @@ private void acqDarkfieldScanActionPerformed(java.awt.event.ActionEvent evt) {//
 }//GEN-LAST:event_acqDarkfieldScanActionPerformed
 
 private void flUtilStartCycleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flUtilStartCycleActionPerformed
-    String command = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl " + 
+    String command = fluidicsbase_dir + "/src/biochem_utils.pl " + 
             Integer.toString(flUtilsFCNum) + 
             " cycle_ligation " + 
             (String)flUtilCycleName.getText();
@@ -2797,7 +2803,7 @@ private void flUtilUseBufferAfterRadioButtonActionPerformed(java.awt.event.Actio
 }//GEN-LAST:event_flUtilUseBufferAfterRadioButtonActionPerformed
 
 private void utilFocusBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_utilFocusBarAdjustmentValueChanged
-    String command = "/home/polonator/G.007/G.007_acquisition/PolonatorUtils setfocus " +
+    String command = acqbase_dir + "/PolonatorUtils setfocus " +
             Integer.toString(utilFocusBar.getValue());
     
     utilFocusLabel.setText(Integer.toString(utilFocusBar.getValue()));
@@ -2806,13 +2812,13 @@ private void utilFocusBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent e
 }//GEN-LAST:event_utilFocusBarAdjustmentValueChanged
 
 private void utilSetFocusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilSetFocusActionPerformed
-    String command = "/home/polonator/G.007/G.007_acquisition/PolonatorUtils writefocus";
+    String command = acqbase_dir + "/PolonatorUtils writefocus";
     SwingWorker<Integer, String> worker = createWorker(command, utilsTextArea, "");
     worker.execute();
 }//GEN-LAST:event_utilSetFocusActionPerformed
 
 private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
-    String command = "/home/polonator/G.007/G.007_acquisition/process_kill.pl acq";
+    String command = acqbase_dir + "/process_kill.pl acq";
     SwingWorker<Integer, String> worker = createWorker(command, polonatorTextArea, "");
     worker.execute();
     enableAllAcqUtilButtons();
@@ -2853,7 +2859,7 @@ private void polonatorStartActionPerformed(java.awt.event.ActionEvent evt) {//GE
 
     // write cycle names to cycle_list file
     try{
-        out = new BufferedWriter(new FileWriter("/home/polonator/G.007/G.007_fluidics/src/cycle_list"));
+        out = new BufferedWriter(new FileWriter(fluidicsbase_dir + "/src/cycle_list"));
         for(i=0; i<entry.length; i++){
             out.write((String)polonatorCycleListVector.elementAt(i));
             out.newLine();
@@ -2869,7 +2875,7 @@ private void polonatorStartActionPerformed(java.awt.event.ActionEvent evt) {//GE
     }
     
     // now execute polonator_main
-    String command = "/home/polonator/G.007/G.007_fluidics/src/polonator_main.py "+
+    String command = fluidicsbase_dir + "/src/polonator_main.py "+
             touchFlag;
     System.out.println(command);
     SwingWorker<Integer, String> worker = createWorker(command, polonatorTextArea, "polonatorStart");
@@ -2933,7 +2939,7 @@ private void acqCycleScanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         fcnum = "1";
     }
     
-    String command = "/home/polonator/G.007/G.007_acquisition/src/manual_image.pl " + 
+    String command = acqbase_dir + "/src/manual_image.pl " + 
             acqCycleName.getText() + " " +
             fcnum + " " +
             (Integer)acqCycleIntFAM.getValue() + " " +
@@ -2975,7 +2981,7 @@ private void utilsColorSnapButtonActionPerformed(java.awt.event.ActionEvent evt)
             (Integer)utilsColorTxRgain.getValue();
     
     System.out.println(commandArgs);
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils colorsnap " + commandArgs, utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils colorsnap " + commandArgs, utilsTextArea, "acqUtils");
     worker.execute();
     
 }//GEN-LAST:event_utilsColorSnapButtonActionPerformed
@@ -2992,21 +2998,21 @@ private void utilsColorViewButtonActionPerformed(java.awt.event.ActionEvent evt)
     
     if((!red.equals("none")) || (!(green.equals("none"))) || (!(blue.equals("none")))){
         if(!red.equals("none")){
-            filename1 = "/home/polonator/G.007/G.007_acquisition/colorsnap-" + 
+            filename1 = acqbase_dir + "/colorsnap-" + 
                     red + 
                     ".raw";
         }
         if(!green.equals("none")){
-            filename2 = "/home/polonator/G.007/G.007_acquisition/colorsnap-" + 
+            filename2 = acqbase_dir + "/colorsnap-" + 
                     green + 
                     ".raw";
         }
         if(!blue.equals("none")){
-            filename3 = "/home/polonator/G.007/G.007_acquisition/colorsnap-" + 
+            filename3 = acqbase_dir + "/colorsnap-" + 
                     blue + 
                     ".raw";
         }
-        command = "/home/polonator/G.007/G.007_acquisition/run_display_color_raw.sh /opt/MATLAB/MATLAB_Component_Runtime/v77/ "+
+        command = acqbase_dir + "/run_display_color_raw.sh " + matlab_runtime_dir + " "+
                 filename1 +
                 " " +
                 filename2 +
@@ -3025,7 +3031,7 @@ private void acqCycleUseSnapActionPerformed(java.awt.event.ActionEvent evt) {//G
 
 private void utilsThetaunlockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilsThetaunlockButtonActionPerformed
     disableAllAcqUtilButtons();
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils unlocktheta", utilsTextArea, "acqUtils");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils unlocktheta", utilsTextArea, "acqUtils");
     worker.execute();
 }//GEN-LAST:event_utilsThetaunlockButtonActionPerformed
 
@@ -3033,7 +3039,7 @@ private void stagealign_viewlogActionPerformed(java.awt.event.ActionEvent evt) {
     String input;
     stagealign_textwindow.setText("");
     try{
-        FileInputStream in = new FileInputStream("/home/polonator/G.007/G.007_acquisition/logs/polonator-stagealign" + stagealign_fcnum + ".offsetlog");
+        FileInputStream in = new FileInputStream(acqbase_dir + "/logs/polonator-stagealign" + stagealign_fcnum + ".offsetlog");
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         while((input=br.readLine()) != null){
             stagealign_textwindow.append(input + "\n");
@@ -3055,21 +3061,21 @@ private void stagealign_fc1ActionPerformed(java.awt.event.ActionEvent evt) {//GE
 }//GEN-LAST:event_stagealign_fc1ActionPerformed
 
 private void stagealign_gotopositionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stagealign_gotopositionActionPerformed
-    String command = "/home/polonator/G.007/G.007_acquisition/PolonatorUtils gotostagealignpos " + stagealign_fcnum + " " + (Integer)stagealign_lane.getValue();
+    String command = acqbase_dir + "/PolonatorUtils gotostagealignpos " + stagealign_fcnum + " " + (Integer)stagealign_lane.getValue();
     System.out.println(command);
     SwingWorker<Integer, String> worker = createWorker(command, stagealign_textwindow, "");
     worker.execute();
 }//GEN-LAST:event_stagealign_gotopositionActionPerformed
 
 private void stagealign_dostagealignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stagealign_dostagealignActionPerformed
-    String command = "/home/polonator/G.007/G.007_acquisition/Polonator-stagealign " + stagealign_fcnum;
+    String command = acqbase_dir + "/Polonator-stagealign " + stagealign_fcnum;
     SwingWorker<Integer, String> worker = createWorker(command, stagealign_textwindow, "");
     worker.execute();
 }//GEN-LAST:event_stagealign_dostagealignActionPerformed
 
 private void stagealign_viewbaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stagealign_viewbaseActionPerformed
-    String command = "/home/polonator/G.007/G.007_acquisition/run_load_raw.sh /opt/MATLAB/MATLAB_Component_Runtime/v77/ " + 
-            stagealign_dir + "ALIGN_BASE" +
+    String command = acqbase_dir + "/run_load_raw.sh " + matlab_runtime_dir + " " + 
+            stagealign_dir + "/ALIGN_BASE" +
             stagealign_fcnum + 
             "_" +
             (Integer)stagealign_lane.getValue() + 
@@ -3084,8 +3090,8 @@ private void stagealign_viewbaseActionPerformed(java.awt.event.ActionEvent evt) 
 }//GEN-LAST:event_stagealign_viewbaseActionPerformed
 
 private void stagealign_viewcurrentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stagealign_viewcurrentActionPerformed
-    String command = "/home/polonator/G.007/G.007_acquisition/run_load_raw.sh /opt/MATLAB/MATLAB_Component_Runtime/v77/ " + 
-            stagealign_dir + "stagealign-image" +
+    String command = acqbase_dir + "/run_load_raw.sh " + matlab_runtime_dir + " " + 
+            stagealign_dir + "/stagealign-image" +
             stagealign_fcnum + 
             "_" +
             (Integer)stagealign_lane.getValue() + 
@@ -3100,8 +3106,8 @@ private void stagealign_viewcurrentActionPerformed(java.awt.event.ActionEvent ev
 }//GEN-LAST:event_stagealign_viewcurrentActionPerformed
 
 private void stagealign_viewscoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stagealign_viewscoreActionPerformed
-    String command = "/home/polonator/G.007/G.007_acquisition/run_load_stagealign_score.sh /opt/MATLAB/MATLAB_Component_Runtime/v77/ " + 
-            stagealign_dir + "stagealign-scorematrix" +
+    String command = acqbase_dir + "/run_load_stagealign_score.sh " + matlab_runtime_dir + " " + 
+            stagealign_dir + "/stagealign-scorematrix" +
             stagealign_fcnum + 
             "_" +
             (Integer)stagealign_lane.getValue();
@@ -3117,7 +3123,7 @@ private void stagealign_viewscoreActionPerformed(java.awt.event.ActionEvent evt)
 
 private void SBSHybRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SBSHybRunActionPerformed
     disableSBSButtons();
-    String command = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl " + 
+    String command = fluidicsbase_dir + "/src/biochem_utils.pl " + 
             Integer.toString(SBSFCNum) + 
             " ilmnHyb " + 
             (String)SBSHybValve.getSelectedItem();
@@ -3141,7 +3147,7 @@ private void SBSFlowcell1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 
 private void SBSDeblockRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SBSDeblockRunActionPerformed
     disableSBSButtons();
-    String command = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl " + 
+    String command = fluidicsbase_dir + "/src/biochem_utils.pl " + 
             Integer.toString(SBSFCNum) + 
             " ilmnDeblock " + 
             (String)SBSDeblockValve.getSelectedItem();
@@ -3153,7 +3159,7 @@ private void SBSDeblockRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN
 
 private void SBSIncorpRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SBSIncorpRunActionPerformed
     disableSBSButtons();
-    String command = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl " + 
+    String command = fluidicsbase_dir + "/src/biochem_utils.pl " + 
             Integer.toString(SBSFCNum) + 
             " ilmnCycle " + 
             (String)SBSIncorpValve.getSelectedItem();
@@ -3165,7 +3171,7 @@ private void SBSIncorpRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 
 private void SBSCycleRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SBSCycleRunActionPerformed
     disableSBSButtons();
-    String command = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl " + 
+    String command = fluidicsbase_dir + "/src/biochem_utils.pl " + 
             Integer.toString(SBSFCNum) + 
             " illumina " + 
             (String)SBSCycleDeblockValve.getSelectedItem() +
@@ -3179,15 +3185,15 @@ private void SBSCycleRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
 private void shutLightButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shutLightButtonActionPerformed
     // TODO add your handling code here:
-    SwingWorker<Integer, String> worker = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils darkfield-off ", utilsTextArea, "acqUtilsLive");
+    SwingWorker<Integer, String> worker = createWorker(acqbase_dir + "/PolonatorUtils darkfield-off ", utilsTextArea, "acqUtilsLive");
     worker.execute();
 
-    SwingWorker<Integer, String> worker2 = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils shutter_close ", utilsTextArea, "acqUtilsLive");
+    SwingWorker<Integer, String> worker2 = createWorker(acqbase_dir + "/PolonatorUtils shutter_close ", utilsTextArea, "acqUtilsLive");
     worker2.execute();
 }//GEN-LAST:event_shutLightButtonActionPerformed
 
 private void gotoAbsPosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gotoAbsPosActionPerformed
-    String command = "/home/polonator/G.007/G.007_acquisition/PolonatorUtils goto_abs_pos " + (Integer)stagealign_lane1.getValue() + " " + (Integer)stagealign_lmage.getValue();
+    String command = acqbase_dir + "/PolonatorUtils goto_abs_pos " + (Integer)stagealign_lane1.getValue() + " " + (Integer)stagealign_lmage.getValue();
     System.out.println(command);
     SwingWorker<Integer, String> worker = createWorker(command, stagealign_textwindow, "");
     worker.execute();
@@ -3432,12 +3438,12 @@ private SwingWorker<Integer, String> createWorker(final String execCommand, fina
                 polonatorTouch.setEnabled(true);
                 jf.setDefaultCloseOperation(EXIT_ON_CLOSE);
             }
-            else if(execCommand.equals("/home/polonator/G.007/G.007_acquisition/process_kill.pl acq")){
+            else if(execCommand.equals(acqbase_dir + "/process_kill.pl acq")){
                     if(homing_axis.isSelected()){
                         disableAllAcqUtilButtons();
                         polonatorCycleEntryValidate.setEnabled(false);
                         polonatorTouch.setEnabled(false);
-                        SwingWorker<Integer, String> worker2 = createWorker("/home/polonator/G.007/G.007_acquisition/PolonatorUtils reset", polonatorTextArea, "acqUtils");
+                        SwingWorker<Integer, String> worker2 = createWorker(acqbase_dir + "/PolonatorUtils reset", polonatorTextArea, "acqUtils");
                         worker2.execute();
                     }
             }
