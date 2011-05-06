@@ -39,6 +39,7 @@ Thumbs.db
 *.class
 *.form-backup
 *.java-backup
+*.jar
 
 # polonator stuff
 0*
