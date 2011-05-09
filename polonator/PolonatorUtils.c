@@ -262,11 +262,13 @@ void snap(float exposure, float gain, char *color, char *filename){
     //py_set_gain(gain);moved to line 174
 
     // determine whether or not to use the shutter
-    if(!strcmp(color, "none")){
+    if(!strcmp(color, "none"))
+    {
         shutterflag = 0;
         maestro_darkfield_on(m_sock);
     }
-    else{
+    else
+    {
         shutterflag = 1;
         maestro_darkfield_off(m_sock);
     }
@@ -280,10 +282,11 @@ void snap(float exposure, float gain, char *color, char *filename){
 
 
     // wait for image to be received by framegrabber 
-    while(!py_snapReceived()){
+    while(!py_snapReceived())
+    {
         wait_counter++;
         usleep(1000);
-        if(wait_counter>20000){
+        if(wait_counter > 20000){
         	attempt_counter++;
         	network_iboot_off(&m_sock);
         	sleep(1);
