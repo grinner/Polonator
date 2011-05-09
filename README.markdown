@@ -7,7 +7,7 @@ MIT license on everything
 ## Release Background
 
 [The Wyss Institute](http://wyss.harvard.edu) is funding improvements to the Polonator source.
-The Polonator was originally a rush job, so the code is a bit rough around the edges.
+Much of the Polonator source code was originally a rush job, so the code is a bit rough around the edges.
 As a commitment to the project, and generally building open software and hardware
 I'm majorly refactoring the code base.  
 This is the start of an organization process of the code, which has been slowly accumulating
