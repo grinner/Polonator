@@ -151,7 +151,8 @@ else:
     # Initialize biochemistry object - cycle-name and flowcell-number need to be passed.
     biochem = Biochem('WL1', 0, logger)
 
-    logger.info('---\t-\t--> Started %s method execution - device_utils.py' % sys.argv[1])
+    logger.info('---\t-\t--> Started %s method execution - device_utils.py' \
+            % sys.argv[1])
     method = sys.argv[1]  # set method to second argument
 
     #---------------------------------------------------------------------------

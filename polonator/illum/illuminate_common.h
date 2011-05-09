@@ -71,11 +71,5 @@ MASK MUST BE BIT-BIGENDIAN (high bit to left), BYTE-LITTLENDIAN (earlier byte to
 */
 
 
-
-
-
-
-
-
 #endif /* ILLUMINATE_COMMON_H */
 

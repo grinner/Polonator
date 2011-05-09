@@ -63,7 +63,8 @@ class MappingFunctions:
 
         MappingFunctions.config = ConfigParser.ConfigParser()
         MappingFunctions.config_dir ='./config_files'
-        MappingFunctions.config_path = MappingFunctions.config_dir + '/camera_to_DMD_params.config'
+        MappingFunctions.config_path = MappingFunctions.config_dir \
+                                            + '/camera_to_DMD_params.config'
         MappingFunctions.A_map = numpy.empty(10,dtype=numpy.float)
         # make sure something is in the file
         if MappingFunctions.config.read(MappingFunctions.config_path) == []:

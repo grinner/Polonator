@@ -112,13 +112,18 @@ int illum_ig_init(HardwareData_type HardwareDescriptor)
         return -2;
     }
 
-    /* Allocate a frame buffer and sketch pad,
-    but make sure that they are not already allocated */
+    /* 
+    Allocate a frame buffer and sketch pad,
+    but make sure that they are not already allocated 
+    */
     if(FrameBuf != NULL)      free(FrameBuf);
     if(SketchPadWide != NULL) free(SketchPadWide);
     FrameBufSize = (ImageData.Width/8 * ImageData.Height); // divide by 8 since the image is in bits not bytes
-    /* wide sketch pad needs to be expanded by size of IlluminateMask on left and right (since we pad by one in x),
-       (IlluminateMask-1) on top and bottom.  This is so that shifted masks can be ORed with it directly. */
+    /* 
+    wide sketch pad needs to be expanded by size of IlluminateMask on left and 
+    right (since we pad by one in x), (IlluminateMask-1) on top and bottom.  
+    This is so that shifted masks can be ORed with it directly. 
+    */
     SketchPadWideWidth = ImageData.Width/8  + 2*ILLUMINATEMASK_ROW_LEN;
     SketchPadWideHeight = ImageData.Height   + 2*(ILLUMINATEMASK_COL_LEN-1);
     SketchPadWideSize =  SketchPadWideWidth * SketchPadWideHeight;
@@ -149,8 +154,9 @@ int illum_ig_fill(int fillval)
 
 
 
-/* display the image from the correct frame buffer (according to where_is_image) */
-/* returns a pointer to the frame buffer*/
+/* 
+display the image from the correct frame buffer (according to where_is_image)
+returns a pointer to the frame buffer*/
 unsigned char *illum_ig_render(void)
 {
     /* note that each CASE cascades to the next intentionally! */
@@ -171,8 +177,11 @@ unsigned char *illum_ig_render(void)
 
 
 
-/* image construction is (OR-)cummulative, so FrameBuf must be cleared before new images */
-/* but also clear the sketchpads, since that's where the processing will really happen */
+/* 
+image construction is (OR-)cummulative, so FrameBuf must be cleared before new 
+images but also clear the sketchpads, since that's where the processing will 
+really happen 
+*/
 int illum_ig_clear_framebuffer(void)
 {
     memset(FrameBuf, 0, FrameBufSize);
@@ -185,17 +194,23 @@ int illum_ig_clear_framebuffer(void)
 
 
 
-/* generate a Illuminate image corresponding to the given objects in Illuminate-coordinates */
-/* MASK MUST BE BIT-BIGENDIAN (high bit to left), BYTE-LITTLENDIAN (earlier byte to left)! */
-/* (ie., the row 01 02 03 corresponds to the mask 000000010000001000000011) */
+/* 
+generate a Illuminate image corresponding to the given objects in 
+Illuminate-coordinates 
+MASK MUST BE BIT-BIGENDIAN (high bit to left), BYTE-LITTLENDIAN 
+(earlier byte to left)!
+(ie., the row 01 02 03 corresponds to the mask 000000010000001000000011) */
 int illum_ig_select(IlluminateCoords_type *coords, int num_coords, IlluminateMask mask)
 {
-    int x, y, m, idx;
+    int x, y, m, idx, temp;
     IlluminateCoords_type coord;
 
 
-    /* first we need to construct an array of bit-shifted masks to speed things up */
-    /* masks in the array are a byte wider than the original to allow for the right-shift */
+    /* 
+    first we need to construct an array of bit-shifted masks to speed things up
+    masks in the array are a byte wider than the original to allow for the 
+    right-shift 
+    */
     unsigned char MaskCache[8][ILLUMINATEMASK_COL_LEN][ILLUMINATEMASK_ROW_LEN+1];
     
     /* set up MaskCache[m=0] */
@@ -204,9 +219,9 @@ int illum_ig_select(IlluminateCoords_type *coords, int num_coords, IlluminateMas
         for(x = 0; x < ILLUMINATEMASK_ROW_LEN; x++)
         {
             MaskCache[0][y][x] = mask[y][x];
-        }
+        } // end for
         MaskCache[0][y][ILLUMINATEMASK_ROW_LEN] = 0;   /* zero-out the added byte */
-    }
+    } // end for
     
     /* fill in the chart */
     
@@ -218,9 +233,9 @@ int illum_ig_select(IlluminateCoords_type *coords, int num_coords, IlluminateMas
             for(x = 1; x < (ILLUMINATEMASK_ROW_LEN+1); x++)
             {
                 MaskCache[m][y][x] = (MaskCache[m-1][y][x-1] << 7) | (MaskCache[m-1][y][x] >> 1);
-            }
-        }
-    }
+            } // end for
+        } // end for
+    } // end for
     /* DONE constructing MaskCache */
 
     
@@ -233,11 +248,22 @@ int illum_ig_select(IlluminateCoords_type *coords, int num_coords, IlluminateMas
         /*printf("Receive coord = (%d, %d)\n", coord.x, coord.y); */
         
         /* check if this coord is in a range that we need to worry about */
-        if((coord.x + ILLUMINATEMASK_ROW_LEN/2*8 - 1) < 0)          		continue;
-        if((coord.x - ILLUMINATEMASK_ROW_LEN/2*8 + 1) > (ImageData.Width))  continue;
-        if((coord.y + ILLUMINATEMASK_COL_LEN/2 - 1)   < 0)                 	continue;
-        if((coord.y - ILLUMINATEMASK_COL_LEN/2 + 1)   > (ImageData.Height)) continue;
-
+        if((coord.x + ILLUMINATEMASK_ROW_LEN/2*8 - 1) < 0) 
+        {
+            continue;
+        }
+        if((coord.x - ILLUMINATEMASK_ROW_LEN/2*8 + 1) > (ImageData.Width))  
+        {
+            continue;
+        }
+        if((coord.y + ILLUMINATEMASK_COL_LEN/2 - 1)   < 0)
+        {
+            continue;
+        }
+        if((coord.y - ILLUMINATEMASK_COL_LEN/2 + 1)   > (ImageData.Height)) 
+        {
+            continue;
+        }
         /*printf("Place coord = (%d, %d)\n", coord.x, coord.y);*/
 
         
@@ -249,11 +275,13 @@ int illum_ig_select(IlluminateCoords_type *coords, int num_coords, IlluminateMas
         {
             for(x = 0; x < (ILLUMINATEMASK_ROW_LEN+1); x++)
             {
-                SketchPadWide[(y + coord.y - ILLUMINATEMASK_COL_LEN/2 + ILLUMINATEMASK_COL_LEN -1 ) * SketchPadWideWidth + \
-                               x + (coord.x >> 3) - ILLUMINATEMASK_ROW_LEN/2 + ILLUMINATEMASK_ROW_LEN] \
-																									   |= MaskCache[m][y][x];
-            }
-        }
+                temp = (y + coord.y - ILLUMINATEMASK_COL_LEN/2 + \
+                    ILLUMINATEMASK_COL_LEN -1 ) * SketchPadWideWidth + \
+                    x + (coord.x >> 3) - ILLUMINATEMASK_ROW_LEN/2 + \
+                    ILLUMINATEMASK_ROW_LEN;
+                SketchPadWide[temp] |= MaskCache[m][y][x];
+            } // end for
+        } // end for
     }
     
     return where_is_image = IMAGE_IN_SKETCHPADWIDE;    /* mark where the image is */
@@ -261,7 +289,10 @@ int illum_ig_select(IlluminateCoords_type *coords, int num_coords, IlluminateMas
 
 
 
-/* generate a circular Illuminate mask by specifying radius.  Units are in SUBBIT_RES resolution. */
+/* 
+generate a circular Illuminate mask by specifying radius.  
+Units are in SUBBIT_RES resolution. 
+*/
 int illum_ig_mask_radius(IlluminateMask mask, int rad)
 {
     int x, y;
@@ -299,7 +330,9 @@ int illum_ig_mask_radius(IlluminateMask mask, int rad)
 
 
 
-/* A diagnostic function for displaying bit images text.  Width given in bits, not bytes */
+/* A diagnostic function for displaying bit images text.  Width given in bits, 
+not bytes 
+*/
 void illum_ig_dump(unsigned char *image, int Width, int Height)
 {
 #ifdef WITH_ILLUM_IG_DUMP
@@ -334,15 +367,21 @@ void illum_ig_dump(unsigned char *image, int Width, int Height)
 }
 
 
-/* generate a Illuminate image corresponding to the given objects in Illuminate-coordinates */
-/* MASK MUST BE BIT-BIGENDIAN (high bit to left), BYTE-LITTLENDIAN (earlier byte to left)! */
-/* (ie., the row 01 02 03 corresponds to the mask 000000010000001000000011) */
+/*
+generate a Illuminate image corresponding to the given objects in 
+Illuminate-coordinates MASK MUST BE BIT-BIGENDIAN (high bit to left), 
+BYTE-LITTLENDIAN (earlier byte to left)! (ie., the row 01 02 03 corresponds to 
+the mask 000000010000001000000011) 
+*/
 int illum_ig_points(int *vx, int *vy, int num_coords, IlluminateMask mask)
 {
-    int x, y, m, idx;
+    int x, y, m, idx. temp;
 
-    /* first we need to construct an array of bit-shifted masks to speed things up */
-    /* masks in the array are a byte wider than the original to allow for the right-shift */
+    /* 
+    first we need to construct an array of bit-shifted masks to speed things up 
+    masks in the array are a byte wider than the original to allow for the 
+    right-shift 
+    */
     unsigned char MaskCache[8][ILLUMINATEMASK_COL_LEN][ILLUMINATEMASK_ROW_LEN+1];
     
     /* set up MaskCache[m=0] */
@@ -393,9 +432,11 @@ int illum_ig_points(int *vx, int *vy, int num_coords, IlluminateMask mask)
         {
             for(x = 0; x< (ILLUMINATEMASK_ROW_LEN+1); x++)
             {
-                SketchPadWide[(y + vy[idx] - ILLUMINATEMASK_COL_LEN/2 + ILLUMINATEMASK_COL_LEN -1 ) * SketchPadWideWidth + \
-                               x + (vx[idx] >> 3) - ILLUMINATEMASK_ROW_LEN/2 + ILLUMINATEMASK_ROW_LEN] \
-																									   |= MaskCache[m][y][x];
+                temp = (y + vy[idx] - ILLUMINATEMASK_COL_LEN/2 + \
+                    ILLUMINATEMASK_COL_LEN -1 ) * SketchPadWideWidth + \
+                    x + (vx[idx] >> 3) - ILLUMINATEMASK_ROW_LEN/2 + \
+                    ILLUMINATEMASK_ROW_LEN;
+                SketchPadWide[temp] |= MaskCache[m][y][x];
             }
         }
     }

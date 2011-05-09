@@ -44,10 +44,11 @@ class Temperature_control:
     PR-59 temperature controller 
     FUNCTIONS
 
-    Performs low-level functional commands (e.g. set target temperature, PID constants, 
-    etc). Each command implemented here must know the command set of the hardware being 
-    controlled, but does not need to know how to communicate with the device (how to poll 
-    it, etc). Each functional command will block until execution is complete.
+    Performs low-level functional commands (e.g. set target temperature, 
+    PID constants, etc). Each command implemented here must know the command set
+     of the hardware being controlled, but does not need to know how to 
+     communicate with the device (how to poll it, etc). Each functional command 
+     will block until execution is complete.
     
     # BASIC SETTINGS 
     """
