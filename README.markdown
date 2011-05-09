@@ -13,13 +13,14 @@ I'm majorly refactoring the code base.
 This is the start of an organization process of the code, which has been slowly accumulating
 over the last year.  
   
-The fundamental things is that we are doing:
+The fundamental things we are doing:
 
 1. More Python
 2. Python gets access to C data structures through [swig](http://www.swig.org/)'d [numpy](http://numpy.scipy.org) arrays (open to anyone changing this, to Boost.Python, or whatever)
 3. The result is a more scriptable automated microscope
 4. Accelerating and multithreading the image processing and basecalling
 5. Updating the user interface.
+6. Code prettying
      
 If you want to contact me mail: nick.conway at wyss.harvard.edu
 
