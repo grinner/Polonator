@@ -26,7 +26,8 @@ If you want to contact me mail: nick.conway at wyss.harvard.edu
 
 ## Installation
 
-For now all I have is the source, this will change as updates proceed
+For now all you can grab is the source. This will change as updates proceed.
+Eventually, a full installer should be available.
 The dependencies are:
 
 1. [SWIG](http://www.swig.org/), [license](http://www.swig.org/legal.html) whatever license you like for redistribution
