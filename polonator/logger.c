@@ -33,12 +33,12 @@ int disp_flag=1;
    To suppress output on stdout, set df == 0
 */
 void start_logger(char *logfilename, int df){
-  fp = fopen(logfilename, "a");
-  fprintf(stdout, "Polonator_logger starting with logfile <%s>...\n", logfilename);
-  fprintf(fp, "-------------------------------------------------------------------------------------\n");
-  if(df == 0){ /* default is 1 */
-    disp_flag = df;
-  }
+    fp = fopen(logfilename, "a");
+    fprintf(stdout, "Polonator_logger starting with logfile <%s>...\n", logfilename);
+    fprintf(fp, "-------------------------------------------------------------------------------------\n");
+    if(df == 0){ /* default is 1 */
+        disp_flag = df;
+    }
 }
 
 void close_logger(void){
@@ -47,12 +47,12 @@ void close_logger(void){
 
 
 void set_disp(int d){
-  if(d!=0){
-    disp_flag = 1;
-  }
-  else{
-    disp_flag = 0;
-  }
+    if(d != 0 ){
+        disp_flag = 1;
+    }
+    else{
+        disp_flag = 0;
+    }
 }
 
 
@@ -79,22 +79,22 @@ void p_log(char *message){
 
 /* Outputs message to log file and (optionally) stdout */
 void p_log_simple(char *message){ 
-  time_t curr_time;
-  struct timeval tv;
-  char timestring[50];
+    time_t curr_time;
+    struct timeval tv;
+    char timestring[50];
 
-  gettimeofday(&tv, NULL);
-  curr_time = tv.tv_sec;
+    gettimeofday(&tv, NULL);
+    curr_time = tv.tv_sec;
 
-  strftime(timestring, 50, "%m-%d-%Y %T.", localtime(&curr_time));
-/*  if(fp != NULL){
+    strftime(timestring, 50, "%m-%d-%Y %T.", localtime(&curr_time));
+    /*  if(fp != NULL){
     fprintf(fp, "%s%06ld\t%s\n", timestring, tv.tv_usec, message);
-  }
-*/
-  if(disp_flag){
-    fprintf(stdout, "%s%06ld\t%s\n", timestring, tv.tv_usec, message);
-  }
-  fflush(fp);
+    }
+    */
+    if(disp_flag){
+        fprintf(stdout, "%s%06ld\t%s\n", timestring, tv.tv_usec, message);
+    }
+    fflush(fp);
 
 }
 
@@ -104,20 +104,20 @@ void p_log_simple(char *message){
    associated with the errno
 */
 void p_log_errorno(char *message){ 
-  time_t curr_time;
-  struct timeval tv;
-  char timestring[50];
+    time_t curr_time;
+    struct timeval tv;
+    char timestring[50];
 
-  gettimeofday(&tv, NULL);
-  curr_time = tv.tv_sec;
+    gettimeofday(&tv, NULL);
+    curr_time = tv.tv_sec;
 
-  strftime(timestring, 50, "%m-%d-%Y %T.", localtime(&curr_time));
-  if(fp != NULL){
-    fprintf(fp, "%s%06ld\t%s: %s\n", timestring, tv.tv_usec, message, strerror(errno));
-  }
-  if(disp_flag){
-    fprintf(stdout, "%s%06ld\t%s: %s\n", timestring, tv.tv_usec, message, strerror(errno));
-  }
-  fflush(fp);
+    strftime(timestring, 50, "%m-%d-%Y %T.", localtime(&curr_time));
+    if(fp != NULL){
+        fprintf(fp, "%s%06ld\t%s: %s\n", timestring, tv.tv_usec, message, strerror(errno));
+    }
+    if(disp_flag){
+        fprintf(stdout, "%s%06ld\t%s: %s\n", timestring, tv.tv_usec, message, strerror(errno));
+    }
+    fflush(fp);
 }
 
