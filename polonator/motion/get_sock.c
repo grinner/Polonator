@@ -34,61 +34,60 @@
 int GetSock(char *argv,
 	    int port){
 
-  int sock;                      /* socket descriptor */
-  struct sockaddr_in servAddr;   /* server address */
-  unsigned short servPort;       /* server port */
-  char *servIP;                  /* server IP address */
-  char errorString[255];
-  struct hostent *h;
-  struct in_addr a;
+    int sock;                      /* socket descriptor */
+    struct sockaddr_in servAddr;   /* server address */
+    unsigned short servPort;       /* server port */
+    char *servIP;                  /* server IP address */
+    char errorString[255];
+    struct hostent *h;
+    struct in_addr a;
 
-  char log_string[500];
+    char log_string[500];
 
-  int waiting_to_connect = 0;
+    int waiting_to_connect = 0;
 
-  servIP = argv;
-  servPort = port;
-  
-  sprintf(log_string, "STATUS:\tGetSock: Connecting to server %s on port %d", servIP, servPort);
-  p_log(log_string);
-  if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
-    p_log_errorno("ERROR:\tGetSock: socket() failed");
-    exit(1);
-  }
-  
-  p_log("STATUS:\tGetSock: Resolving hostname...");
-  h=gethostbyname(servIP);
-  bcopy(*h->h_addr_list, (char*) &a, sizeof(a));
-  sprintf(log_string, "STATUS:\tGetSock: Host address: %s", inet_ntoa(a));
-  p_log(log_string);
+    servIP = argv;
+    servPort = port;
 
-
-  memset(&servAddr, 0, sizeof(servAddr));
-  servAddr.sin_family = AF_INET;
-  servAddr.sin_addr.s_addr = inet_addr(inet_ntoa(a));
-  servAddr.sin_port = htons(servPort);
-  
-    
-  while(connect(sock, (struct sockaddr *) & servAddr, sizeof(servAddr)) < 0){
-    if(waiting_to_connect){;}
-    else{
-      p_log("STATUS:\tGetSock: Waiting to connect to server ...");
-      waiting_to_connect = 1;
+    sprintf(log_string, "STATUS:\tGetSock: Connecting to server %s on port %d", servIP, servPort);
+    p_log(log_string);
+    if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
+        p_log_errorno("ERROR:\tGetSock: socket() failed");
+        exit(1);
     }
-  }
-  /*
-  if(connect(sock, (struct sockaddr *) & servAddr, sizeof(servAddr)) < 0){
+
+    p_log("STATUS:\tGetSock: Resolving hostname...");
+    h=gethostbyname(servIP);
+    bcopy(*h->h_addr_list, (char*) &a, sizeof(a));
+    sprintf(log_string, "STATUS:\tGetSock: Host address: %s", inet_ntoa(a));
+    p_log(log_string);
+
+
+    memset(&servAddr, 0, sizeof(servAddr));
+    servAddr.sin_family = AF_INET;
+    servAddr.sin_addr.s_addr = inet_addr(inet_ntoa(a));
+    servAddr.sin_port = htons(servPort);
+
+
+    while(connect(sock, (struct sockaddr *) & servAddr, sizeof(servAddr)) < 0)
+    {
+        if(waiting_to_connect){;}
+        else{
+            p_log("STATUS:\tGetSock: Waiting to connect to server ...");
+            waiting_to_connect = 1;
+        }
+    }
+    /*
+    if(connect(sock, (struct sockaddr *) & servAddr, sizeof(servAddr)) < 0){
     perror(NULL);
     DieWithError("connect() failed");
-  }
-  */
+    }
+    */
 
-  return sock;
-  
+    return sock;
 
-  
 }
   
 /*
-// ------------------------------------ END GetSock.c------------------------------------------
+// ------------------------------------ END GetSock.c---------------------------
 /*/
