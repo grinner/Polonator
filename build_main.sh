@@ -1,9 +1,8 @@
 #!/usr/bin/sh
-# Build instructions for Polonator Java source, as an alternative to netbeans
-# puts classes in a jar file and cleans up afterwards
+# Build instructions for Polonator
+# this builds the python source and dependencies
 #
 
-SCRIPT=$(readlink -f $0) # doesn't work for os x
 SCRIPT=`python -c 'import os, sys; print os.path.realpath(sys.argv[1])' $0`
 PROJECT_PATH=`dirname $SCRIPT`
 

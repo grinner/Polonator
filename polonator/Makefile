@@ -171,7 +171,12 @@ UTIL_INC = -I$(CAM_DIR) -I$(MO_DIR) -I$(CAM_DIR)/common
 
 # Explicit rules for building objects go here.
 
-all : directory_check python_illum python_camA python_maestro python_proc_dmd python_log python_img_tools python_find_obj
+all : directory_check python_illum \
+	python_camA python_maestro \
+	python_proc_dmd python_log \
+	python_img_tools python_find_obj \
+	Polonator-stagealign PolonatorUtils \
+	PolonatorAcq
 
 directory_check:
 	echo nachos $(BASE_DIR)
