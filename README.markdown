@@ -38,6 +38,17 @@ The dependencies are:
 5. Open source Phoenix drivers v5.59 for the [Phoenix](http://www.activesilicon.com/products_fg_phx.htm) frame grabber from [Active Silicon](http://www.activesilicon.com/)
 6. Java, and even Netbeans for reviewing the old GUI
 
+To build:
+
+1. git clone the repository to a directory, such as /usr/local to create the directory such as /usr/local/Polonator
+2. set the POLONATOR\_PATH environment variable to the above directory in your .profile, .bash_profile, or .bashrc. For instance in bash run
+    export POLONATOR_PATH = /usr/local/Polonator 
+3. change directories to the:
+    cd POLONATOR_PATH
+4. run: 
+    sh build_main.sh
+
+
 ## Usage
 
 Polonator will be an installable python module. You might find

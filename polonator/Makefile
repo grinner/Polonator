@@ -7,8 +7,6 @@
 # SWIG, python, numpy, and the phoenix frame grabber libraries
 
 # commented out the absolute path of the base directory
-#BASE_DIR = /home/polonator/Dropbox/release_code_check_11292010/Polonator/polonator
-#BASE_DIR = ../polonator
 BASE_DIR := $(shell pwd)
 
 
