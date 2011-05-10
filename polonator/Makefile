@@ -1,5 +1,5 @@
 # Badass Makefile for the G.007 Polonator
-# Nick Conway 12 2010 Wyss Institute 
+# Nick Conway 12 2010 Wyss Institute
 # FYI:
 # -L is a root directory for a library, -l is off a root directory
 # -I is an include directory
@@ -8,11 +8,13 @@
 
 # commented out the absolute path of the base directory
 #BASE_DIR = /home/polonator/Dropbox/release_code_check_11292010/Polonator/polonator
-BASE_DIR = ../polonator
+#BASE_DIR = ../polonator
+BASE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+
 
 # general include and compiler optimizations
 CFLAGS = -I$(BASE_DIR) -O3
-CPPFLAGS = -I$(BASE_DIR) -O3 -msse -msse2 -fexpensive-optimizations -funroll-loops 
+CPPFLAGS = -I$(BASE_DIR) -O3 -msse -msse2 -fexpensive-optimizations -funroll-loops
 
 # for C SWIG wrapped Python
 SHARELIBFLAGS = -fPIC -shared
@@ -23,7 +25,7 @@ SWIG_LIB = -I/usr/lib64
 PYTHONFLAGS = -I$(PYINC) -I$(PYLIB) -lpython$(PYTHON_VER)
 
 # For including numpy in SWIG
-NUMPY_INC1 = /usr/lib64/python$(PYTHON_VER)/site-packages/numpy/core/include 
+NUMPY_INC1 = /usr/lib64/python$(PYTHON_VER)/site-packages/numpy/core/include
 NUMPY_INC2 = /usr/lib64/python$(PYTHON_VER)/site-packages/numpy/numarray
 NUMPY_FLAGS = -I$(NUMPY_INC1) -I$(NUMPY_INC2)
 
@@ -64,7 +66,7 @@ MO_DIR = $(BASE_DIR)/motion
 MAESTRO_DEP = $(MO_DIR)/maestro_functions.c $(MO_DIR)/maestro_functions.h \
 				$(MO_DIR)/config.c $(MO_DIR)/config.h \
 				$(MO_DIR)/get_sock.c $(MO_DIR)/get_sock.h \
-				$(CAM_DIR)/global_parameters.h 
+				$(CAM_DIR)/global_parameters.h
 MAESTRO_SRC = $(MO_DIR)/maestro_functions.c $(MO_DIR)/config.c \
 				$(MO_DIR)/get_sock.c
 MAESTRO_INC = -I$(MO_DIR) -I$(CAM_DIR)
@@ -117,7 +119,7 @@ endif
 # general includes
 PHX_LIBS = -L$(PHX_LIBDIR) -lpfw -lphx -lpbu -lpdl -lX11 -lm -Xlinker -rpath $(PHX_LIBDIR)
 PHX_INCLUDE = -I$(PHX_INCDIR) -I$(COMMON_DIR) -I/usr/X11R6/include
-PHX_CFLAGS  = -D_GNU_SOURCE -D_PHX_LINUX -D_CDA_LINUX -D_REENTRANT 
+PHX_CFLAGS  = -D_GNU_SOURCE -D_PHX_LINUX -D_CDA_LINUX -D_REENTRANT
 # end PHXlive section
 #////////////////////////////////////////////////////
 
@@ -139,7 +141,7 @@ ACQ_DEP = $(BASE_DIR)/Polonator-acquirer.c \
 ACQ_SRC = $(BASE_DIR)/Polonator-acquirer.c \
 			$(MAESTRO_SRC) $(CAMERA1_SRC) $(BASE_DIR)/network_functions.c \
 			$(LOG_SRC)
-ACQ_INC = -I$(CAM_DIR) -I$(MO_DIR) -I$(CAM_DIR)/common 
+ACQ_INC = -I$(CAM_DIR) -I$(MO_DIR) -I$(CAM_DIR)/common
 
 # Command line runs the stage alignment
 STG_DEP = $(BASE_DIR)/Polonator-stagealign.c $(BASE_DIR)/Polonator-stagealign.h \
@@ -169,12 +171,16 @@ UTIL_INC = -I$(CAM_DIR) -I$(MO_DIR) -I$(CAM_DIR)/common
 
 # Explicit rules for building objects go here.
 
-all : python_illum python_camA python_maestro python_proc_dmd python_log python_img_tools python_find_obj
+all : directory_check python_illum python_camA python_maestro python_proc_dmd python_log python_img_tools python_find_obj
+
+directory_check:
+	echo nachos $(BASE_DIR)
+
 
 python_illum: $(ILLUMFUNCTIONS_DEP) $(ILL_DIR)/control_D4000.i
 	swig -python $(ILL_DIR)/control_D4000.i
 	gcc $(ILLUMFUNCTIONS_SRC) $(ILL_DIR)/control_D4000_wrap.c $(NUMPY_FLAGS) $(PYTHONFLAGS) \
-		$(CFLAGS) $(ILLUMFUNCTIONS_INC) -o $(ILL_DIR)/_D4000.so $(LIB_DMD_FLAGS) $(SHARELIBFLAGS) 
+		$(CFLAGS) $(ILLUMFUNCTIONS_INC) -o $(ILL_DIR)/_D4000.so $(LIB_DMD_FLAGS) $(SHARELIBFLAGS)
     #rm *.o
 
 python_camA: $(CAMERA2_DEP) $(LOG_DEP) $(CAM_DIR)/as_phoenix.i
@@ -219,7 +225,7 @@ PolonatorUtils: $(UTIL_DEP)
 
 PolonatorAcq: $(ACQ_DEP)
 	gcc -Wall $(ACQ_SRC) $(CFLAGS) $(ACQ_INC) -o ../bin/Polonator-acquirer $(PHX_CFLAGS) $(PHX_INCLUDE) $(PHX_LIBS)
-    
+
 python_find_obj: $(FINDOBJ_DEP) $(IMG_DIR)/find_objects.i
 	swig -c++ -python $(IMG_DIR)/find_objects.i
 	g++ $(FINDOBJ_SRC) $(IMG_DIR)/find_objects_wrap.cxx $(NUMPY_FLAGS) $(PYTHONFLAGS) \
