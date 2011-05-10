@@ -45,7 +45,8 @@ To build:
         cd /usr/local
         git clone git@github.com:grinner/Polonator.git
 
-2. set the POLONATOR\_PATH environment variable to the above directory in your .profile, .bash_profile, or .bashrc. For instance in bash run
+2. set the `POLONATOR_PATH` environment variable to the above directory in your `.profile`, `.bash_profile`, or `.bashrc`. 
+    For instance add or run in bash depending on use case:
     
         export POLONATOR_PATH = /usr/local/Polonator
 
