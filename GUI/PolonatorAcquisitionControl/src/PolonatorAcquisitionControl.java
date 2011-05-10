@@ -12,7 +12,7 @@ import java.awt.*;
 import java.lang.System;
 import java.lang.Runtime;
 import java.lang.Process;
-
+import java.util.Map;
 
 /**
  *
@@ -33,18 +33,25 @@ public class PolonatorAcquisitionControl extends javax.swing.JFrame {
     Vector acqButtons = new Vector();
     Vector acqUtilsCameraButtons = new Vector();
     Vector sbsButtons = new Vector();
-    int flUtilsFCNum=0;
-    int SBSFCNum=0;
+    int flUtilsFCNum = 0;
+    int SBSFCNum = 0;
     int stagealign_fcnum;
     boolean flUtilUseBuffer;
     JFrame jf = this;
     // use the convention that directory strings omit tailing '/'
     // except for maybe the matlab_runtime_dir
+    
     String matlab_runtime_dir = "/opt/MATLAB/MATLAB_Component_Runtime/v77/";
-    String base_dir = "/home/polonator/G.007";
-    String acqbase_dir = base_dir + "/G.007_acquisition";
-    String fluidicsbase_dir = "/home/polonator/G.007/G.007_fluidics";
-    String stagealign_dir = acqbase_dir + "/stagealign";
+    
+    Map<String, String> env = System.getenv();
+    String base_dir = env.get("POLONATOR_PATH");
+    // String base_dir = "/home/polonator/G.007";
+    
+    //String acqbase_dir = base_dir + "/G.007_acquisition";
+    String acqbase_dir = base_dir + "/bin";
+    // String fluidicsbase_dir = "/home/polonator/G.007/G.007_fluidics";
+    String fluidicsbase_dir = base_dir + "/polonator/fluidics/src";
+    String stagealign_dir = acqbase_dir + "/stagealign"; // TODO Fix stagealign stuff, source code files are missing
     Vector polonatorCycleListVector = new Vector();
     String currentVersion = "Version 1.71";
     String currentDate = "February 13 2009";

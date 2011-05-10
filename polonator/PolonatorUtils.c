@@ -32,6 +32,7 @@ int main(int argc, char *argv[]){
     int m_sock,i,j, autoexp_gain;
     char autoe_filename[500];
     char autoe_dirname[500];
+    char command_buffer[256]; // buffer for commands to be executed
 
     if(argc < 2)
     {
@@ -141,11 +142,22 @@ int main(int argc, char *argv[]){
 
     else if((strcmp(argv[1], "snap1") == 0) && (argc == 6))
     {
-        system("mkdir /home/polonator/G.007/G.007_acquisition/autoexp_FL_images");
-        system("mkdir /home/polonator/G.007/G.007_acquisition/autoexp_FL_images/cy3");
-        system("mkdir /home/polonator/G.007/G.007_acquisition/autoexp_FL_images/fam");
-        system("mkdir /home/polonator/G.007/G.007_acquisition/autoexp_FL_images/cy5");
-        system("mkdir /home/polonator/G.007/G.007_acquisition/autoexp_FL_images/txred");
+        sprintf(command_buffer, "mkdir %s/polonator", getenv("HOME"));
+        system(command_buffer);
+        sprintf(command_buffer, "mkdir %s/polonator/G.007", getenv("HOME"));
+        system(command_buffer);
+        sprintf(command_buffer, "mkdir %s/polonator/G.007/acquisition", getenv("HOME"));
+        system(command_buffer);
+        sprintf(command_buffer, "mkdir %s/polonator/G.007/acquisition/autoexp_FL_images", getenv("HOME"));
+        system(command_buffer);
+        sprintf(command_buffer, "mkdir %s/polonator/G.007/acquisition/autoexp_FL_images/cy3", getenv("HOME"));
+        system(command_buffer);
+        sprintf(command_buffer, "mkdir %s/polonator/G.007/acquisition/autoexp_FL_images/fam", getenv("HOME"));
+        system(command_buffer);
+        sprintf(command_buffer, "mkdir %s/polonator/G.007/acquisition/autoexp_FL_images/cy5", getenv("HOME"));
+        system(command_buffer);
+        sprintf(command_buffer, "mkdir %s/polonator/G.007/acquisition/autoexp_FL_images/txred", getenv("HOME"));
+        system(command_buffer);
 
         /*  
         sprintf(autoe_dirname, "mkdir /home/polonator/G.007/G.007_acquisition/autoexp_FL_images/%s",argv[2]);
@@ -165,7 +177,7 @@ int main(int argc, char *argv[]){
 		        autoexp_gain = atoi(argv[4])+i*10;
 	    	    sprintf(autoe_filename, "   ... start acquring FL image in lane %d, for %s with autoexposure gain of %d ...   ",j, argv[2],autoexp_gain);
 	    	    p_log_simple(autoe_filename);
-	    	    sprintf(autoe_filename, "/home/polonator/G.007/G.007_acquisition/autoexp_FL_images/%s/%d_image_%d.raw",argv[2],j,autoexp_gain);
+	    	    sprintf(autoe_filename, "%s/polonator/G.007/acquisition/autoexp_FL_images/%s/%d_image_%d.raw", getenv("HOME"),argv[2],j,autoexp_gain);
 	    	    p_log_simple(autoe_filename);
 	    	    wait_counter = 0;
 	    	    snap(atof(argv[3]), autoexp_gain, argv[2], autoe_filename); 
