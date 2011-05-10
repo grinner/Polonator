@@ -40,7 +40,10 @@ char log_string[LOG_STR_BUF0];
 void py_maestro_open(char *machine_name, int port){
     py_sock = GetSock(machine_name, port);
     maestro_open(&py_sock);
-    start_logger(LOG_FILE_FULL_PATH,1);
+    char filepath_buffer[256];
+    strcpy(filepath_buffer, getenv("HOME"));
+    strcat(filepath_buffer, LOG_FILE_FULL_PATH);
+    start_logger(filepath_buffer,1);
 }
 
 
@@ -288,7 +291,11 @@ void maestro_gotostagealign_position(int m_sock, int flowcell, int lane)
     int response_length;
     int lane_index;
 
-    config_open(CONFIG_FILE_FULL_PATH);
+    char filepath_buffer[256];
+    strcpy(filepath_buffer, getenv("POLONATOR_PATH"))
+    strcat(filepath_buffer, CONFIG_FILE_FULL_PATH);
+    config_open(filepath_buffer);
+    
     if(!config_getvalue("stagealign_wells_per_fc", config_value))
     {
         p_log_simple("ERROR:\tPolonator-stagealign: config_getval(key stagealign_wells_per_fc) returned no value");
@@ -389,7 +396,10 @@ void maestro_goto_image(int m_sock, int flowcell, int lane, int image_number)
 
 	/* make like a stage align */
 
-	config_open(CONFIG_FILE_FULL_PATH);
+	char filepath_buffer[256];
+    strcpy(filepath_buffer, getenv("POLONATOR_PATH"))
+    strcat(filepath_buffer, CONFIG_FILE_FULL_PATH);
+    config_open(filepath_buffer);
 
 	if(!config_getvalue("stagealign_optical_mag", config_value))
 	{

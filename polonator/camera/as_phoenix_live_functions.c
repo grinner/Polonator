@@ -258,17 +258,23 @@ Error:
 */
 int camera_live(int argc, char *argv[], int tdiflag)
 {
-   tPhxCmd sPhxCmd;
-   int     nStatus;
-   PhxCommonParseCmd( argc, argv, &sPhxCmd );
-   /*PhxCommonKbInit();*/
-   if(tdiflag){
-     nStatus = phxlive( sPhxCmd.eCamConfigLoad, "/home/polonator/G.007/G.007_acquisition/em9100-50.pcf", atof(argv[2]), atoi(argv[3]), tdiflag);
-   }
-   else{
-     nStatus = phxlive( sPhxCmd.eCamConfigLoad, "/home/polonator/G.007/G.007_acquisition/em9100-02.pcf", atof(argv[2]), atoi(argv[3]), tdiflag);
-   }
-   /*PhxCommonKbClose();*/
-   return nStatus;
+    tPhxCmd sPhxCmd;
+    int     nStatus;
+    PhxCommonParseCmd( argc, argv, &sPhxCmd );
+
+    char filepath_buffer[256];
+    strcpy(filepath_buffer, getenv("POLONATOR_PATH"));
+
+    /*PhxCommonKbInit();*/
+    if(tdiflag){
+        strcat(filepath_buffer, "/config_files/em9100-50.pcf");
+        nStatus = phxlive( sPhxCmd.eCamConfigLoad, filepath_buffer, atof(argv[2]), atoi(argv[3]), tdiflag);
+    }
+    else{
+        strcat(filepath_buffer, "/config_files/em9100-02.pcf");
+        nStatus = phxlive( sPhxCmd.eCamConfigLoad, filepath_buffer, atof(argv[2]), atoi(argv[3]), tdiflag);
+    }
+    /*PhxCommonKbClose();*/
+    return nStatus;
 }
 

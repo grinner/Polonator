@@ -23,7 +23,7 @@ import tel_net
 import random
 import time
 import subprocess
-
+import os
 
 class Autoexpose:
     global camera
@@ -40,7 +40,8 @@ class Autoexpose:
         #self.logger = LoggerFunctions.Logger_Functions('../logs/autoexpose-log')
 
     def autoe(self):
-        utilPath = '/home/polonator/G.007/G.007_acquisition/PolonatorUtils'
+        
+        utilPath = os.environ['POLONATOR_PATH']+'/bin/PolonatorUtils'
         p = subprocess.Popen(utilPath + ' gotostagealignpos 0 0', \
                             shell=True, \
                             stdout=subprocess.PIPE, \

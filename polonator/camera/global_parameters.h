@@ -56,9 +56,9 @@
 /* end MAESTRO BUFS */
 
 /* the full path of the configuration file */
-#define CONFIG_FILE_FULL_PATH		"/home/polonator/G.007/G.007_acquisition/src/polonator-acq.cfg"
+#define CONFIG_FILE_FULL_PATH		"/config_files/polonator-acq.cfg"
 /* the full path of the log file */
-#define LOG_FILE_FULL_PATH			"/home/polonator/G.007/G.007_acquisition/logs/py_maestro-log"
+#define LOG_FILE_FULL_PATH			"/polonator/G.007/acquisition/logs/py_maestro-log"
 
 
 #endif /* __GlOBAL_PARAMETERS_ */

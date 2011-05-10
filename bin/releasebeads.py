@@ -97,8 +97,8 @@ def goto_flagged_images(self):
             
     """
     # now look up the base call file
-    polonator_data_dir = '/home/polonator/G.007/G.007_acquisition/'
-    acquire_exec_path = '/home/polonator/G.007/G.007_acquisition/'
+    polonator_data_dir = os.environ['HOME']+'/polonator/G.007/acquisition'
+    acquire_exec_path = os.environ['POLONATOR_PATH'] + '/bin'
     base_dir = polonator_data_dir + 'output_data/'
     the_files = glob.glob(base_dir + '*.basecalls') # there is a basecall file 
                                                     # for each lane?

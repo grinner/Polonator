@@ -97,6 +97,7 @@ void send_DMD_register_image(int array_num, int image_num, int clnt_sock)
   int x_offset,y_offset;
   char log_string[500];
   short unsigned int blank_image[1000000];
+  char filepath_buffer[256];
 
   /* Read file declarations */
   short unsigned int *baseimage;
@@ -109,7 +110,8 @@ void send_DMD_register_image(int array_num, int image_num, int clnt_sock)
   }
 
   /* read and send the DMD register image */
-  sprintf(stagealign_rawimgfilename, "/home/polonator/G.007/G.007_acquisition/DMD/image.raw");
+  strcpy(stagealign_rawimgfilename,getenv("HOME"));
+  strcat(stagealign_rawimgfilename,"/polonator/G.007/acquisition/DMD/image.raw");
   p_log_simple(stagealign_rawimgfilename);  
   
   if((baseimgfp = fopen(stagealign_rawimgfilename, "r"))==NULL){

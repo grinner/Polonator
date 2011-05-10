@@ -139,18 +139,18 @@ class Imager(threading.Thread):
             while i < 4:
             
                 # perform stage alignment
-                cmd = '/home/polonator/G.007/G.007_acquisition/Polonator-stagealign %d' % (self.flowcell)
+                cmd = (os.environ["POLONATOR_PATH"] + '/bin/Polonator-stagealign %d') % (self.flowcell)
                 print cmd
                 os.system(cmd)
 
                 if(self.auto_exposure == 1):
                     j = 60
                     curr_name_new = '%s' % (imaging_order[i])
-                    cmd = '/home/polonator/G.007/G.007_acquisition/PolonatorUtils gotostagealignpos 0 0'
+                    cmd = os.environ["POLONATOR_PATH"] + '/bin/PolonatorUtils gotostagealignpos 0 0'
                     print cmd
                     os.system(cmd)
  
-                    cmd = '/home/polonator/G.007/G.007_acquisition/PolonatorUtils snap1 %s %f %d %d' % (curr_name_new,0.035,j, j+150)
+                    cmd = os.environ["POLONATOR_PATH"] + '/bin/PolonatorUtils snap1 %s %f %d %d' % (curr_name_new,0.035,j, j+150)
                     print cmd
                     os.system(cmd)
 
@@ -175,9 +175,9 @@ class Imager(threading.Thread):
 
                 # this must be called w/ sudo so that the thread has a high enough priority
                 # to ensure images aren't missed often
-                cmd = 'sudo /home/polonator/G.007/G.007_acquisition/Polonator-acquirer %s %d %d %d %d' % (curr_name, self.integration_times[fluors.index(imaging_order[i])]-5, self.manual_gains[fluors.index(imaging_order[i])], self.flowcell, self.num_arrays)
+                cmd = ('sudo ' + os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer %s %d %d %d %d') % (curr_name, self.integration_times[fluors.index(imaging_order[i])]-5, self.manual_gains[fluors.index(imaging_order[i])], self.flowcell, self.num_arrays)
                 print cmd
-                cmd = '/home/polonator/G.007/G.007_acquisition/Polonator-acquirer'
+                cmd = os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer'
                 print cmd
 
                 # spawn thread to receive the images and wait for it to return;
@@ -204,9 +204,9 @@ class Imager(threading.Thread):
             # if this is a dual-flowcell run, we must convert the flowcell == 2 or 3
             # to flowcell == 0 or 1
             if(self.dual_fc == 1):
-                cmd = '/home/polonator/G.007/G.007_acquisition/Polonator-stagealign %d 1' % (self.flowcell-2)
+                cmd = (os.environ["POLONATOR_PATH"] + '/bin/Polonator-stagealign %d 1') % (self.flowcell-2)
             else:
-                cmd = '/home/polonator/G.007/G.007_acquisition/Polonator-stagealign %d 1' % (self.flowcell)
+                cmd = (os.environ["POLONATOR_PATH"] + '/bin/Polonator-stagealign %d 1') % (self.flowcell)
                 
             print cmd
             os.system(cmd)
@@ -222,7 +222,7 @@ class Imager(threading.Thread):
             # 0 for a single-flowcell run to either 2 or 3 for a dual flowcell run (fc 0 or 1, respectively)
             # the imaging software (Polonator-acquirer) understands this convention and converts the 2 or a 3
             # to a 0 or a 1 after sending the proper flag to the processing pipeline
-            cmd = 'sudo /home/polonator/G.007/G.007_acquisition/Polonator-acquirer %s %d %d %d %d %d' % (self.cycle_name, self.WL_integration_time-5, self.WL_gain, self.flowcell, self.num_arrays, self.WL_num_to_avg)
+            cmd = ('sudo '+ os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer %s %d %d %d %d %d') % (self.cycle_name, self.WL_integration_time-5, self.WL_gain, self.flowcell, self.num_arrays, self.WL_num_to_avg)
             print cmd
             os.system(cmd)
             self.maestro.darkfield_off()

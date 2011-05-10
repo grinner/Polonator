@@ -286,11 +286,15 @@ int py_camera_live(double exposure_time, int gain, int tdiflag, unsigned short *
    sPhxCmd.dwSlowOption      = 10;
    sPhxCmd.eCamConfigLoad = (etCamConfigLoad) ( PHX_DIGITAL | sPhxCmd.dwBoardNumber );
    
+   char filepath_buffer[256];
+   strcpy(filepath_buffer, getenv("POLONATOR_PATH"));
+   
    /*PhxCommonKbInit();*/
    if(tdiflag)
    {
+     strcat(filepath_buffer, "/config_files/em9100-50.pcf");
      nStatus = phxlive( sPhxCmd.eCamConfigLoad, \
-                        "/home/polonator/G.007/G.007_acquisition/em9100-50.pcf", \
+                        filepath_buffer, \
                         exposure_time, \
                         gain, \
                         tdiflag, \
@@ -298,8 +302,9 @@ int py_camera_live(double exposure_time, int gain, int tdiflag, unsigned short *
    }
    else
    {
+     strcat(filepath_buffer, "/config_files/em9100-02.pcf");
      nStatus = phxlive( sPhxCmd.eCamConfigLoad, \
-                        "/home/polonator/G.007/G.007_acquisition/em9100-02.pcf", \
+                        filepath_buffer, \
                         exposure_time, \
                         gain, \
                         tdiflag,\
