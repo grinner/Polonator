@@ -8,7 +8,7 @@
 
 # commented out the absolute path of the base directory
 #BASE_DIR = /home/polonator/Dropbox/release_code_check_11292010/Polonator/polonator
-BASE_DIR = ../polonator
+BASE_DIR := $(shell pwd)
 
 # general include and compiler optimizations
 CFLAGS = -I$(BASE_DIR) -O3
