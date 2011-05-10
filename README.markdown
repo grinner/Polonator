@@ -47,7 +47,7 @@ To build:
 
 3. change directories to the:
     
-    `cd POLONATOR_PATH`
+    `cd $POLONATOR_PATH`
     
 4. run: 
     
