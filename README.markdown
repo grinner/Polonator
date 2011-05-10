@@ -31,10 +31,10 @@ For now all you can grab is the source. This will change as updates proceed.
 Eventually, a full installer should be available.
 The dependencies are:
 
-1. [SWIG](http://www.swig.org/), [license](http://www.swig.org/legal.html) whatever license you like for redistribution
+1. [SWIG](http://www.swig.org/), [license](http://www.swig.org/legal.html), whatever license you like for redistribution
 2. Python 2.X, v2.5 or greater
 3. Perl
-4. [Numpy](http://numpy.scipy.org), [license](http://numpy.scipy.org/license.html#license) BSD
+4. [Numpy](http://numpy.scipy.org), [license](http://numpy.scipy.org/license.html#license), BSD
 5. Open source Phoenix drivers v5.59 for the [Phoenix](http://www.activesilicon.com/products_fg_phx.htm) frame grabber from [Active Silicon](http://www.activesilicon.com/)
 6. Java, and even Netbeans for reviewing the old GUI
 
