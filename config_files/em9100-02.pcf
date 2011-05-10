@@ -1,0 +1,40 @@
+# ==========================
+# Phoenix Configuration File
+# Hamamatsu_C9100-02.pcf
+# ==========================
+
+# Camera Specific Settings
+# ------------------------
+PHX_BOARD_TYPE,            PHX_DIGITAL
+PHX_CAM_TYPE,              PHX_CAM_AREASCAN_ROI
+PHX_DATASTREAM_VALID,      PHX_DATASTREAM_ALWAYS
+PHX_CAM_FORMAT,            PHX_CAM_NON_INTERLACED
+PHX_CAM_CLOCK_POLARITY,    PHX_CAM_CLOCK_POS
+PHX_CAM_SRC_DEPTH,         14
+PHX_CAM_SRC_COL,           PHX_CAM_SRC_MONO
+PHX_CAM_ACTIVE_XOFFSET,    0
+PHX_CAM_ACTIVE_YOFFSET,    0
+PHX_CAM_ACTIVE_XLENGTH,    1000
+PHX_CAM_ACTIVE_YLENGTH,    1000
+PHX_CAM_DATA_VALID,        PHX_DISABLE
+PHX_CAM_HTAP_NUM,          1
+PHX_CAM_HTAP_DIR,          PHX_CAM_HTAP_LEFT
+PHX_CAM_HTAP_TYPE,         PHX_CAM_HTAP_LINEAR
+PHX_CAM_HTAP_ORDER,        PHX_CAM_HTAP_ASCENDING
+PHX_CAM_VTAP_NUM,          1
+PHX_CAM_VTAP_DIR,          PHX_CAM_VTAP_TOP
+PHX_CAM_VTAP_TYPE,         PHX_CAM_VTAP_LINEAR
+PHX_CAM_VTAP_ORDER,        PHX_CAM_VTAP_ASCENDING
+PHX_COMMS_DATA,            PHX_COMMS_DATA_8
+PHX_COMMS_STOP,            PHX_COMMS_STOP_1
+PHX_COMMS_PARITY,          PHX_COMMS_PARITY_NONE
+PHX_COMMS_SPEED,           9600
+PHX_COMMS_FLOW,            PHX_COMMS_FLOW_NONE
+PHX_DST_FORMAT,            PHX_DST_FORMAT_Y14
+
+# System Specific Settings
+# ------------------------
+
+# Application Specific Settings
+# -----------------------------
+
