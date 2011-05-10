@@ -742,6 +742,7 @@ void send_initial_raw_images(int num_array, int clnt_sock)
     short unsigned int *baseimage;
     FILE *baseimgfp;
     char stagealign_rawimgfilename[500];
+    
     /*prepare the network connection and send*/
     /* open the port, and wait for processor to connect
     network_startserver(&serv_sock, &clnt_sock, proc_portnum);*/
@@ -755,7 +756,7 @@ void send_initial_raw_images(int num_array, int clnt_sock)
     while(i < num_array)
     {
         /* read and send the auto_exposure raw images */
-        sprintf(stagealign_rawimgfilename, "/home/polonator/G.007/G.007_acquisition/stagealign/stagealign-image0_%d.raw", i);
+        sprintf(stagealign_rawimgfilename, "%s/polonator/G.007/acquisition/stagealign/stagealign-image0_%d.raw", getenv("HOME"), i);
         p_log_simple(stagealign_rawimgfilename);
 
         if((baseimgfp = fopen(stagealign_rawimgfilename, "r"))==NULL)
@@ -838,7 +839,7 @@ int send_FL_images(char *mystring, int num_array, int clnt_sock)
         sprintf(log_string, "success_%d.raw", 0);
         p_log(log_string);
 
-        sprintf(stagealign_dir_name, "/home/polonator/G.007/G.007_acquisition/autoexp_FL_images/fam/");
+        sprintf(stagealign_dir_name, "%s/polonator/G.007/acquisition/autoexp_FL_images/fam/", getenv("HOME"));
         p_log(stagealign_dir_name);
 
     }
@@ -848,7 +849,7 @@ int send_FL_images(char *mystring, int num_array, int clnt_sock)
         sprintf(log_string, "success_%d.raw", 0);
         p_log(log_string);
 
-        sprintf(stagealign_dir_name, "/home/polonator/G.007/G.007_acquisition/autoexp_FL_images/cy3/");
+        sprintf(stagealign_dir_name, "%s/polonator/G.007/acquisition/autoexp_FL_images/cy3/",getenv("HOME"));
         p_log(stagealign_dir_name);
 
     }
@@ -858,7 +859,7 @@ int send_FL_images(char *mystring, int num_array, int clnt_sock)
         sprintf(log_string, "success_%d.raw", 0);
         p_log(log_string);
 
-        sprintf(stagealign_dir_name, "/home/polonator/G.007/G.007_acquisition/autoexp_FL_images/txred/");
+        sprintf(stagealign_dir_name, "%s/polonator/G.007/acquisition/autoexp_FL_images/txred/",getenv("HOME"));
         p_log(stagealign_dir_name);
 
     }
@@ -868,7 +869,7 @@ int send_FL_images(char *mystring, int num_array, int clnt_sock)
         sprintf(log_string, "success_%d.raw", 0);
         p_log(log_string);
 
-        sprintf(stagealign_dir_name, "/home/polonator/G.007/G.007_acquisition/autoexp_FL_images/cy5/");
+        sprintf(stagealign_dir_name, "%s/polonator/G.007/acquisition/autoexp_FL_images/cy5/",getenv("HOME"));
         p_log(stagealign_dir_name);
 
     }

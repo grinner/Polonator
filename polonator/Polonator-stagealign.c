@@ -48,6 +48,8 @@ int main(int argc, char *argv[])
     int i;
     int total_lanes;
 
+    char acqcfgpath[127];
+
     if(argc == 3){
         initialize_flag = atoi(argv[2]);
     }
@@ -56,7 +58,9 @@ int main(int argc, char *argv[])
     }
 
     /* Open config file */
-    config_open("/home/polonator/G.007/G.007_acquisition/src/polonator-acq.cfg");
+    strcpy(acqcfgpath, getenv("POLONATOR_PATH"));
+    strcat(acqcfgpath, "/config_files/polonator-acq.cfg");
+    config_open(acqcfgpath);
     if(!config_getvalue("stagealign_wells_per_fc", config_value)){
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_wells_per_fc) returned no value");
         exit(0);
@@ -103,6 +107,8 @@ void stagealign(int fcnum, int lane_num, int initialize)
     char logfilename[255];
     char offsetfilename[255];
     char stagealign_baseimgfilename[255];
+
+    char acqcfgpath[127];
 
     /* Used to send commands and receive responses from Maestro */
     char command[255];
@@ -153,7 +159,9 @@ void stagealign(int fcnum, int lane_num, int initialize)
 #endif
 
     /* Open config file */
-    config_open("/home/polonator/G.007/G.007_acquisition/src/polonator-acq.cfg");
+    strcpy(acqcfgpath, getenv("POLONATOR_PATH"));
+    strcat(acqcfgpath, "/config_files/polonator-acq.cfg");
+    config_open(acqcfgpath);
 
     /* Initialize variables */
     if(!config_getvalue("stagealign_logfilename", config_value)){
@@ -640,7 +648,7 @@ void flatten_image(int* orig_image,
     /* RESCALE IF NECESSARY*/
     if(rescale)
     {
-        for(i=0; i<NUM_YROWS * NUM_XCOLS; i++)
+        for(i = 0; i < (NUM_YROWS*NUM_XCOLS); i++)
         {
             index = new_image + i;
             *(index) = *(index) - new_min;

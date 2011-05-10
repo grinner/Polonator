@@ -45,13 +45,15 @@ public class PolonatorAcquisitionControl extends javax.swing.JFrame {
     
     Map<String, String> env = System.getenv();
     String base_dir = env.get("POLONATOR_PATH");
+    String home_dir = env.get("HOME");
     // String base_dir = "/home/polonator/G.007";
     
     //String acqbase_dir = base_dir + "/G.007_acquisition";
     String acqbase_dir = base_dir + "/bin";
     // String fluidicsbase_dir = "/home/polonator/G.007/G.007_fluidics";
     String fluidicsbase_dir = base_dir + "/polonator/fluidics/src";
-    String stagealign_dir = acqbase_dir + "/stagealign"; // TODO Fix stagealign stuff, source code files are missing
+    //String stagealign_dir = acqbase_dir + "/stagealign"; // TODO Fix stagealign stuff, source code files are missing
+    String stagealign_dir = home_dir + "/stagealign";
     Vector polonatorCycleListVector = new Vector();
     String currentVersion = "Version 1.71";
     String currentDate = "February 13 2009";
