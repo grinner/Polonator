@@ -35,6 +35,17 @@ Thumbs.db
 *.app
 *.raw
 
+#swig stuff
+*_wrap.c
+logger.py
+polProcDMD.py
+PolonatorImager.py
+maestroFunctions.py
+D4000.py
+asPhoenix.py
+asPhoenixLive.py
+
+
 # java stuff
 *.class
 *.form-backup
