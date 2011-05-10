@@ -1,7 +1,7 @@
 
 # Polonator G.007 source
 
-The Polonator Source is going github. 
+The Polonator Source has gone github. 
 MIT license on everything
 
 ## Release Background
