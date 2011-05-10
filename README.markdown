@@ -42,8 +42,8 @@ To build:
 
 1. git clone the repository to a directory, such as /usr/local to create the directory such as /usr/local/Polonator
 
-    `cd /usr/local`
-    `git clone git@github.com:grinner/Polonator.git`
+    `cd /usr/local
+    git clone git@github.com:grinner/Polonator.git`
 
 2. set the POLONATOR\_PATH environment variable to the above directory in your .profile, .bash_profile, or .bashrc. For instance in bash run
     
