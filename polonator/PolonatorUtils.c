@@ -299,12 +299,12 @@ void snap(float exposure, float gain, char *color, char *filename){
         wait_counter++;
         usleep(1000);
         if(wait_counter > 20000){
-        	attempt_counter++;
-        	network_iboot_off(&m_sock);
-        	sleep(1);
-        	network_iboot_on(&m_sock);
-        	sleep(1);
-        	wait_counter = 0;
+            attempt_counter++;
+            network_iboot_off(&m_sock);
+            sleep(1);
+            network_iboot_on(&m_sock);
+            sleep(1);
+            wait_counter = 0;
         }
     }
 

@@ -46,7 +46,8 @@ for($i=0; $i<$num_cmds; $i++){
 }
 
 if($ARGV[0] eq "acq"){
-    $exec_cmd = "/home/polonator/G.007/G.007_acquisition/PolonatorUtils complete-scan";
+    $polpath = $ENV{'POLONATOR_PATH'};
+    $exec_cmd = $polpath . "/bin/PolonatorUtils complete-scan";
     print "$exec_cmd\n";
     system($exec_cmd);
 }   

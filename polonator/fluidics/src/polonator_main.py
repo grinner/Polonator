@@ -26,7 +26,8 @@ from threading import Thread
 from logger import Logger
 
 from tel_net import Tel_net
-sys.path.append("../../G.007_acquisition/src")
+sys.path.append("../")
+# sys.path.append("../../G.007_acquisition/src")
 import PolonatorImager
 from biochem import Biochem
 

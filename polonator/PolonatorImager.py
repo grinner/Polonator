@@ -127,14 +127,14 @@ class Imager(threading.Thread):
             i = 0
 
             
-	    #print self.manual_gains
-	    #p = subprocess.Popen('/home/polonator/G.007/G.007_acquisition/PolonatorUtils snap ' + 0 + ' 0.035 ' + 90,  shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	    #stdout_value, stderr_value = p.communicate() 
-	    #print 'stdout_value \n' , stdout_value
+            #print self.manual_gains
+            #p = subprocess.Popen('/home/polonator/G.007/G.007_acquisition/PolonatorUtils snap ' + 0 + ' 0.035 ' + 90,  shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            #stdout_value, stderr_value = p.communicate() 
+            #print 'stdout_value \n' , stdout_value
 
-#	    cmd = '/home/polonator/G.007/G.007_acquisition/PolonatorUtils snap1 %d %d %d' % (0,0.035,90)
- #           print cmd
- #           os.system(cmd)
+            # cmd = '/home/polonator/G.007/G.007_acquisition/PolonatorUtils snap1 %d %d %d' % (0,0.035,90)
+            # print cmd
+            # os.system(cmd)
 
             while i < 4:
             
@@ -154,11 +154,11 @@ class Imager(threading.Thread):
                     print cmd
                     os.system(cmd)
 
-#                    while j < 210:
-#                        cmd = '/home/polonator/G.007/G.007_acquisition/PolonatorUtils snap1 %s %f %d' % (curr_name_new,0.035,j)
-#                        print cmd
-#                        os.system(cmd)
-#                        j+=10
+                    # while j < 210:
+                    #     cmd = '/home/polonator/G.007/G.007_acquisition/PolonatorUtils snap1 %s %f %d' % (curr_name_new,0.035,j)
+                    #     print cmd
+                    #     os.system(cmd)
+                    #     j+=10
 
 
                 # turn the darkfield illuminator off if it was left on
