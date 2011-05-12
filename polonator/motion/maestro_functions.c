@@ -1,6 +1,6 @@
 
 /* =============================================================================
-// 
+//
 // Polonator G.007 Image Acquisition Software
 //
 // Church Lab, Harvard Medical School
@@ -51,7 +51,7 @@ void py_maestro_open(char *machine_name, int port){
 /* as m_sock to be used for subsequent communication with the device */
 void maestro_open(int *m_sock)
 {
-  
+
     /* control messages to start Telnet session */
     unsigned char a0[] = {255,254,1};
     unsigned char a01[] = {255,254,3};
@@ -132,7 +132,7 @@ void maestro_stop(int m_sock)
     }
     maestro_resetflag(m_sock);
 }
-  
+
 /* Used by maestro_stop to determine when the current set of X moves
    has completed
 */
@@ -189,7 +189,7 @@ void maestro_resetflag(int m_sock)
     maestro_readresponse(m_sock, response, &response_length);
     p_log_simple(response);
 }
-  
+
 
 /* returns the pause flag value */
 int maestro_getflag(int m_sock)
@@ -292,10 +292,10 @@ void maestro_gotostagealign_position(int m_sock, int flowcell, int lane)
     int lane_index;
 
     char filepath_buffer[256];
-    strcpy(filepath_buffer, getenv("POLONATOR_PATH"))
+    strcpy(filepath_buffer, getenv("POLONATOR_PATH"));
     strcat(filepath_buffer, CONFIG_FILE_FULL_PATH);
     config_open(filepath_buffer);
-    
+
     if(!config_getvalue("stagealign_wells_per_fc", config_value))
     {
         p_log_simple("ERROR:\tPolonator-stagealign: config_getval(key stagealign_wells_per_fc) returned no value");
@@ -397,7 +397,7 @@ void maestro_goto_image(int m_sock, int flowcell, int lane, int image_number)
 	/* make like a stage align */
 
 	char filepath_buffer[256];
-    strcpy(filepath_buffer, getenv("POLONATOR_PATH"))
+    strcpy(filepath_buffer, getenv("POLONATOR_PATH"));
     strcat(filepath_buffer, CONFIG_FILE_FULL_PATH);
     config_open(filepath_buffer);
 
@@ -505,7 +505,7 @@ void maestro_goto_image(int m_sock, int flowcell, int lane, int image_number)
 
 
 /* used to 'start' the controller to do a single set of imaging (one
-   color); sets fluor, integration time in milliseconds, and number 
+   color); sets fluor, integration time in milliseconds, and number
    of images to average (if darkfield imaging);
    includes python SWIG interface (where the controller socket is maintained
    as a global variable)
@@ -528,7 +528,7 @@ void maestro_setupimaging(int m_sock, int filter, int integration_time, int num_
     send(m_sock, command, strlen(command), 0);
     maestro_readresponse(m_sock, response, &response_length);
     sprintf(log_string, "STATUS:\tmaestro_setupimage: Controller responded with <%s>", response);
-    p_log_simple(log_string);  
+    p_log_simple(log_string);
 
 
     /* SET SHUTTER STATE (0==INACTIVE, 1==ACTIVE) */
@@ -538,7 +538,7 @@ void maestro_setupimaging(int m_sock, int filter, int integration_time, int num_
     send(m_sock, command, strlen(command), 0);
     maestro_readresponse(m_sock, response, &response_length);
     sprintf(log_string, "STATUS:\tmaestro_setupimage: Controller responded with <%s>", response);
-    p_log_simple(log_string);  
+    p_log_simple(log_string);
 
 
     /* SET INTEGRATION TIME */
@@ -621,7 +621,7 @@ void maestro_setfocus(int m_sock, int focus)
 
     sprintf(command, "z.as[1]=%0.02f\n\r", flfocus);
     p_log_simple(command);
-    send(m_sock, command, strlen(command), 0); 
+    send(m_sock, command, strlen(command), 0);
     maestro_readresponse(m_sock, response, &response_length);
     p_log_simple(response);
 }
@@ -657,7 +657,7 @@ void maestro_writefocus(int m_sock)
 }
 
 
-/* 
+/*
 Returns the current INTEGER value of the focus offset; this will vary from one
    machine to another, and is a real number.  We assume the number will always
    be in the range [-1..1], and allow intervals of 0.05.  Therefore, we scale
@@ -698,10 +698,10 @@ void maestro_setcolor(int m_sock, char *color)
     int response_length;
     char log_string[LOG_BUF2];
 
-    /* 
-    determine the actual position on the wheel to move to; 
-    the mapping from 'color' to 'color number' is determined 
-    by Danaher when they build the instrument (e.g. "fam" 
+    /*
+    determine the actual position on the wheel to move to;
+    the mapping from 'color' to 'color number' is determined
+    by Danaher when they build the instrument (e.g. "fam"
     is position 1
     */
 
@@ -1153,7 +1153,7 @@ void maestro_shutterclose(int m_sock)
 
 /* used to stop all programs running on the controller, reset it,
    re-home all axes, and re-initialize all controller-resident code;
-   this should NOT be executed during a run as the absolute positions 
+   this should NOT be executed during a run as the absolute positions
    can be lost and result in image alignment failure
 */
 void maestro_reset(int m_sock)
@@ -1195,7 +1195,7 @@ void maestro_reset(int m_sock)
 }
 
 
-/* 
+/*
 returns 1 if X and/or Y is currently homing, 0 if both are homed (x.hmstat
 and y.hmstat == 1)
 */
@@ -1222,7 +1222,7 @@ int maestro_homing(int m_sock)
     }
     return 1; /* either X or Y or both not homed */
 }
-  
+
 /* used to snap a single image */
 void maestro_snap(int m_sock, int integration_inmsec, int shutterflag)
 {
@@ -1272,7 +1272,7 @@ void consume_bytes(int m_sock, int num_bytes)
         total_bytes_received += current_bytes_received;
 
 #ifdef DEBUG_MAESTRO
-        sprintf(log_string,"Consuming %d bytes: %d received: %d:", num_bytes, total_bytes_received, current_bytes_received); 
+        sprintf(log_string,"Consuming %d bytes: %d received: %d:", num_bytes, total_bytes_received, current_bytes_received);
         p_log(log_string);
         for(i = 0; i < total_bytes_received; i++)
         {
