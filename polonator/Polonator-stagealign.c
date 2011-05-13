@@ -52,8 +52,10 @@ int main(int argc, char *argv[])
 
     char command_buffer[255];
     char base_dir[255];
+    char log_dir[255];
     sprintf(base_dir, "%s/polonator/G.007/acquisition", getenv("HOME"));
-    sprintf(command_buffer, "mkdir -p %s", base_dir);
+    sprintf(log_dir, "%s/logs", base_dir);
+    sprintf(command_buffer, "mkdir -p %s", log_dir);
     system(command_buffer);
 
     if(argc == 3){
@@ -175,7 +177,9 @@ void stagealign(int fcnum, int lane_num, int initialize)
         exit(0);
     }
     p_log_simple("awesome0\n");
-    strcpy(logfilename, config_value);
+    strcpy(logfilename, log_dir);
+    strcat(logfilename, "/");
+    strcat(logfilename, config_value);
     sprintf(command, "%d", fcnum);
     strcat(logfilename, command);
     strcat(logfilename, ".log");

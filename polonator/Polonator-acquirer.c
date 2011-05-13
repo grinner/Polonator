@@ -113,13 +113,22 @@ int main(int argc, char *argv[])
     char log_string[255];
     char config_value[255];
     char logfilename[255];
+    
 
     int caught_readout;
     int auto_exposure = 0;
     char * polpath;
     char acqcfgpath[127];
-
+    
+    char command_buffer[255];
+    char base_dir[255];
+    char log_dir[255];
+    sprintf(base_dir, "%s/polonator/G.007/acquisition", getenv("HOME"));
+    sprintf(log_dir, "%s/logs", base_dir);
+    sprintf(command_buffer, "mkdir -p %s", log_dir);
+    system(command_buffer);
     /* Open config file */
+    
     polpath = getenv("POLONATOR_PATH");
     strcpy(acqcfgpath, polpath);
     strcat(acqcfgpath, "/config_files/polonator-acq.cfg");
@@ -137,7 +146,9 @@ int main(int argc, char *argv[])
         fprintf(stderr, "ERROR:\tPolonator-acquirer: config_getval(key logfilename) returned no value\n");
         exit(0);
     }
-    strcpy(logfilename, config_value);
+    strcpy(logfilename, log_dir);
+    strcat(logfilename, "/");
+    strcat(logfilename, config_value);
     strcat(logfilename, ".");
     strcat(logfilename, argv[1]);
     strcat(logfilename, ".log");
