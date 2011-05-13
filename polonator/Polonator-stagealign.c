@@ -182,6 +182,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     sprintf(command, "%d", fcnum);
     strcat(logfilename, command);
     strcat(logfilename, ".log");
+    p_log_simple(logfilename);
     start_logger(logfilename, 1);
 
     strcpy(offsetfilename, log_dir);
@@ -194,6 +195,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     if this is being run in 'initialize mode' -- the first scan of a run --
     overwrite the offset logfile
     */
+    p_log_simple("awesome66\n");
     if(initialize){
         offsetfp = fopen(offsetfilename, "w");
     }
@@ -243,7 +245,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
 
 
     baseimage = (short unsigned int*)malloc(1000000 * sizeof(short unsigned int));
-    
+
     /*--------------------------------------------------------------------------
     //
     // MAESTRO SETUP
@@ -307,10 +309,10 @@ void stagealign(int fcnum, int lane_num, int initialize)
         curr_offset_y = atoi(response);
     }
 
-  /* MOVE STAGE TO ORIGIN */
-  maestro_gotostagealign_position(m_sock, fcnum, lane_num);
+    /* MOVE STAGE TO ORIGIN */
+    maestro_gotostagealign_position(m_sock, fcnum, lane_num);
 
-
+    p_log_simple("awesome fool00\n");
     /* ACQUIRE IMAGE */
     p_log("STATUS:\tPolonator-stagealign: Acquire image...");
     maestro_snap(m_sock, stagealign_integration_inmsec, 1); /*rolony*/
@@ -319,12 +321,13 @@ void stagealign(int fcnum, int lane_num, int initialize)
 
 
     /* IF INITIALIZING, RE-WRITE THE BASE IMAGE; THE OFFSET FOUND SHOULD BE ZERO */
+    p_log_simple(stagealign_baseimgfilename);
     if(initialize){
         baseimgfp = fopen(stagealign_baseimgfilename, "w");
         fwrite(testimage, 1000000, sizeof(short unsigned int), baseimgfp);
         fclose(baseimgfp);
     }
-
+    p_log_simple("awesome fool01\n");
 #ifdef DEBUG_STAGEALIGN
     fwrite(testimage, 1000000, sizeof(short unsigned int), imgfp);
 #endif
@@ -455,6 +458,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     py_cameraClose();
     free(baseimage);
     close_logger();
+    p_log_simple("awesome fool02\n");
 }
 
 

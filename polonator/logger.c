@@ -1,5 +1,5 @@
 /* =============================================================================
-// 
+//
 // Polonator G.007 Image Acquisition Software
 //
 // Church Lab, Harvard Medical School
@@ -32,21 +32,24 @@ int disp_flag=1;
 
    To suppress output on stdout, set df == 0
 */
-void start_logger(char *logfilename, int df){
-    fp = fopen(logfilename, "a");
+void start_logger(char *logfilename, int df)
+{
+    //fp = fopen(logfilename, "a");
     fprintf(stdout, "Polonator_logger starting with logfile <%s>...\n", logfilename);
-    fprintf(fp, "-------------------------------------------------------------------------------------\n");
+    //fprintf(fp, "-------------------------------------------------------------------------------------\n");
     if(df == 0){ /* default is 1 */
         disp_flag = df;
     }
 }
 
-void close_logger(void){
-  fclose(fp);
+void close_logger(void)
+{
+    //fclose(fp);
 }
 
 
-void set_disp(int d){
+void set_disp(int d)
+{
     if(d != 0 ){
         disp_flag = 1;
     }
@@ -57,7 +60,7 @@ void set_disp(int d){
 
 
 /* Outputs message to log file and/or stdout */
-void p_log(char *message){ 
+void p_log(char *message){
 /* time_t curr_time;
   struct timeval tv;
   char timestring[50];
@@ -78,7 +81,7 @@ void p_log(char *message){
 }
 
 /* Outputs message to log file and (optionally) stdout */
-void p_log_simple(char *message){ 
+void p_log_simple(char *message){
     time_t curr_time;
     struct timeval tv;
     char timestring[50];
@@ -103,7 +106,7 @@ void p_log_simple(char *message){
    errno -- p_log_errorno() will print out the test message
    associated with the errno
 */
-void p_log_errorno(char *message){ 
+void p_log_errorno(char *message){
     time_t curr_time;
     struct timeval tv;
     char timestring[50];
