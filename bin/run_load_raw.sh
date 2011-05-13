@@ -1,7 +1,7 @@
 #!/bin/sh
 # script for execution of deployed applications
 #
-# Sets up the MCR environment for the current $ARCH and executes 
+# Sets up the MCR environment for the current $ARCH and executes
 # the specified command.
 #
 echo "------------------------------------------"
@@ -14,7 +14,7 @@ else
   echo ---
   MWE_ARCH="glnxa64" ;
   if [ "$MWE_ARCH" = "sol64" ] ; then
-	LD_LIBRARY_PATH=.:/usr/lib/lwp:${MCRROOT}/runtime/glnxa64 ; 
+	LD_LIBRARY_PATH=.:/usr/lib/lwp:${MCRROOT}/runtime/glnxa64 ;
   else
   	LD_LIBRARY_PATH=.:${MCRROOT}/runtime/glnxa64 ;
   fi
@@ -23,19 +23,21 @@ else
   if [ "$MWE_ARCH" = "mac" -o "$MWE_ARCH" = "maci" ]; then
 	DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:/System/Library/Frameworks/JavaVM.framework/JavaVM:/System/Library/Frameworks/JavaVM.framework/Libraries;
   else
-	MCRJREVER=`cat ${MCRROOT}/sys/java/jre/glnxa64/jre.cfg` ; 
-	echo Found MCR Java JRE version: $MCRJREVER ; 
+	MCRJREVER=`cat ${MCRROOT}/sys/java/jre/glnxa64/jre.cfg` ;
+	echo Found MCR Java JRE version: $MCRJREVER ;
 	MCRJRE=${MCRROOT}/sys/java/jre/glnxa64/jre${MCRJREVER}/lib/amd64 ;
-	LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MCRJRE}/native_threads ; 
+	LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MCRJRE}/native_threads ;
 	LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MCRJRE}/server ;
 	LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MCRJRE}/client ;
-	LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MCRJRE} ;  
+	LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MCRJRE} ;
   fi
   XAPPLRESDIR=${MCRROOT}/X11/app-defaults ;
   export LD_LIBRARY_PATH;
   export XAPPLRESDIR;
   echo LD_LIBRARY_PATH is ${LD_LIBRARY_PATH};
   shift 1
+#/home/polonator/gitsrc/Polonator/bin/load_raw $*
 ./load_raw $*
 fi
 exit
+

@@ -1,5 +1,5 @@
 // =============================================================================
-// 
+//
 // Polonator G.007 Image Processing Software
 //
 // Church Lab, Harvard Medical School
@@ -23,7 +23,7 @@
 - extraction, and output to disk.  Called by processor.c
 -
 - Written by Greg Porreca (Church Lab) 12-14-2007
-- 
+-
 */
 
 #include <stdio.h>
@@ -73,6 +73,11 @@ void ReceiveData(char *argv, int portnum,
 	int num_loops;
 
 	int connection_isok=1;
+	char command_buffer[255];
+    char image_dir[255];
+    sprintf(image_dir, "%s/polonator/G.007/acquisition/images", getenv("HOME"));
+    sprintf(command_buffer, "mkdir -p %s", image_dir);
+    system(command_buffer);
 
 #ifdef SAVE_FL_IMAGES
 	char outputfilename[255];
@@ -87,7 +92,7 @@ void ReceiveData(char *argv, int portnum,
 	{
 		p_log_errorno((char*)"malloc() failed");
 	}
-  
+
 	//ALLOCATE MEMORY FOR OFFSET HISTORY ARRAYS (USED BY PROCESSIMAGE_REGISTER)
 	if((offsetx_history=(int*)malloc(OFFSET_HISTORY_LENGTH * sizeof(int))) == NULL)
 	{
@@ -160,8 +165,7 @@ void ReceiveData(char *argv, int portnum,
 	}
 
 #ifdef SAVE_FL_IMAGES
-	system("mkdir images");
-	sprintf(outputfilename, "mkdir images/%s", CYCLE_NAME);
+	sprintf(outputfilename, "mkdir -p %s/%s", image_dir, CYCLE_NAME);
 	system(outputfilename);
 #endif
 
@@ -231,7 +235,7 @@ void ReceiveData(char *argv, int portnum,
 							totalBytesRcvd = data_size;
 							bytesRcvd = 0;
 						}
-	
+
 						// was the connection broken?  if so, the acq software was probably stopped prematurely; recover gracefully
 						else if(bytesRcvd == 0)
 						{
@@ -240,7 +244,7 @@ void ReceiveData(char *argv, int portnum,
 							connection_isok = 0;
 							totalBytesRcvd = data_size;
 						}
-						/*	    
+						/*
 #ifdef DEBUG1
 						sprintf(log_string, "STATUS:\tReceiveData: received %d bytes of image data", bytesRcvd);
 						p_log(log_string);
@@ -249,7 +253,7 @@ void ReceiveData(char *argv, int portnum,
 						totalBytesRcvd += bytesRcvd;
 						num_loops++;
 					}
-	  
+
 					if(!connection_isok)
 					{
 						i = curr_fcnum + 1;
@@ -258,17 +262,17 @@ void ReceiveData(char *argv, int portnum,
 						p_log((char*)"ERROR:\tReceiveData: connection was broken; exiting");
 						break;
 					}
-	
+
 					p_log((char*)"STATUS:\tReceiveData: all data received for current image");
 					imagesRcvd++;
 					num_loops = 0;
 
 					// NOW THAT WE HAVE THE IMAGE, DO SOMETHING WITH IT
 #ifdef SAVE_FL_IMAGES
-					if(k%100 == 0)
+					if( (k % 100) == 0)
 					{
-						sprintf(outputfilename, "images/%s/%02d_%04d.raw", 
-								CYCLE_NAME, *(inputBuffer+1), *(inputBuffer+2));
+						sprintf(outputfilename, "%s/%s/%02d_%04d.raw",
+								image_dir, CYCLE_NAME, *(inputBuffer+1), *(inputBuffer+2));
 						sprintf(log_string, "STATUS:\tReceiveData: write received data to image file %s",
 								outputfilename);
 						p_log(log_string);
@@ -277,7 +281,7 @@ void ReceiveData(char *argv, int portnum,
 						fclose(imgfile);
 					}
 #endif
-	  
+
 #ifdef DEBUG1
 					sprintf(log_string, "STATUS:\tReceiveData: calling ProcessImage for frame %d %d %d, expecting %d %d %d",
 							*(inputBuffer),
@@ -298,8 +302,8 @@ void ReceiveData(char *argv, int portnum,
 						reglogfile,
 						offsetx_history,
 						offsety_history);
-					
-	
+
+
 				} // end for k
 			} // end for j
 		} // end for i
@@ -314,7 +318,7 @@ void ReceiveData(char *argv, int portnum,
 			p_log_errorno((char*)"send() from client to signal all data received failed");
 		//exit(0);
 		}
-  
+
 		if(shutdown(sock, 2) < 0)
 		{
 			p_log_errorno((char*)"ERROR on shutdown(sock)");
@@ -326,7 +330,8 @@ void ReceiveData(char *argv, int portnum,
 	free(offsety_history);
 	free(inputBuffer);
 }
-  
+
 //
 // ------------------------------------ END receive_data.c------------------------------------------
 //
+

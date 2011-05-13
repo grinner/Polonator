@@ -1,5 +1,5 @@
 /* =============================================================================
-// 
+//
 // Polonator G.007 Image Processing Software
 //
 // Church Lab, Harvard Medical School
@@ -32,7 +32,13 @@ int main(int argc, char *argv[]){
     int m_sock,i,j, autoexp_gain;
     char autoe_filename[500];
     char autoe_dirname[500];
-    char command_buffer[256]; // buffer for commands to be executed
+    char command_buffer[255]; // buffer for commands to be executed
+    char image_dir[255];
+
+    sprintf(image_dir, "%s/polonator/G.007/acquisition", getenv("HOME"));
+    sprintf(command_buffer, "mkdir -p %s", image_dir);
+    system(command_buffer);
+
 
     if(argc < 2)
     {
@@ -92,7 +98,7 @@ int main(int argc, char *argv[]){
     else if((strcmp(argv[1], "live") == 0) && ((argc == 4)||(argc == 5))){
         maestro_open(&m_sock);
 
-        maestro_darkfield_on(m_sock);    
+        maestro_darkfield_on(m_sock);
         maestro_setcolor(m_sock, "none");
 
     if(argc==4){
@@ -116,7 +122,7 @@ int main(int argc, char *argv[]){
         else{
 	        maestro_darkfield_off(m_sock);
 	        maestro_shutteropen(m_sock);
-        }    
+        }
 
         if(argc==5){
             camera_live(argc, argv, 0);
@@ -129,7 +135,7 @@ int main(int argc, char *argv[]){
 	        maestro_shutterclose(m_sock);
         }
     }
-  
+
     else if (strcmp(argv[1],"shutter_close")==0)
     {
 	    maestro_open(&m_sock);
@@ -137,32 +143,25 @@ int main(int argc, char *argv[]){
     }
     /* Acquire an image at the current stage position */
     else if((strcmp(argv[1], "snap") == 0) && (argc == 5)){
-        snap(atof(argv[3]), atof(argv[4]), argv[2], "snap-image.raw");
-    }    
+        sprintf(command_buffer, "%s/snap-image.raw", image_dir);
+        snap(atof(argv[3]), atof(argv[4]), argv[2], command_buffer);
+    }
 
     else if((strcmp(argv[1], "snap1") == 0) && (argc == 6))
     {
-        sprintf(command_buffer, "mkdir %s/polonator", getenv("HOME"));
+        sprintf(command_buffer, "mkdir -p %s/autoexp_FL_images/cy3", image_dir);
         system(command_buffer);
-        sprintf(command_buffer, "mkdir %s/polonator/G.007", getenv("HOME"));
+        sprintf(command_buffer, "mkdir -p %s/autoexp_FL_images/fam", image_dir);
         system(command_buffer);
-        sprintf(command_buffer, "mkdir %s/polonator/G.007/acquisition", getenv("HOME"));
+        sprintf(command_buffer, "mkdir -p %s/autoexp_FL_images/cy5", image_dir);
         system(command_buffer);
-        sprintf(command_buffer, "mkdir %s/polonator/G.007/acquisition/autoexp_FL_images", getenv("HOME"));
-        system(command_buffer);
-        sprintf(command_buffer, "mkdir %s/polonator/G.007/acquisition/autoexp_FL_images/cy3", getenv("HOME"));
-        system(command_buffer);
-        sprintf(command_buffer, "mkdir %s/polonator/G.007/acquisition/autoexp_FL_images/fam", getenv("HOME"));
-        system(command_buffer);
-        sprintf(command_buffer, "mkdir %s/polonator/G.007/acquisition/autoexp_FL_images/cy5", getenv("HOME"));
-        system(command_buffer);
-        sprintf(command_buffer, "mkdir %s/polonator/G.007/acquisition/autoexp_FL_images/txred", getenv("HOME"));
+        sprintf(command_buffer, "mkdir -p %s/autoexp_FL_images/txred", image_dir);
         system(command_buffer);
 
-        /*  
+        /*
         sprintf(autoe_dirname, "mkdir /home/polonator/G.007/G.007_acquisition/autoexp_FL_images/%s",argv[2]);
         system(autoe_dirname);
-        */    
+        */
         /*
         system(autoe_dirname);system("mkdir /home/polonator/G.007/G.007_acquisition/autoexp_FL_images");
         */
@@ -177,29 +176,33 @@ int main(int argc, char *argv[]){
 		        autoexp_gain = atoi(argv[4])+i*10;
 	    	    sprintf(autoe_filename, "   ... start acquring FL image in lane %d, for %s with autoexposure gain of %d ...   ",j, argv[2],autoexp_gain);
 	    	    p_log_simple(autoe_filename);
-	    	    sprintf(autoe_filename, "%s/polonator/G.007/acquisition/autoexp_FL_images/%s/%d_image_%d.raw", getenv("HOME"),argv[2],j,autoexp_gain);
+	    	    sprintf(autoe_filename, "%s/autoexp_FL_images/%s/%d_image_%d.raw", image_dir,argv[2],j,autoexp_gain);
 	    	    p_log_simple(autoe_filename);
 	    	    wait_counter = 0;
-	    	    snap(atof(argv[3]), autoexp_gain, argv[2], autoe_filename); 
+	    	    snap(atof(argv[3]), autoexp_gain, argv[2], autoe_filename);
 	    	    sprintf(autoe_filename, "   ... acquired FL image in %d ms ...\n", wait_counter);
 	    	    p_log_simple(autoe_filename);
-	    
+
 	    	    while((attempt_counter < 4) && (attempt_counter > 0))
 	    	    {
 		 	        sprintf(autoe_filename, "... ACQUIRING FAILED !!! Re-acquring FL image in lane %d, for %s with autoexposure gain of %d ...\n",atoi(argv[5]), argv[2],atoi(argv[4]));
 	    	    	p_log_errorno(autoe_filename);
-		    	    snap(atof(argv[3]), atof(argv[4]), argv[2], autoe_filename);     
+		    	    snap(atof(argv[3]), atof(argv[4]), argv[2], autoe_filename);
 	    	    }
-	        } // end for i	
+	        } // end for i
         } // end for j
     } // end else if
 
     /* Acquire 4 fluorescence images */
     else if((strcmp(argv[1], "colorsnap") == 0) && (argc == 7)){
-        snap(atof(argv[2]), atof(argv[3]), "fam", "colorsnap-fam.raw");
-        snap(atof(argv[2]), atof(argv[4]), "cy5", "colorsnap-cy5.raw");
-        snap(atof(argv[2]), atof(argv[5]), "cy3", "colorsnap-cy3.raw");
-        snap(atof(argv[2]), atof(argv[6]), "txred", "colorsnap-txr.raw");
+        sprintf(command_buffer, "%s/colorsnap-fam.raw", image_dir);
+        snap(atof(argv[2]), atof(argv[3]), "fam", command_buffer);
+        sprintf(command_buffer, "%s/colorsnap-cy5.raw", image_dir);
+        snap(atof(argv[2]), atof(argv[4]), "cy5", command_buffer);
+        sprintf(command_buffer, "%s/colorsnap-cy3.raw", image_dir);
+        snap(atof(argv[2]), atof(argv[5]), "cy3", command_buffer);
+        sprintf(command_buffer, "%s/colorsnap-txr.raw", image_dir);
+        snap(atof(argv[2]), atof(argv[6]), "txred", command_buffer);
     }
 
     else if(strcmp(argv[1], "complete-scan") == 0){
@@ -216,7 +219,7 @@ int main(int argc, char *argv[]){
         maestro_open(&m_sock);
         maestro_darkfield_on(m_sock);
     }
-      
+
     else if(strcmp(argv[1], "hometheta") == 0){
         maestro_open(&m_sock);
         maestro_hometheta(m_sock);
@@ -261,14 +264,14 @@ void snap(float exposure, float gain, char *color, char *filename){
 
     wait_counter = 0;
 
-    // open hardware and file 
-    py_cameraInit(0); // use non-TDI config file 
+    // open hardware and file
+    py_cameraInit(0); // use non-TDI config file
     py_set_gain(gain);
     maestro_open(&m_sock);
     outfile = fopen(filename, "w");
 
 
-    // configure hardware  
+    // configure hardware
     maestro_setcolor(m_sock, color);
     //maestro_darkfield_off(m_sock);
     //py_set_gain(gain);moved to line 174
@@ -285,7 +288,7 @@ void snap(float exposure, float gain, char *color, char *filename){
         maestro_darkfield_off(m_sock);
     }
 
-    // setup the software to receive an image from the camera 
+    // setup the software to receive an image from the camera
     py_setupSnap();
 
 
@@ -293,7 +296,7 @@ void snap(float exposure, float gain, char *color, char *filename){
     maestro_snap(m_sock, (int)(exposure * 1000.0), shutterflag);
 
 
-    // wait for image to be received by framegrabber 
+    // wait for image to be received by framegrabber
     while(!py_snapReceived())
     {
         wait_counter++;
@@ -308,7 +311,7 @@ void snap(float exposure, float gain, char *color, char *filename){
         }
     }
 
-    // get pointer to image 
+    // get pointer to image
     image = py_getSnapImage();
 
 
@@ -317,7 +320,7 @@ void snap(float exposure, float gain, char *color, char *filename){
     fprintf(stdout, "Image mean: %d\n", imagemean);
     fwrite(image, sizeof(short unsigned int), 1000000, outfile);
     fprintf(stdout, "finish outputing image");
-    // close hardware and file 
+    // close hardware and file
     if(!strcmp(color, "none")) maestro_darkfield_off(m_sock);
     fclose(outfile);
     fprintf(stdout, "closing camera");

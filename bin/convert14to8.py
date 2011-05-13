@@ -6,8 +6,9 @@ Short code utilizing the python imaging library to convert a 14 bit raw image
 Into a standard viewable PNG
 """
 import numpy as np
-import PIL as Image
+import Image
 import sys
+import os
 
 def show_usage():
     print "convert14to8 <filename> [autolevel]"
@@ -19,11 +20,15 @@ def show_usage():
 
 def onePNG(filename, autolevel=0):
     """
-        snaps an image and saves the 14bit image as an 8 bit greyscale PNG
-        by shifting out 6 bits
+    snaps an image and saves the 14bit image as an 8 bit greyscale PNG
+    by shifting out 6 bits
+    returns the output filename if needed
     """
     shape = (1000, 1000)
-    image_file = open(filename+'.raw', 'rb')
+    #image_file = open(filename+'.raw', 'rb')
+
+    image_file = open(filename, 'rb')
+    filename = os.path.splitext(filename)[0]
     # load a 1000000 length array
     img_array_1D = np.fromfile(file=image_file, dtype=np.uint16)
     if autolevel == 1:
@@ -32,12 +37,13 @@ def onePNG(filename, autolevel=0):
         min_val = auto_array.min()
         img_array_1D = (16383*(auto_array-min_val)/(max_val-min_val)).astype(np.uint16)
     # end if
-    
+
     image_file.close()
     image_8bit = (img_array_1D.reshape(shape) >> 6).astype(np.uint8)
-   
+
     im = Image.fromarray(image_8bit,'L')
     im.save(filename + ".png", "png")
+    return filename + ".png"
 # end def
 
 def main(argv=None):

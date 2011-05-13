@@ -1,5 +1,5 @@
 /* =============================================================================
-// 
+//
 // Polonator G.007 Image Acquisition Software
 //
 // Church Lab, Harvard Medical School
@@ -50,6 +50,12 @@ int main(int argc, char *argv[])
 
     char acqcfgpath[127];
 
+    char command_buffer[255];
+    char base_dir[255];
+    sprintf(base_dir, "%s/polonator/G.007/acquisition", getenv("HOME"));
+    sprintf(command_buffer, "mkdir -p %s", base_dir);
+    system(command_buffer);
+
     if(argc == 3){
         initialize_flag = atoi(argv[2]);
     }
@@ -70,14 +76,16 @@ int main(int argc, char *argv[])
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_outputdir) returned no value");
         exit(0);
     }
-    strcpy(output_directory, config_value);
+    strcpy(output_directory, base_dir);
+    strcat(output_directory, "/");
+    strcat(output_directory, config_value);
     config_close();
 
     fprintf(stdout, "=%s=\n", output_directory);
 
     /* Make sure stagealign output directory exists */
     mkdir(output_directory, S_IRWXU);
-    sprintf(log_string, "Create new directory %s:", output_directory);
+    sprintf(log_string, "Create new directory %s :", output_directory);
     p_log_simple(log_string);
 
 
@@ -91,12 +99,11 @@ int main(int argc, char *argv[])
 
 void stagealign(int fcnum, int lane_num, int initialize)
 {
-  
+
     short unsigned int *testimage;
     short unsigned int *baseimage;
     FILE *baseimgfp;
     FILE *offsetfp;
-
     /* used to dump score matrix to file when debugging */
     FILE *score_matrixfp;
 
@@ -148,7 +155,6 @@ void stagealign(int fcnum, int lane_num, int initialize)
 
     int i;
 
-
   /* in debugging mode, dump internal data to files */
 #ifdef DEBUG_STAGEALIGN
     FILE *imgfp;
@@ -157,18 +163,18 @@ void stagealign(int fcnum, int lane_num, int initialize)
     sprintf(command, "%s/stagealign-scorematrix%d_%d", output_directory, fcnum, lane_num);
     score_matrixfp = fopen(command, "w");
 #endif
-
+    p_log_simple("awesome2\n");
     /* Open config file */
     strcpy(acqcfgpath, getenv("POLONATOR_PATH"));
     strcat(acqcfgpath, "/config_files/polonator-acq.cfg");
     config_open(acqcfgpath);
-
+    p_log_simple("awesome1\n");
     /* Initialize variables */
     if(!config_getvalue("stagealign_logfilename", config_value)){
         fprintf(stderr, "ERROR:\tPolonator-stagealign: config_getval(key logfilename) returned no value\n");
         exit(0);
     }
-
+    p_log_simple("awesome0\n");
     strcpy(logfilename, config_value);
     sprintf(command, "%d", fcnum);
     strcat(logfilename, command);
@@ -179,7 +185,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     strcat(offsetfilename, command);
     strcat(offsetfilename, ".offsetlog");
 
-    /* 
+    /*
     if this is being run in 'initialize mode' -- the first scan of a run --
     overwrite the offset logfile
     */
@@ -232,7 +238,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
 
 
     baseimage = (short unsigned int*)malloc(1000000 * sizeof(short unsigned int));
-
+    p_log_simple("awesome00\n");
     /*--------------------------------------------------------------------------
     //
     // MAESTRO SETUP
@@ -244,26 +250,26 @@ void stagealign(int fcnum, int lane_num, int initialize)
     */
 
 
-  /*----------------------------------------------------------------------------
-  //
-  // CAMERA SETUP
-  /*/
-  p_log("STATUS:\tPolonator-stagealign: Opening camera handle...");
-  py_cameraInit(0); /* use non-TDI config file */
-  py_set_gain(stagealign_gain);
-  py_setupSnap(); /* setup capture software to wait for images from camera */
-  /*
-  //----------------------------------------------------------------------------
-  */
+    /*--------------------------------------------------------------------------
+    //
+    // CAMERA SETUP
+    /*/
+    p_log("STATUS:\tPolonator-stagealign: Opening camera handle...");
+    py_cameraInit(0); /* use non-TDI config file */
+    py_set_gain(stagealign_gain);
+    py_setupSnap(); /* setup capture software to wait for images from camera */
+    /*
+    //--------------------------------------------------------------------------
+    */
 
 
-  /*p_log("STATUS:\tPolonator-stagealign: Darkfield illuminator on...");  rolony*/
-  /*maestro_darkfield_on(m_sock);
-  p_log("STATUS:\tPolonator-stagealign: Select darkfield filter block...");  rolony*/
-  maestro_setcolor(m_sock, "cy5"); 
+    /*p_log("STATUS:\tPolonator-stagealign: Darkfield illuminator on...");  rolony*/
+    /*maestro_darkfield_on(m_sock);
+    p_log("STATUS:\tPolonator-stagealign: Select darkfield filter block...");  rolony*/
+    maestro_setcolor(m_sock, "cy5");
 
 
-  /* IF INITIALIZING, RESET OFFSETS */
+    /* IF INITIALIZING, RESET OFFSETS */
     if(initialize){
         p_log("INITIALIZING STAGEALIGN");
         sprintf(command, "PolonatorScan.OFFSET_X[%d]=0\n\r", lane_index);
@@ -301,7 +307,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
 
 
     /* ACQUIRE IMAGE */
-    p_log("STATUS:\tPolonator-stagealign: Acquire image...");  
+    p_log("STATUS:\tPolonator-stagealign: Acquire image...");
     maestro_snap(m_sock, stagealign_integration_inmsec, 1); /*rolony*/
     while(!py_snapReceived()){;}
     testimage = py_getSnapImage();
@@ -317,13 +323,13 @@ void stagealign(int fcnum, int lane_num, int initialize)
 #ifdef DEBUG_STAGEALIGN
     fwrite(testimage, 1000000, sizeof(short unsigned int), imgfp);
 #endif
-  
+
     /* LOAD BASE IMAGE */
-    p_log("STATUS:\tPolonator-stagealign: Load base image and determine offset...");  
+    p_log("STATUS:\tPolonator-stagealign: Load base image and determine offset...");
     baseimgfp = fopen(stagealign_baseimgfilename, "r");
     fread(baseimage, 1000000, sizeof(short unsigned int), baseimgfp);
     fclose(baseimgfp);
-    p_log("STATUS:\tPolonator-stagealign: Load base image and determine offset2...");  
+    p_log("STATUS:\tPolonator-stagealign: Load base image and determine offset2...");
 
     /* DETERMINE OFFSETS */
     register_image(baseimage, testimage, &pixel_offset_x, &pixel_offset_y, &score, score_matrixfp);
@@ -372,7 +378,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
 
 
     /* ISSUE COMMANDS TO ADJUST STAGE COORDS */
-    p_log("STATUS:\tPolonator-stagealign: Set offset variables on Maestro...");  
+    p_log("STATUS:\tPolonator-stagealign: Set offset variables on Maestro...");
     sprintf(command, "PolonatorScan.OFFSET_X[%d]=PolonatorScan.OFFSET_X[%d]+%d\n\r", lane_index, lane_index, (int)stageunit_offset_x);
     p_log(command);
     send(m_sock, command, strlen(command), 0);
@@ -397,25 +403,25 @@ void stagealign(int fcnum, int lane_num, int initialize)
     fwrite(testimage, 1000000, sizeof(short unsigned int), imgfp);
     fclose(imgfp);
 #endif
-  
-  
+
+
     /* DETERMINE OFFSET TO CONFIRM */
-    /* p_log("STATUS:\tPolonator-stagealign: Re-compute alignment to verify move...");  
+    /* p_log("STATUS:\tPolonator-stagealign: Re-compute alignment to verify move...");
     register_image(baseimage, testimage, &pixel_offset_x, &pixel_offset_y, &score, score_matrixfp);
     sprintf(log_string, "STATUS:\tPolonator-stagealign: Found pixel offsets X:%d, Y:%d, score:%d", pixel_offset_x, pixel_offset_y, score);
     p_log(log_string);
     fprintf(offsetfp, "%d\t%d", pixel_offset_x, pixel_offset_y);
-    */  
+    */
 
     /* DID THE MOVE WORK? */
     if(((abs(pixel_offset_x)>successful_move_threshold) || (abs(pixel_offset_y)>successful_move_threshold)) && (!initialize))
     {
-        sprintf(log_string, "ERROR:\tPolonator-stagealign: one or more offsets are greater that the %d-pixel maximum; X:%d, Y:%d", 
+        sprintf(log_string, "ERROR:\tPolonator-stagealign: one or more offsets are greater that the %d-pixel maximum; X:%d, Y:%d",
             successful_move_threshold,
             pixel_offset_x,
             pixel_offset_y);
         p_log(log_string);
-        fprintf(offsetfp, "*"); 
+        fprintf(offsetfp, "*");
         /* mark current line in offsetlog, since offsets found will not be the offsets stored on the controller */
 
         sprintf(log_string, "Restoring previous offsets X:%d, Y:%d", curr_offset_x, curr_offset_y);
@@ -447,7 +453,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
 }
 
 
-/* 
+/*
 returns offset, in pixels, between base_img and test_img for translation
    to bring images into register
 */
@@ -499,7 +505,7 @@ void register_image(short unsigned int *base_img,
                                 - *(base_img + ((1000 * base_x_idx)+base_y_idx))));
 	            } // end for l
             } // end for k
-      
+
             *(score_matrix + score_matrix_index) = curr_score;
             score_matrix_index++;
         } // end for j
@@ -551,7 +557,7 @@ void flatten_image(int* orig_image,
 		   int* new_image,
 		   int rescale,
 		   int img_size){
-  
+
     long int pixel_mean;
     int i, j, k, m;
     int *index, *index2, *index3;
@@ -612,7 +618,7 @@ void flatten_image(int* orig_image,
             } // end for k
         } // end for j
     } // end for i
-  
+
     /* RESCALE BG_IMAGE SO IT STARTS AT 0, SUBTRACT FROM IMAGE; COMPUTE
     // NEW IMAGE PIXEL MAX AND MIN IF RESCALE == 1*/
     new_min = INT_MAX;
@@ -626,7 +632,7 @@ void flatten_image(int* orig_image,
         new_val = *(index2) - bg_min;
         if(new_val < 0) new_val = 0;
         *(index2) = (int)new_val; /* this is the backgound pixel value*/
-    
+
 
         /*    new_val = *(index) - *(index2);*/
         new_val = *(index) +(bg_max - *(index2));
@@ -657,3 +663,4 @@ void flatten_image(int* orig_image,
     }
     free(bg_image);
 } // end function
+

@@ -1,5 +1,5 @@
 // =============================================================================
-// 
+//
 // Polonator G.007 Image Processing Software
 //
 // Church Lab, Harvard Medical School
@@ -20,7 +20,7 @@
 - initialize_processor.c
 -
 - Written by Greg Porreca (Church Lab) 11-20-2007
-- 
+-
 */
 
 #include <stdio.h>
@@ -73,6 +73,12 @@ void ReceiveInitData(char *argv, int portnum,
 	int connection_isok=1;
 
 	char log_string[255];
+
+    char command_buffer[255];
+    char image_dir[255];
+    sprintf(image_dir, "%s/polonator/G.007/acquisition/images", getenv("HOME"));
+    sprintf(command_buffer, "mkdir -p %s", image_dir);
+    system(command_buffer);
 
 #ifdef SAVE_IMAGES
 	char outputfilename[255];
@@ -144,8 +150,7 @@ void ReceiveInitData(char *argv, int portnum,
 	}
 
 #ifdef SAVE_IMAGES
-	system("mkdir images");
-	sprintf(outputfilename, "mkdir images/%s", CYCLE_NAME);
+	sprintf(outputfilename, "mkdir -p %s/%s", image_dir, CYCLE_NAME);
 	system(outputfilename);
 #endif
 
@@ -162,7 +167,7 @@ void ReceiveInitData(char *argv, int portnum,
 					p_log(log_string);
 					bytesRcvd = 0;
 					totalBytesRcvd = 0;
-	
+
 					// tell server we're ready for the next block
 					p_log((char*)"Request data");
 					if(send(sock, sendBuffer, 1, 0) != 1)
@@ -219,9 +224,9 @@ void ReceiveInitData(char *argv, int portnum,
 
 					// NOW THAT WE HAVE THE IMAGE, DO SOMETHING WITH IT
 					//verify it is the image we think it is
-					if( (*(inputBuffer + 0) != i) || 
+					if( (*(inputBuffer + 0) != i) ||
 						(*(inputBuffer + 1) != j) ||
-						(*(inputBuffer + 2) != k) || 
+						(*(inputBuffer + 2) != k) ||
 						(*(inputBuffer + 3) == 1))
 					{
 						sprintf(log_string, "ERROR; expected image %d %d %d 0, got %d %d %d %d",
@@ -233,7 +238,7 @@ void ReceiveInitData(char *argv, int portnum,
 						p_log(log_string);
 						exit(0);
 					}
-	  
+
 #ifdef WHITE_BEADS
 					//invert for images where beads are lighter than background
 					for(z=0; z < 1000000; z++)
@@ -258,7 +263,11 @@ void ReceiveInitData(char *argv, int portnum,
 
 
 #ifdef SAVE_IMAGES
-					sprintf(outputfilename, "images/%s/%02d_%04d.raw", CYCLE_NAME, *(inputBuffer+1), *(inputBuffer+2));
+					sprintf(outputfilename, "%s/%s/%02d_%04d.raw",
+					                        image_dir,
+					                        CYCLE_NAME,
+					                        *(inputBuffer+1),
+					                        *(inputBuffer+2));
 					imgfile = fopen(outputfilename, "w");
 					fwrite(inputBuffer+4, sizeof(short unsigned int), 1000000, imgfile);
 					fwrite(image, sizeof(short unsigned int), 1000000, imgfile);
@@ -385,3 +394,4 @@ void ReceiveInitData(char *argv, int portnum,
 //
 // ------------------------------------ END ReceiveInitData.c------------------------------------------
 //
+

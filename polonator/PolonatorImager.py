@@ -20,7 +20,7 @@
 ## ========================================================================================
 
 
-import polMaestro
+import maestro
 import threading
 import time
 import datetime
@@ -79,7 +79,7 @@ class Imager(threading.Thread):
             # construct cycle name for WL imaging
             today = datetime.date.today()
             fn = '%02d%02d%04d' % (today.month, today.day, today.year)
-            self.cycle_name = '%c%c%c%c%c%c' % (fn[0], fn[1], fn[2], fn[3], fn[6], fn[7]) 
+            self.cycle_name = '%c%c%c%c%c%c' % (fn[0], fn[1], fn[2], fn[3], fn[6], fn[7])
 
         else:
             self.fluor_imaging = 1
@@ -109,7 +109,7 @@ class Imager(threading.Thread):
                 print "using gains found with AutoExposGain.py"
             else:
                 print "using gains entered by user"
-            # this is the order of fluors in the integration and gain arrays; 
+            # this is the order of fluors in the integration and gain arrays;
             # it is also the order used by autoexposure
             fluors = ['cy5', 'fam', 'cy3', 'txred']
 
@@ -126,10 +126,10 @@ class Imager(threading.Thread):
             # first to minimize image alignment drift
             i = 0
 
-            
+
             #print self.manual_gains
             #p = subprocess.Popen('/home/polonator/G.007/G.007_acquisition/PolonatorUtils snap ' + 0 + ' 0.035 ' + 90,  shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            #stdout_value, stderr_value = p.communicate() 
+            #stdout_value, stderr_value = p.communicate()
             #print 'stdout_value \n' , stdout_value
 
             # cmd = '/home/polonator/G.007/G.007_acquisition/PolonatorUtils snap1 %d %d %d' % (0,0.035,90)
@@ -137,7 +137,7 @@ class Imager(threading.Thread):
             # os.system(cmd)
 
             while i < 4:
-            
+
                 # perform stage alignment
                 cmd = (os.environ["POLONATOR_PATH"] + '/bin/Polonator-stagealign %d') % (self.flowcell)
                 print cmd
@@ -149,7 +149,7 @@ class Imager(threading.Thread):
                     cmd = os.environ["POLONATOR_PATH"] + '/bin/PolonatorUtils gotostagealignpos 0 0'
                     print cmd
                     os.system(cmd)
- 
+
                     cmd = os.environ["POLONATOR_PATH"] + '/bin/PolonatorUtils snap1 %s %f %d %d' % (curr_name_new,0.035,j, j+150)
                     print cmd
                     os.system(cmd)
@@ -183,8 +183,8 @@ class Imager(threading.Thread):
                 # spawn thread to receive the images and wait for it to return;
                 # it will exit w/ value of 10 if it did not acquire all images -- in
                 # this case, repeat the current color
-                if(os.spawnlp(os.P_WAIT, 'sudo', 'sudo', cmd, 
-                             curr_name, 
+                if(os.spawnlp(os.P_WAIT, 'sudo', 'sudo', cmd,
+                             curr_name,
                              str(self.integration_times[fluors.index(imaging_order[i])]),
                              str(self.manual_gains[fluors.index(imaging_order[i])]),
                              str(self.flowcell),
@@ -195,7 +195,7 @@ class Imager(threading.Thread):
                     print 'Polonator-acquirer exited with error'
 
 
-        # we're doing darkfield imaging; assume we've just started the run and 
+        # we're doing darkfield imaging; assume we've just started the run and
         # tell Polonator-stagealign to zero out the offsetlog and collect a new
         # base image
         else:
@@ -207,7 +207,7 @@ class Imager(threading.Thread):
                 cmd = (os.environ["POLONATOR_PATH"] + '/bin/Polonator-stagealign %d 1') % (self.flowcell-2)
             else:
                 cmd = (os.environ["POLONATOR_PATH"] + '/bin/Polonator-stagealign %d 1') % (self.flowcell)
-                
+
             print cmd
             os.system(cmd)
 
@@ -228,3 +228,4 @@ class Imager(threading.Thread):
             self.maestro.darkfield_off()
 
         return 1
+

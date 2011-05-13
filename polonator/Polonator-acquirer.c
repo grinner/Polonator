@@ -45,9 +45,9 @@ char log_string[500];
 /* structure to hold info from callback */
 typedef struct
 {
-  volatile int num_imgs; /* number of images received so far */
-  volatile int image_ready; /* signals a new image has been received */
-  volatile int readout_started;
+    volatile int num_imgs; /* number of images received so far */
+    volatile int image_ready; /* signals a new image has been received */
+    volatile int readout_started;
 } tPhxCallbackInfo;
 
 /* Phoenix image buffer */
@@ -176,7 +176,9 @@ int main(int argc, char *argv[])
         fprintf(stderr, "ERROR:\tPolonator-acquirer: config_getval(key PHX_configfilename) returned no value\n");
         exit(0);
     }
-    strcpy(PHX_configfilename, config_value);
+    strcpy(PHX_configfilename, getenv("POLONATOR_PATH"));
+    strcat(PHX_configfilename, "/config_files/");
+    strcat(PHX_configfilename, config_value);
 
     if(!config_getvalue("auto_exposure", config_value)){
         fprintf(stderr, "ERROR:\tPolonator-acquirer: config_getval(key proc_portnum) returned no value\n");
@@ -742,7 +744,7 @@ void send_initial_raw_images(int num_array, int clnt_sock)
     short unsigned int *baseimage;
     FILE *baseimgfp;
     char stagealign_rawimgfilename[500];
-    
+
     /*prepare the network connection and send*/
     /* open the port, and wait for processor to connect
     network_startserver(&serv_sock, &clnt_sock, proc_portnum);*/
