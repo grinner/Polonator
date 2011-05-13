@@ -200,50 +200,50 @@ void stagealign(int fcnum, int lane_num, int initialize)
     else{
         offsetfp = fopen(offsetfilename, "a");
     }
-
+    p_log_simple("awesome00\n");
     if(!config_getvalue("stagealign_baseimgfilename", config_value)){
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_baseimgfilename) returned no value");
         exit(0);
     }
     sprintf(stagealign_baseimgfilename, "%s/%s%s_%d.raw", output_directory, config_value, command, lane_num);
-
+    p_log_simple("awesome01\n");
     if(!config_getvalue("stagealign_integration_inmsec", config_value)){
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_integration_inmsec) returned no value");
         exit(0);
     }
     stagealign_integration_inmsec = atoi(config_value);
-
+    p_log_simple("awesome02\n");
     if(!config_getvalue("stagealign_gain", config_value)){
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_gain) returned no value");
         exit(0);
     }
     stagealign_gain = atoi(config_value);
-
+    p_log_simple("awesome03\n");
     if(!config_getvalue("stagealign_optical_mag", config_value)){
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_optical_mag) returned no value");
         exit(0);
     }
     stagealign_optical_mag = atoi(config_value);
-
+    p_log_simple("awesome04\n");
     if(!config_getvalue("stagealign_ccd_pixel_size", config_value)){
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_ccd_pixel_size) returned no value");
         exit(0);
     }
     ccd_pixel_size = atoi(config_value);
-
+    p_log_simple("awesome05\n");
     if(!config_getvalue("stagealign_wells_per_fc", config_value)){
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_wells_per_fc) returned no value");
         exit(0);
     }
     stagealign_wells_per_fc = atoi(config_value);
     config_close();
-
+    p_log_simple("awesome06\n");
     stagealign_well = lane_num;
     lane_index = (fcnum * stagealign_wells_per_fc) + stagealign_well;
 
 
     baseimage = (short unsigned int*)malloc(1000000 * sizeof(short unsigned int));
-    p_log_simple("awesome00\n");
+    
     /*--------------------------------------------------------------------------
     //
     // MAESTRO SETUP
