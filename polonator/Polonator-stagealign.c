@@ -39,7 +39,7 @@ char log_string[500];
 char output_directory[500];
 char autoe_filename[500];
 char autoe_dirname[500];
-
+char log_dir[255];
 
 int main(int argc, char *argv[])
 {
@@ -52,7 +52,6 @@ int main(int argc, char *argv[])
 
     char command_buffer[255];
     char base_dir[255];
-    char log_dir[255];
     sprintf(base_dir, "%s/polonator/G.007/acquisition", getenv("HOME"));
     sprintf(log_dir, "%s/logs", base_dir);
     sprintf(command_buffer, "mkdir -p %s", log_dir);
@@ -185,7 +184,9 @@ void stagealign(int fcnum, int lane_num, int initialize)
     strcat(logfilename, ".log");
     start_logger(logfilename, 1);
 
-    strcpy(offsetfilename, config_value);
+    strcpy(offsetfilename, log_dir);
+    strcat(offsetfilename, "/");
+    strcat(offsetfilename, config_value);
     strcat(offsetfilename, command);
     strcat(offsetfilename, ".offsetlog");
 
