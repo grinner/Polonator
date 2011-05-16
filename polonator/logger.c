@@ -36,12 +36,16 @@ void start_logger(char *logfilename, int df)
 {
     if (fp = fopen(logfilename, "a") != NULL) {
         fprintf(stdout, "Polonator_logger starting with logfile <%s>...\n", logfilename);
+        fflush(stdout);
         fprintf(fp, "-------------------------------------------------------------------------------------\n");
         if(df == 0){ /* default is 1 */
             disp_flag = df;
         }
-        fflush(stdout);
         fflush(fp);
+    }
+    else
+    {
+        fprintf(stdout, "Failer to load log file <%s>\n", logfilename);
     }
 }
 
@@ -126,4 +130,7 @@ void p_log_errorno(char *message){
     }
     fflush(fp);
 }
+
+
+
 
