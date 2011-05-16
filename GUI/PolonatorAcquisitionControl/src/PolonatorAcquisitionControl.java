@@ -3090,7 +3090,7 @@ private void stagealign_gotopositionActionPerformed(java.awt.event.ActionEvent e
 }//GEN-LAST:event_stagealign_gotopositionActionPerformed
 
 private void stagealign_dostagealignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stagealign_dostagealignActionPerformed
-    String command = acqbase_dir + "/Polonator-stagealign " + stagealign_fcnum;
+    String command = acqbase_dir + "/Polonator-stagealign " + stagealign_fcnum + " 1";
     SwingWorker<Integer, String> worker = createWorker(command, stagealign_textwindow, "");
     worker.execute();
 }//GEN-LAST:event_stagealign_dostagealignActionPerformed

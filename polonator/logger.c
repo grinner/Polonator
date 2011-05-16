@@ -34,7 +34,7 @@ int disp_flag=1;
 */
 void start_logger(char *logfilename, int df)
 {
-    if (fp = fopen(logfilename, "a") != NULL) {
+    if ((fp = fopen(logfilename, "a")) != NULL) {
         fprintf(stdout, "Polonator_logger starting with logfile <%s>...\n", logfilename);
         fflush(stdout);
         fprintf(fp, "-------------------------------------------------------------------------------------\n");
@@ -103,6 +103,7 @@ void p_log_simple(char *message){
     */
     if(disp_flag){
         fprintf(stdout, "%s%06ld\t%s\n", timestring, tv.tv_usec, message);
+        fflush(stdout);
     }
     fflush(fp);
 
@@ -130,7 +131,4 @@ void p_log_errorno(char *message){
     }
     fflush(fp);
 }
-
-
-
 

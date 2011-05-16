@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
     else{
         initialize_flag = 0;
     }
+    fprintf(stdout, "the initialize flag is %d\n", initialize_flag);
 
     /* Open config file */
     strcpy(acqcfgpath, getenv("POLONATOR_PATH"));
@@ -116,7 +117,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     char offsetfilename[255];
     char stagealign_baseimgfilename[255];
 
-    char acqcfgpath[127];
+    char acqcfgpath[255];
 
     /* Used to send commands and receive responses from Maestro */
     char command[255];
@@ -190,7 +191,8 @@ void stagealign(int fcnum, int lane_num, int initialize)
     strcat(offsetfilename, config_value);
     strcat(offsetfilename, command);
     strcat(offsetfilename, ".offsetlog");
-
+    fprintf(stdout, offsetfilename);
+    fflush(stdout);
     /*
     if this is being run in 'initialize mode' -- the first scan of a run --
     overwrite the offset logfile
@@ -471,7 +473,8 @@ void register_image(short unsigned int *base_img,
 		    int *x_offset,
 		    int *y_offset,
 		    int *score,
-		    FILE *score_matrix_fp){
+		    FILE *score_matrix_fp)
+{
 
     int window_width = 100;
     int i, j, k, l;
