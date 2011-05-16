@@ -34,17 +34,20 @@ int disp_flag=1;
 */
 void start_logger(char *logfilename, int df)
 {
-    //fp = fopen(logfilename, "a");
-    fprintf(stdout, "Polonator_logger starting with logfile <%s>...\n", logfilename);
-    //fprintf(fp, "-------------------------------------------------------------------------------------\n");
-    if(df == 0){ /* default is 1 */
-        disp_flag = df;
+    if (fp = fopen(logfilename, "a") != NULL) {
+        fprintf(stdout, "Polonator_logger starting with logfile <%s>...\n", logfilename);
+        fprintf(fp, "-------------------------------------------------------------------------------------\n");
+        if(df == 0){ /* default is 1 */
+            disp_flag = df;
+        }
+        fflush(stdout);
+        fflush(fp);
     }
 }
 
 void close_logger(void)
 {
-    //fclose(fp);
+    fclose(fp);
 }
 
 
