@@ -59,6 +59,7 @@ ILLUMFUNCTIONS_INC = -I$(ILL_DIR) -I$(IMG_DIR)
 
 LIB_DMD_FLAGS = -lD4000
 
+
 # Motion Control Source
 MO_DIR = $(BASE_DIR)/motion
 MAESTRO_DEP = $(MO_DIR)/maestro_functions.c $(MO_DIR)/maestro_functions.h \
@@ -68,6 +69,16 @@ MAESTRO_DEP = $(MO_DIR)/maestro_functions.c $(MO_DIR)/maestro_functions.h \
 MAESTRO_SRC = $(MO_DIR)/maestro_functions.c $(MO_DIR)/config.c \
 				$(MO_DIR)/get_sock.c
 MAESTRO_INC = -I$(MO_DIR) -I$(CAM_DIR)
+
+# Network Functions source
+NET_DEP = network_functions.c network_functions.h \
+				logger.c logger.h \
+				$(MO_DIR)/get_sock.c $(MO_DIR)/get_sock.h \
+				
+NET_SRC = network_functions.c \
+				logger.c \
+				$(MO_DIR)/get_sock.c
+NET_INC = -I$(MO_DIR) 
 
 # Camera/Framegrabber Source
 # Active Silicon Phoenix Framegrabber
@@ -174,7 +185,8 @@ all : directory_check python_illum \
 	python_proc_dmd python_log \
 	python_img_tools python_find_obj \
 	Polonator-stagealign PolonatorUtils \
-	PolonatorAcq
+	PolonatorAcq \
+	python_network
 
 directory_check:
 	echo nachos $(BASE_DIR)
@@ -219,6 +231,11 @@ python_log: logger.c logger.h logger.i
 	gcc logger.c logger_wrap.c $(PYTHONFLAGS) \
 	$(CFLAGS) -o _logger.so  $(SHARELIBFLAGS)
 	#rm *.o
+
+python_network: $(NET_DEP)  network_functions.i
+	swig -python network_functions.i
+	gcc $(NET_SRC) network_functions_wrap.c $(PYTHONFLAGS) \
+	$(CFLAGS) -o _networkG007.so  $(SHARELIBFLAGS)
 
 Polonator-stagealign: $(STG_DEP)
 	gcc -Wall $(STG_SRC) $(CFLAGS) $(STG_INC) -o  ../bin/Polonator-stagealign $(PHX_CFLAGS) $(PHX_INCLUDE) $(PHX_LIBS)

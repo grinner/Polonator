@@ -24,3 +24,8 @@ extern void py_maestro_goto_image(int, int, int);
 extern void py_maestro_hometheta(void);
 extern void py_maestro_unlocktheta(void);
 extern void py_maestro_locktheta(void);
+extern void py_maestro_snap(int integration_inmsec, int shutterflag);
+extern void py_maestro_setflag(void);
+extern void py_maestro_stop(void);
+extern void py_maestro_getstatus(void);
+extern void py_maestro_resetflag(void);

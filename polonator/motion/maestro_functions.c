@@ -26,6 +26,7 @@
 #include "logger.h"
 #include "config.h"
 #include "maestro_functions.h"
+int py_sock;
 
 #include "global_parameters.h" // added by NC 11/24/2009
 
@@ -89,6 +90,11 @@ void maestro_open(int *m_sock)
     /* all responses; these should be discarded also */
 }
 
+void py_maestro_stop(void)
+{
+    maestro_stop(py_sock);
+}
+
 /* Used to gracefully 'reset' the software on the Maestro if a scan
    has been stopped while running (e.g. by a software crash, etc).  When
    this happens, the maestro code thinks everything is just 'paused', but
@@ -149,6 +155,11 @@ int maestro_get_scan_status(int m_sock)
     return response[0]-48;
 }
 
+void py_maestro_setflag(void) 
+{
+    maestro_setflag(py_sock);
+}
+
 /* Used by Polonator-acquirer during the scan routine to
    unset controller 'pause flag' (set the flag to 'ON');
    the flag is global variable iprdy on the X axis, and tells
@@ -173,7 +184,10 @@ void maestro_setflag(int m_sock)
     p_log(response);
 }
 
-
+void py_maestro_resetflag(void)
+{
+    maestro_resetflag(py_sock);
+}
 /* set controller pause flag so acquisition stops; normally the controller
    handles this
 */
@@ -975,6 +989,11 @@ void maestro_lock(int m_sock)
     p_log(response);
 }
 
+void py_maestro_getstatus(void)
+{
+    maestro_getstatus(py_sock);   
+}
+
 void maestro_getstatus(int m_sock)
 {
     char command0[] = "PolonatorScan.STATUS\n\r";
@@ -1221,6 +1240,12 @@ int maestro_homing(int m_sock)
         }
     }
     return 1; /* either X or Y or both not homed */
+}
+
+void py_maestro_snap(int integration_inmsec, int shutterflag)
+{
+    maestro_snap(py_sock, integration_inmsec, shutterflag);
+    shutdown(py_sock,2);
 }
 
 /* used to snap a single image */

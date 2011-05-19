@@ -26,8 +26,17 @@ void py_setupSnap(void);
 int py_snapReceived(void);
 short unsigned int* py_getSnapImage(void);
 
+int sPCI_readout_started(void);
+void sPCI_set_readout(int startstop);
+int sPCI_num_imgs(void);
+int sPCI_image_ready(void);
+void sPCI_set_image_ready(int ready);
+void py_startAcquire(void);
+void py_get_buffer(void);
+void py_release_buffer(void);
+void py_get_buffer_ptr(unsigned short * raw_image);
+void py_cameraInitAcq(int tdiflag, float exposure, int gain);
+static void acquirer_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
 
-tHandle pyHandle; /* camera handle for Python functions */
-short unsigned int* image_ptr; /* pointer to current snapped image */
 
 #endif

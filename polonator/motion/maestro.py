@@ -146,5 +146,18 @@ class MaestroFunctions:
 
     def cameraint_stop(self):
         MaestroFunctions.TS.parse_read_string('x.ob[1]=0', '>')
-
         
+    def snap(self):
+        MaestroFunctions.col.py_maestro_snap(int_time, shutterflag)
+        
+    def set_flag(self):
+        MaestroFunctions.col.py_maestro_setflag()
+        
+    def reset_flag(self):
+        MaestroFunctions.col.py_maestro_resetflag()
+        
+    def stop(self):
+        MaestroFunctions.col.py_maestro_stop()
+        
+    def status(self):
+        MaestroFunctions.col.py_maestro_getstatus()

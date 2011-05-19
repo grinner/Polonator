@@ -36,6 +36,15 @@
 char error_string[500];
 char log_string[500];
 
+int py_serv_sock;
+int py_clnt_sock
+
+void py_network_startserver(int port)
+{
+    network_startserver(&py_serv_sock, &py_clnt_sock, port);
+}
+
+
 /*
 // function to start transmit server; listens on port portnum, and returns
 // when it receives a connection (assigning the client socket to clnt_sock);
@@ -96,6 +105,10 @@ void network_startserver(int *serv_sock, int *clnt_sock, int portnum)
 }
 
 
+void py_network_sendfilename(char *filename)
+{
+    network_sendfilename(py_clnt_sock, filename);
+}
 /* 
 // function sends filename over network to processing computer; assumes
 // processor already connected and is present on clnt_sock (by call to
@@ -125,6 +138,10 @@ int network_sendfilename(int clnt_sock, char *filename){
 }
 
 
+int py_network_sendfcnum(int fcnum)
+{
+    network_sendfcnum(py_clnt_sock, fcnum)
+}
 /* 
 // function sends flowcell number over network to processing computer; assumes
 // processor already connected and is present on clnt_sock (by call to
@@ -158,6 +175,10 @@ int network_sendfcnum(int clnt_sock, int fcnum)
     }
 }
   
+int py_network_waitforsend(void)
+{
+    network_waitforsend(py_clnt_sock);
+}
 
 /* function blocks until request for next image is received from processor */
 int network_waitforsend(int clnt_sock)
@@ -208,8 +229,8 @@ int network_waitforsend(int clnt_sock)
         else { /* ERROR: SOMETHING ELSE REQUESTED */
             sprintf(error_string, "ERROR: Polonator_networkfunctions: network_sendimage(): processor request was '%c'(%d), expecting '1' for image request", *input, *input);
             p_log(error_string);
-    	    p_log_errorno("");
-    	    return 0;
+            p_log_errorno("");
+            return 0;
         }    
     }
 
@@ -224,7 +245,11 @@ int network_waitforsend(int clnt_sock)
     }
 
   return -1;
-}    
+}
+
+int py_network_waitforDMD() {
+    network_waitforDMD(py_clnt_sock);
+}   
 
 int network_waitforDMD(int clnt_sock)
 {
@@ -244,8 +269,8 @@ int network_waitforDMD(int clnt_sock)
     p_log(log_string);
 
 
-    if(bytes_recvd>0){
-        if(bytes_recvd==1){
+    if(bytes_recvd > 0){
+        if(bytes_recvd == 1){
             sprintf(log_string, "received %c:%d", input[0], input[0]);
             p_log(log_string);
         }
@@ -275,11 +300,18 @@ int network_waitforDMD(int clnt_sock)
 
 /* do not call this function until network_waitforsend() has returned true */
 /* signalling the processor is ready to receive the data */
+int py_network_sendimage(   short unsigned int fcnum,
+                            short unsigned int arraynum,
+                            short unsigned int imagenum,
+                            short unsigned int *image_ptr)
+{
+    network_sendimage(clnt_sock,fcnum, arraynum, imagenum,image_ptr);
+}
 int network_sendimage(int clnt_sock, 
-		      short unsigned int fcnum,
-		      short unsigned int arraynum,
-		      short unsigned int imagenum,
-		      short unsigned int *image_ptr)
+              short unsigned int fcnum,
+              short unsigned int arraynum,
+              short unsigned int imagenum,
+              short unsigned int *image_ptr)
 {
 
     short unsigned int image_info[4];
@@ -295,6 +327,10 @@ int network_sendimage(int clnt_sock,
     return 1;
 }
   
+void py_network_send(char *data, int bytes_to_send)
+{
+    network_send(clnt_sock, data, bytes_to_send);
+}
 
 void network_send(int clnt_sock, char *data, int bytes_to_send)
 {
@@ -319,6 +355,10 @@ void network_send(int clnt_sock, char *data, int bytes_to_send)
     }
 }
 
+void py_network_iboot_on(void)
+{
+    network_iboot_on(&clnt_sock);
+}
 
 void network_iboot_on(int *clnt_sock)
 {
@@ -329,6 +369,11 @@ void network_iboot_on(int *clnt_sock)
     network_send(*clnt_sock, command, strlen(command)); 
     sprintf(log_string, "STATUS:\tcamera on, %d", 1);
     p_log_simple(log_string);
+}
+
+void py_network_iboot_off(void)
+{
+    network_iboot_off(&clnt_sock);
 }
 
 void network_iboot_off(int *clnt_sock)
@@ -342,9 +387,12 @@ void network_iboot_off(int *clnt_sock)
     p_log_simple(log_string);
 }
 
+void py_network_stopserver(void)
+{
+    network_stopserver(serv_sock);
+}
 
-
-void network_stopserver(serv_sock)
+void network_stopserver(int serv_sock)
 {
     if(shutdown(serv_sock,2) < 0)
     {
@@ -353,9 +401,14 @@ void network_stopserver(serv_sock)
     }
 }
 
+void py_network_shutdown(void)
+{
+    network_shutdown();
+}
+
 void network_shutdown(void){
-	int serv_sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-	network_stopserver(serv_sock);
+    int serv_sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    network_stopserver(serv_sock);
 }
 
 /*

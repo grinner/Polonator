@@ -18,9 +18,16 @@
 
 #include "as_phoenix_functions.h"
 #include "common.h"
+#include "global_parameters.h"
+
+tHandle pyHandle; /* camera handle for Python functions */
+short unsigned int* image_ptr; /* pointer to current snapped image */
+
 
 char log_string[500];
-
+/* Phoenix image buffer */
+stImageBuff py_img_buffer;
+ui32 PHX_buffersize; /* width of the framegrabber's circular image buffer */
 
 static void snap_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
 typedef struct{
@@ -64,7 +71,7 @@ void py_cameraInit(int tdiflag)
     sPCI.image_ready = 0;
 }
 
-void py_cameraClose()
+void py_cameraClose(void)
 {
     p_log_simple("STATUS:\tpy_cameraClose: Release internal camera handle");
     PHX_CameraRelease(&pyHandle);
@@ -87,7 +94,7 @@ void py_set_gain(int gain)
     set_gain(pyHandle, gain);
 }
 
-void py_setupSnap()
+void py_setupSnap(void)
 {
     etStat eStat;
     etParamValue dw;
@@ -114,7 +121,7 @@ void py_setupSnap()
 }
 
 
-int py_snapReceived(){
+int py_snapReceived(void){
     return sPCI.image_ready;
 }
 
@@ -311,8 +318,8 @@ void check_for_error(etStat eStat, char *fn_name, char *error_call)
 }
 
 static void snap_callback(tHandle hCamera,
-			  ui32 dwInterruptMask,
-			  void *pvParams)
+                        ui32 dwInterruptMask,
+                        void *pvParams)
 {
 
     tPhxCallbackInfo *sPCI = (tPhxCallbackInfo*) pvParams;
@@ -328,6 +335,189 @@ static void snap_callback(tHandle hCamera,
         p_log_simple("PHX CALLBACK: IMAGE READY");
     }
 }
+
+int sPCI_readout_started(void)
+{
+    return sPCI.readout_started;
+}
+
+void sPCI_set_readout(int startstop)
+{
+    sPCI.readout_started = startstop;
+}
+
+int sPCI_num_imgs(void)
+{
+    return sPCI.num_imgs;
+}
+
+int sPCI_image_ready(void)
+{
+    return sPCI.image_ready;
+}
+
+void sPCI_set_image_ready(int ready)
+{
+    sPCI.image_ready = ready;
+}
+
+void py_startAcquire(void) 
+{
+    p_log("STATUS:\tacquirer: starting capture...");
+    eStat = PHX_Acquire( pyHandle, PHX_START, (void*) acquirer_callback);
+    check_for_error(py_eStat, py_function_name, "PHX_Acquire(PHX_START)");
+    
+}
+
+void py_get_buffer(void)
+{
+    etStat eStat;
+    /* get pointer to image so we can manipulate it */
+    eStat = PHX_Acquire(pyHandle, PHX_BUFFER_GET, &py_img_buffer);
+    check_for_error(eStat, "acquirer", "PHX_Acquire(PHX_BUFFER_GET)");
+}
+void py_release_buffer(void)
+{
+    //release buffer back to Phoenix's buffer pool 
+    PHX_Acquire(pyHandle, PHX_BUFFER_RELEASE, &py_img_buffer);
+}
+
+void py_get_buffer_ptr(unsigned short * raw_image)
+{
+    return memcpy(raw_image,py_img_buffer.pvAddress, 2*IMAGE_RESOLUTION_X*IMAGE_RESOLUTION_Y);
+}
+
+// This function is explicitly for acquirer.py
+// NC 05-2011
+void py_cameraInitAcq(int tdiflag, float exposure, int gain)
+{
+    etStat eStat;
+    char filepath_buffer[256];
+    strcpy(filepath_buffer, getenv("POLONATOR_PATH"));
+    etParamValue dw = (etParamValue) (0 | 
+                // PHX_INTRPT_GLOBAL_ENABLE | 
+                PHX_INTRPT_BUFFER_READY | 
+                PHX_INTRPT_FRAME_START); // only trap buffer_ready events 
+
+    p_log("STATUS:\tpy_cameraInit: Initialize internal camera handle");
+    pyHandle = 0;
+    if(tdiflag)
+    {
+        p_log("Use 9100-50 config file");
+        strcat(filepath_buffer, "/config_files/em9100-50.pcf");
+        eStat = PHX_CameraConfigLoad(&pyHandle, filepath_buffer, PHX_BOARD_AUTO | PHX_DIGITAL, NULL);
+    }
+    else
+    {
+        p_log_simple("Use 9100-02 config file");
+        strcat(filepath_buffer, "/config_files/em9100-02.pcf");
+        eStat = PHX_CameraConfigLoad(&pyHandle, filepath_buffer,(etCamConfigLoad)(PHX_BOARD_AUTO|PHX_DIGITAL|PHX_NO_RECONFIGURE),PHX_ErrHandlerDefault);
+        /*eStat = PHX_CameraConfigLoad(&pyHandle, "/home/polonator/G.007/G.007_acquisition/em9100-02.pcf", PHX_BOARD_AUTO | PHX_DIGITAL, NULL);*/
+    }
+    check_for_error(eStat, "py_cameraInit", "PHX_CameraConfigLoad");
+
+    // this is the only difference from the py_cameraInit
+    p_log_simple("STATUS:\tPolonator_acquirer: PHX_ParameterSet(PHX_INTRPT_SET)");
+    eStat = PHX_ParameterSet(pyHandle, PHX_INTRPT_SET, &dw);
+
+    p_log_simple("STATUS:\tpy_cameraInit: Set camera to external (Maestro) triggering");
+    init_camera_external_trigger(pyHandle);
+
+    /* set exposure and gain on camera */
+    sprintf(log_string, "STATUS:\tPolonator-acquirer: set camera integration time to %f seconds", exposure/1000);
+    p_log(log_string);
+    set_exposure(pyHandle, exposure/1000);
+
+    sprintf(log_string, "STATUS:\tPolonator-acquirer: set camera EM gain to %d (out of 255)", gain);
+    p_log(log_string);
+    set_gain(pyHandle, gain);
+
+    // p_log_simple("STATUS:\tpy_cameraInit: Allocate image buffer");
+    // image_ptr = (short unsigned int*)malloc(1000000*sizeof(short unsigned int));
+
+
+    // setup event context 
+    p_log("STATUS:\tPolonator-acquirer: setup event context...");
+    memset(&sPCI, 0, sizeof(tPhxCallbackInfo));
+    sPCI.image_ready = 0;
+    sPCI.num_imgs = 0;
+    sPCI.image_ready = 0;
+    sPCI.readout_started = 0;
+    
+    /* setup capture */
+    p_log_simple("STATUS:\tacquirer: setup capture...");
+    eStat = PHX_ParameterSet( pyHandle, PHX_EVENT_CONTEXT, (void *) &sPCI );
+    check_for_error(eStat, "acquirer", "PHX_ParameterSet(PHX_EVENT_CONTEXT)");
+}
+
+
+/* 
+executed every time a BUFFER_READY event is registered by the Pheonix API
+it is very important to release the callback quickly so it can be re-called
+upon the next interrupt event; if it is not released quickly enough,
+BUFFER_READY events can be missed
+therefore we simply signal main() through sPCI->image_ready  that there
+is a new image, increment a counter, and DO NOTHING ELSE!!!
+*/
+static void acquirer_callback(tHandle hCamera,
+                            ui32 dwInterruptMask,
+                            void *pvParams)
+{
+
+    tPhxCallbackInfo *sPCI = (tPhxCallbackInfo*) pvParams;
+    (void) hCamera;
+
+    /* event PHX_INTRPT_BUFFER_READY evaluates true when the framegrabber receives a
+        full image from the camera; at this point, we can get a pointer to the image
+        in the framegrabber's memory pool and copy it out for our own use
+    */
+    if(PHX_INTRPT_BUFFER_READY & dwInterruptMask)
+    {
+        /*
+        callback sets image_ready to true on execution, then main thread
+        resets it to false when it is finished with the image; therefore,
+        always be false when the callback is executed
+        if it is not, it means code in the main thread (Polonator-acquirer.c)
+        for handling the previous image is still executing; warn the user because
+        ideally these two threads are not executing simultaneously
+        */
+        if(sPCI->image_ready)
+        {
+            sprintf(log_string, "WARNING: Polonator-acquirer:callback: hit again before previous (%d) processed; images may be missed", sPCI->num_imgs);
+            p_log_errorno(log_string);
+            while(sPCI->image_ready){WAIT;}
+        }
+
+#ifdef DEBUG_POLONATORACQ
+        p_log("PHX CALLBACK: IMAGE READY");
+#endif
+
+        /*
+        holds total number of BUFFER_READY events since Polonator-acquirer
+        started
+        */
+        sPCI->num_imgs++;
+
+        /* signal main thread that a new image is ready for handling */
+        sPCI->image_ready = 1;
+    }
+
+    /* event PHX_INTRPT_FRAME_START evaluates true when the framegrabber starts
+        receiving a new image from the camera; we cannot get the image yet, but
+        our software uses this to synchronize with the controller in step-and-
+        settle mode
+    */
+    /*  else if(PHX_INTRPT_FRAME_START & dwInterruptMask){
+    sPCI->readout_started = 1;
+
+    #ifdef DEBUG_POLONATORACQ
+    p_log("PHX CALLBACK: READOUT STARTED");
+    #endif
+
+    }
+    */
+}
+
 
 
 /****************************************************************************

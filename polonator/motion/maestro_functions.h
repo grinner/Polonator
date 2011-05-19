@@ -18,6 +18,11 @@ void py_maestro_goto_image(int flowcell, int lane, int image_number);
 void py_maestro_hometheta(void);
 void py_maestro_unlocktheta(void);
 void py_maestro_locktheta(void);
+void py_maestro_snap(int integration_inmsec, int shutterflag);
+void py_maestro_setflag(void);
+void py_maestro_stop(void);
+void py_maestro_getstatus(void);
+void py_maestro_resetflag(void);
 
 void maestro_open(int *m_sock);
 void consume_bytes(int m_sock, int num_bytes);
@@ -57,8 +62,5 @@ void maestro_snap(int, int, int);
 void maestro_goto_image(int m_sock, int flowcell, int lane, int image_number);
 /*added by NC 01/25/10*/
 void maestro_reset(int m_sock);
-
-
-int py_sock;
 
 #endif
