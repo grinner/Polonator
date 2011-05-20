@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-# http://www.opensource.org/licenses/mit-license.php
+# http://www.opensource.org/licenses/mit-license.php    
 
 import polonator.illum.mapping as PM
 from polonator.motion import maestro
