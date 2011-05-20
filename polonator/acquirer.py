@@ -54,9 +54,11 @@ average_image_sums = numpy.zeros(data_size, dtype=np.uint32)
 
 curr_averageimgnum = 0
 averaging_complete = 0
+num_to_average = 0
 
 def main(argv=None):
     global curr_averageimgnum
+    global num_to_average
     
     if argv is None:
         argv = sys.argv
@@ -392,26 +394,23 @@ def average_images(curr_img):
     global average_image_sums
     global averaging_complete
     global curr_averageimgnum 
+    global num_to_average
     
     curr_averageimgnum += 1
     
     if curr_averageimgnum == num_to_average:
         # this image is the last one; add it, then compute avg
-        for i in range(datasize):
-            average_image_sums[i] += curr_img[i]
-            average_image[i] = average_image_sums[i] / num_to_average
-        # end for
+        average_image_sums[:] += curr_img[:]
+        average_image[:] = average_image_sums[:] / num_to_average
         curr_averageimgnum = 0 # reset for next position
         averaging_complete = 1 # signal to transmit the data in average_image
     # end if
     elif curr_averageimgnum == 1:
         # first time for this position; overwrite previous data
         averaging_complete = 0 # reset so nothing is transmitted until we do num_to_avg images
-        average_image_sums = numpy.copy(curr_img)
+        average_image_sums[:] = curr_img[:]
     else:
-        for i in range(datasize):
-            average_image_sums[i] += curr_img[i]
-        # end for
+        average_image_sums[:] += curr_img[:]
     # end else
 # end def
 
