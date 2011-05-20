@@ -44,13 +44,16 @@ data_size = LEN#+4
 
 function_name = "acquirer"
 
+# Globals
+
 # image averaging
 # holds the final averaged image
 average_image = numpy.zeros(data_size, dtype=np.uint16)
 # holds the accumulating sums for each pixel
 average_image_sums = numpy.zeros(data_size, dtype=np.uint32)
-curr_averageimgnum = 0
 
+curr_averageimgnum = 0
+averaging_complete = 0
 
 def main(argv=None):
     global curr_averageimgnum
@@ -79,7 +82,7 @@ def main(argv=None):
     base_dir = "%s/polonator/G.007/acquisition" % (os.environ["HOME"])
     log_dir =  "%s/logs" % (base_dir)
     command_buffer =  "mkdir -p %s" % log_dir
-    system(command_buffer);
+    system(command_buffer)
 
     logfilename = log_dir + "/" + config.get("Log", "logfilename") +\
                     "." + argv[1] + ".log"
@@ -99,9 +102,9 @@ def main(argv=None):
     auto_exposure = int(config.get("Stage_Align", "auto_exposure"))
 
     argc = len(argv)
-    if argc == 7 :
+    if argc == 7:
         # number of images to average was specified 
-        log_string = "%s called with %d args: <%s> <%d> <%d> <%d> <%d> <%d>", %
+        log_string = "%s called with %d args: <%s> <%d> <%d> <%d> <%d> <%d>" %
                         (argv[0], argc-1, argv[1], \
                         int(argv[2]), int(argv[3]), int(argv[4]),\
                         int(argv[5]), int(argv[6]) )
@@ -113,7 +116,7 @@ def main(argv=None):
             num_to_average = 0
     elif argc == 6:
         # number of images to average was not specified; assume no averaging 
-        log_string = "%s called with %d args: <%s> <%d> <%d> <%d> <%d>", % \
+        log_string = "%s called with %d args: <%s> <%d> <%d> <%d> <%d>" % \
                         (argv[0], argc-1, argv[1], \
                         int(argv[2]), int(argv[3]), \
                         int(argv[4]), int(argv[5]) )
@@ -143,10 +146,10 @@ def main(argv=None):
 
         array_string = argv[1]
 
-        PL.p_log(array_string);
+        PL.p_log(array_string)
 
         if argv[1] == "0" or argv[1] == "1":
-            PL.p_log(array_string);
+            PL.p_log(array_string)
             send_initial_raw_images(1)
         else:
             log_string = "STATUS:\tPolonator-acquirer: running autoexposure, server sending filename %s to processor, port %d..." % (argv[1], proc_portnum)
@@ -160,7 +163,7 @@ def main(argv=None):
 
             # close connection, then re-open for flowcell number
             net.py_network_stopserver()
-            net.py_network_startserver(proc_portnum);
+            net.py_network_startserver(proc_portnum)
 
             autoe_gain = send_FL_images(array_string,15)
             PC.py_set_gain(autoe_gain)
@@ -174,7 +177,7 @@ def main(argv=None):
 
 
 
-    PL.p_log_simple("STATUS:\tPolonator-acquirer: server waiting for processor to connect...");
+    PL.p_log_simple("STATUS:\tPolonator-acquirer: server waiting for processor to connect...")
     net.py_network_startserver(proc_portnum)
 
     # now send the filename for the current image set
@@ -193,19 +196,19 @@ def main(argv=None):
     net.py_network_stopserver()
 
     log_string = "STATUS:\tPolonator-acquirer: server establishing image transfer connection to processor, port %d..." % (proc_portnum)
-    PL.p_log_simple(log_string);
+    PL.p_log_simple(log_string)
     net.py_network_startserver(proc_portnum)
 
     log_string = "STATUS:\tPolonator-acquirer: server establishing image transfer connection to processor, port %d..." % (proc_portnum)
-    PL.p_log(log_string);
+    PL.p_log(log_string)
 
     blank_image[:] = 0
     
-    PL.p_log_simple("STATUS:\tPolonator-acquirer: waiting for processor to signal ready to begin");
+    PL.p_log_simple("STATUS:\tPolonator-acquirer: waiting for processor to signal ready to begin")
     if net.py_network_waitforsend() != 1:
-        PL.p_log("ERROR:\tPolonator-acquirer: processor requested the wrong kind of data (not an image)");
+        PL.p_log("ERROR:\tPolonator-acquirer: processor requested the wrong kind of data (not an image)")
         exit_on_error(mf)
-    PL.p_log_simple("STATUS:\tPolonator-acquirer: processor ready to receive first image");
+    PL.p_log_simple("STATUS:\tPolonator-acquirer: processor ready to receive first image")
     net.py_network_sendimage(0, 0, 0, blank_image)
 
 
@@ -283,14 +286,14 @@ def main(argv=None):
             PC.sPCI_set_readout(0)
             if PC.sPCI_num_imgs() and num_to_average == 0:
                 PL.p_log("STATUS:\tPolonator-acquirer: wait for processor ready to receive image")
-                if net.py_network_waitforsend() != 1 :
+                if net.py_network_waitforsend() != 1:
                     PL.p_log("ERROR:\tPolonator-acquirer: processor requested the wrong kind of data (not an image)")
                     exit_on_error(mf)
                 # end if
             # end if
             PL.p_log("STATUS:\tPolonator-acquirer: processor ready to receive image")
             # set controller flag so acquisition continues
-            PL.p_log("STATUS:\tPolonator-acquirer: signalling controller ready to start integration of next image");
+            PL.p_log("STATUS:\tPolonator-acquirer: signalling controller ready to start integration of next image")
             mf.setflag()
             PL.p_log("STATUS:\tPolonator-acquirer: finished signalling controller ready to start integration of next image")
 
@@ -314,9 +317,9 @@ def main(argv=None):
 
                 if averaging_complete:
                     if not first_average_image:
-                        PL.p_log("STATUS:\tPolonator-acquirer: averaging complete; wait for processor ready to receive image");
+                        PL.p_log("STATUS:\tPolonator-acquirer: averaging complete; wait for processor ready to receive image")
                         while net.py_network_waitforsend() !=1:
-                            PL.p_log("ERROR:\tPolonator-acquirer: processor requested the wrong kind of data (not an image)");
+                            PL.p_log("ERROR:\tPolonator-acquirer: processor requested the wrong kind of data (not an image)")
                             exit_on_error(mf)
                     # end if
                 # end if
@@ -325,16 +328,16 @@ def main(argv=None):
                 # end else
                     PL.p_log("STATUS:\tPolonator-acquirer: processor ready to receive image")
 
-                    # transmit the image; acquisition of next image has already started */
+                    # transmit the image; acquisition of next image has already started
                     PL.p_log("STATUS:\tPolonator-acquirer: sending image to processor")
-                    net.py_network_sendimage(fcnum, curr_array, curr_img, average_image);
+                    net.py_network_sendimage(fcnum, curr_array, curr_img, average_image)
                     PL.p_log("STATUS:\tPolonator-acquirer: finished sending image to processor")
             # end if
 
             # end if (num_to_average)
             else:
                 # transmit the image; acquisition of next image has already started
-                PL.p_log("STATUS:\tPolonator-acquirer: sending image to processor");
+                PL.p_log("STATUS:\tPolonator-acquirer: sending image to processor")
                 net.py_network_sendimage(fcnum, curr_array, curr_img, img_buffer_cpy)
                 PL.p_log("STATUS:\tPolonator-acquirer: finished sending image to processor")
             # end else
@@ -367,14 +370,14 @@ def main(argv=None):
                     # end if
                 # end if
             # end if
-            PL.p_log("STATUS:\tPolonator-acquirer: re-entering image-receive loop...");
+            PL.p_log("STATUS:\tPolonator-acquirer: re-entering image-receive loop...")
         # end if (sPCI.image_ready)
     # end while
     print "\n"
-    PL.p_log("STATUS:\tPolonator-acquirer: last image received from camera...");
+    PL.p_log("STATUS:\tPolonator-acquirer: last image received from camera...")
     mf.reset_flag()
 
-    PL.p_log("STATUS:\tPolonator-acquirer: release camera handle...");
+    PL.p_log("STATUS:\tPolonator-acquirer: release camera handle...")
     PC.py_cameraClose()
         
     net.py_network_waitforsend()  # don't close connection until last image is transmitted
@@ -393,8 +396,8 @@ def exit_on_error(maestro):
     sys.exit(10)
 # end def
 
-# used to accumulate an average of multiple images; we call this during */
-# brightfield image acquisition to decrease noise so segmentation works better */
+# used to accumulate an average of multiple images; we call this during
+# brightfield image acquisition to decrease noise so segmentation works better 
 def average_images(curr_img):
     """
     this is a global variable that tells us how many images 
@@ -416,12 +419,12 @@ def average_images(curr_img):
             average_image_sums[i] += curr_img[i]
             average_image[i] = average_image_sums[i] / num_to_average
         # end for
-        curr_averageimgnum = 0 # reset for next position */
-        averaging_complete = 1 # signal to transmit the data in average_image */
+        curr_averageimgnum = 0 # reset for next position
+        averaging_complete = 1 # signal to transmit the data in average_image
     # end if
     elif curr_averageimgnum == 1:
-        # first time for this position; overwrite previous data */
-        averaging_complete = 0 # reset so nothing is transmitted until we do num_to_avg images */
+        # first time for this position; overwrite previous data
+        averaging_complete = 0 # reset so nothing is transmitted until we do num_to_avg images
         average_image_sums = numpy.copy(curr_img)
     else:
         for i in range(datasize):
@@ -444,7 +447,7 @@ def send_initial_raw_images(num_array):
     while i < num_array:
         # read and send the auto_exposure raw images
         stagealign_rawimgfilename = "%s/polonator/G.007/acquisition/stagealign/stagealign-image0_%d.raw" % (os.environ["HOME"], i)
-        PL.p_log_simple(stagealign_rawimgfilename);
+        PL.p_log_simple(stagealign_rawimgfilename)
 
         log_string =  "STATUS:\t 1try to send the autoexposure images %s to processor, port %d..." % (stagealign_rawimgfilename, proc_portnum)
         PL.p_log(log_string)
@@ -461,7 +464,7 @@ def send_initial_raw_images(num_array):
 
         while net.py_network_waitforsend() != 1:
             log_string = "Waiting to send the autoexposure images"
-            PL.p_log(log_string);
+            PL.p_log(log_string)
         # end while
         log_string = "Trying to send autoexposure images %d" %  (i)
         PL.p_log_simple(log_string)
@@ -486,7 +489,7 @@ def send_FL_images(mystring, num_array):
 
     if string1 == "G":
         log_string = "success_%d.raw" % (0)
-        PL.p_log(log_string);
+        PL.p_log(log_string)
 
         stagealign_dir_name = "%s/polonator/G.007/acquisition/autoexp_FL_images/fam/" % (os.environ["HOME"])
         PL.p_log(stagealign_dir_name)
@@ -494,7 +497,7 @@ def send_FL_images(mystring, num_array):
         log_string = "success_%d.raw" % (0)
         PL.p_log(log_string)
 
-        sprintf(stagealign_dir_name, "%s/polonator/G.007/acquisition/autoexp_FL_images/cy3/" % (os.environ["HOME"])
+        stagealign_dir_name = "%s/polonator/G.007/acquisition/autoexp_FL_images/cy3/" % (os.environ["HOME"])
         PL.p_log(stagealign_dir_name)
     # elif
 
@@ -528,11 +531,11 @@ def send_FL_images(mystring, num_array):
         blank_image = numpy.copy(baseimage)
         
         log_string =  "STATUS:\t 3try to send the autoexposure images %s to processor, port %d..." % (stagealign_rawimgfilename, proc_portnum)
-        PL.p_log(log_string);
+        PL.p_log(log_string) 
 
         while net.py_network_waitforsend() != 1:
             log_string = "Waiting to send the autoexposure images"
-            PL.p_log(log_string);
+            PL.p_log(log_string)
         # end while
         
         log_string = "Trying to send autoexposure FL images %d" % (i)
