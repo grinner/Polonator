@@ -11,6 +11,7 @@ void network_stopserver(int serv_sock);
 void network_iboot_on(int* clnt_sock);
 void network_iboot_off(int* clnt_sock);
 void network_send(int clnt_sock, char* data, int bytes_to_send);
+void network_shutdown(void);
 
 void py_network_startserver(int portnum);
 int py_network_sendfilename(char *filename);
@@ -27,3 +28,4 @@ void py_network_send(char* data, int bytes_to_send);
 void py_network_shutdown(void);
 
 #endif
+

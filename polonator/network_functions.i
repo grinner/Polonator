@@ -4,15 +4,16 @@
     #define SWIG_FILE_WITH_INIT
     #include "network_functions.h"
 %}
-   
+
 %include "numpy.i"
-  
+
 %init %{
     import_array();
 %}
 
-%rename (py_network_sendimage) my_py_network_sendimage;
+%include "network_functions.h"
 
+%rename (py_network_sendimage) my_py_network_sendimage;
 
 %apply (int DIM1, unsigned short * IN_ARRAY1) { (int len1, unsigned short * image_ptr) }
 
@@ -34,7 +35,5 @@ int py_network_waitforDMD(void);
 void py_network_stopserver(void);
 void py_network_iboot_on(void);
 void py_network_iboot_off(void);
-
-
-/* Added by NC 2/3/2010 */
 void py_network_shutdown(void);
+

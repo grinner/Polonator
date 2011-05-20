@@ -71,14 +71,14 @@ MAESTRO_SRC = $(MO_DIR)/maestro_functions.c $(MO_DIR)/config.c \
 MAESTRO_INC = -I$(MO_DIR) -I$(CAM_DIR)
 
 # Network Functions source
-NET_DEP = network_functions.c network_functions.h \
-				logger.c logger.h \
+NET_DEP = $(BASE_DIR)/network_functions.c $(BASE_DIR)/network_functions.h \
+				$(BASE_DIR)/logger.c $(BASE_DIR)/logger.h \
 				$(MO_DIR)/get_sock.c $(MO_DIR)/get_sock.h \
-				
-NET_SRC = network_functions.c \
-				logger.c \
+
+NET_SRC = $(BASE_DIR)/network_functions.c \
+				$(BASE_DIR)/logger.c \
 				$(MO_DIR)/get_sock.c
-NET_INC = -I$(MO_DIR) 
+NET_INC = -I$(MO_DIR)
 
 # Camera/Framegrabber Source
 # Active Silicon Phoenix Framegrabber
@@ -226,16 +226,16 @@ python_proc_dmd: $(PROCDMD_DEP) $(BASE_DIR)/polonator_proc_DMD.i
 	$(SHARELIBFLAGS)
 	#rm *.o
 
-python_log: logger.c logger.h logger.i
-	swig -python -lcpointer.i logger.i
-	gcc logger.c logger_wrap.c $(PYTHONFLAGS) \
-	$(CFLAGS) -o _logger.so  $(SHARELIBFLAGS)
+python_log: $(BASE_DIR)/logger.c $(BASE_DIR)/logger.h $(BASE_DIR)/logger.i
+	swig -python -lcpointer.i $(BASE_DIR)/logger.i
+	gcc $(BASE_DIR)/logger.c $(BASE_DIR)/logger_wrap.c $(PYTHONFLAGS) \
+	$(CFLAGS) -o $(BASE_DIR)/_logger.so  $(SHARELIBFLAGS)
 	#rm *.o
 
-python_network: $(NET_DEP)  network_functions.i
-	swig -python network_functions.i
-	gcc $(NET_SRC) network_functions_wrap.c $(PYTHONFLAGS) \
-	$(CFLAGS) -o _networkG007.so  $(SHARELIBFLAGS)
+python_network: $(NET_DEP)  $(BASE_DIR)/network_functions.i
+	swig -python $(BASE_DIR)/network_functions.i
+	gcc $(NET_SRC) $(BASE_DIR)/network_functions_wrap.c $(NUMPY_FLAGS) $(PYTHONFLAGS) \
+	$(CFLAGS) $(NET_INC) -o $(BASE_DIR)/_networkG007.so  $(SHARELIBFLAGS)
 
 Polonator-stagealign: $(STG_DEP)
 	gcc -Wall $(STG_SRC) $(CFLAGS) $(STG_INC) -o  ../bin/Polonator-stagealign $(PHX_CFLAGS) $(PHX_INCLUDE) $(PHX_LIBS)

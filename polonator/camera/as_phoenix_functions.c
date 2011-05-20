@@ -1,5 +1,5 @@
 /* =============================================================================
-// 
+//
 // Polonator G.007 Image Acquisition Software
 //
 // Church Lab, Harvard Medical School
@@ -19,6 +19,7 @@
 #include "as_phoenix_functions.h"
 #include "common.h"
 #include "global_parameters.h"
+#define WAIT usleep(1000)
 
 tHandle pyHandle; /* camera handle for Python functions */
 short unsigned int* image_ptr; /* pointer to current snapped image */
@@ -29,10 +30,18 @@ char log_string[500];
 stImageBuff py_img_buffer;
 ui32 PHX_buffersize; /* width of the framegrabber's circular image buffer */
 
-static void snap_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
-typedef struct{
-    volatile int image_ready;
+/* structure to hold info from callback */
+typedef struct
+{
+    volatile int num_imgs; /* number of images received so far */
+    volatile int image_ready; /* signals a new image has been received */
+    volatile int readout_started;
 } tPhxCallbackInfo;
+
+static void snap_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
+/*typedef struct{*/
+/*    volatile int image_ready;*/
+/*} tPhxCallbackInfo;*/
 stImageBuff img_buffer;
 tPhxCallbackInfo sPCI;
 
@@ -184,10 +193,10 @@ int py_imagemean(short unsigned int* img)
    image acquisition; it sets the trigger line high for the duration
    of the integration period.  We therefore don't need to set 'exposure
    time' in software.  This is called 'level triggering' (as opposed to
-   'edge triggering', where the trigger edge signals the start of 
+   'edge triggering', where the trigger edge signals the start of
    integration, and the duration is set in software w/ the AET command.
    We use the AET command consistently anyway, since it must be used when
-   triggering the camera in software (e.g. single-shot mode during 
+   triggering the camera in software (e.g. single-shot mode during
    autoexposure).
 */
 void init_camera_external_trigger(tHandle hCamera)
@@ -199,7 +208,7 @@ void init_camera_external_trigger(tHandle hCamera)
     phxser(hCamera, "EMD L"); /* set to level triggering (trigger rise/fall starts/ends exposure)*/
     /*  phxser(hCamera, "EMD E");*/ /* set to edge triggering (trigger edge starts exposure)*/
     phxser(hCamera, "ESC M"); /* set to trigger source "multi-pin"*/
-    phxser(hCamera, "ATP P"); /* set to positive polarity trigger*/  
+    phxser(hCamera, "ATP P"); /* set to positive polarity trigger*/
     /*phxser(hCamera, "ACN 0");*/ /* acquire cycling forever */
     /*phxser(hCamera, "CEO 0");*/ /* set 'contrast enhancement' to maximum */
 
@@ -230,7 +239,7 @@ void init_camera_external_trigger_TDI(tHandle hCamera){
     phxser(hCamera, "AMD T"); /* set to TDI 'normal' mode*/
     phxser(hCamera, "TMD E"); /* set to external TDI mode*/
     phxser(hCamera, "ESC M"); /* set to trigger source "multi-pin"*/
-    phxser(hCamera, "ATP P"); /* set to positive polarity trigger*/  
+    phxser(hCamera, "ATP P"); /* set to positive polarity trigger*/
     /*phxser(hCamera, "ACN 0");*/ /* acquire one image */
     /*phxser(hCamera, "CEO 0");*/ /* set 'contrast enhancement' to maximum */
 }
@@ -246,7 +255,7 @@ void init_camera_internal_trigger_TDI(tHandle hCamera){
     phxser(hCamera, "AMD T"); /* set to internal ("normal") trigger mode from Phoenix*/
     phxser(hCamera, "TMD I"); /* set to internal TDI mode*/
     phxser(hCamera, "ESC M"); /* set to trigger source "multi-pin"*/
-    phxser(hCamera, "ATP P"); /* set to positive polarity trigger*/  
+    phxser(hCamera, "ATP P"); /* set to positive polarity trigger*/
     phxser(hCamera, "ACN 0"); /* acquire cycling forever */
     phxser(hCamera, "CEO 0"); /* set 'contrast enhancement' to maximum */
 }
@@ -302,7 +311,7 @@ void set_gain(tHandle hCamera, int gain)
 
 
 
-/* check for a camera-specific error; if any, pass to p_log for 
+/* check for a camera-specific error; if any, pass to p_log for
    timestamping and file output
 */
 void check_for_error(etStat eStat, char *fn_name, char *error_call)
@@ -361,12 +370,13 @@ void sPCI_set_image_ready(int ready)
     sPCI.image_ready = ready;
 }
 
-void py_startAcquire(void) 
+void py_startAcquire(void)
 {
+    etStat eStat;
     p_log("STATUS:\tacquirer: starting capture...");
     eStat = PHX_Acquire( pyHandle, PHX_START, (void*) acquirer_callback);
-    check_for_error(py_eStat, py_function_name, "PHX_Acquire(PHX_START)");
-    
+    check_for_error(eStat, "acquirer", "PHX_Acquire(PHX_START)");
+
 }
 
 void py_get_buffer(void)
@@ -378,7 +388,7 @@ void py_get_buffer(void)
 }
 void py_release_buffer(void)
 {
-    //release buffer back to Phoenix's buffer pool 
+    //release buffer back to Phoenix's buffer pool
     PHX_Acquire(pyHandle, PHX_BUFFER_RELEASE, &py_img_buffer);
 }
 
@@ -399,10 +409,10 @@ void py_cameraInitAcq(int tdiflag, float exposure, int gain)
     etStat eStat;
     char filepath_buffer[256];
     strcpy(filepath_buffer, getenv("POLONATOR_PATH"));
-    etParamValue dw = (etParamValue) (0 | 
-                // PHX_INTRPT_GLOBAL_ENABLE | 
-                PHX_INTRPT_BUFFER_READY | 
-                PHX_INTRPT_FRAME_START); // only trap buffer_ready events 
+    etParamValue dw = (etParamValue) (0 |
+                // PHX_INTRPT_GLOBAL_ENABLE |
+                PHX_INTRPT_BUFFER_READY |
+                PHX_INTRPT_FRAME_START); // only trap buffer_ready events
 
     p_log("STATUS:\tpy_cameraInit: Initialize internal camera handle");
     pyHandle = 0;
@@ -441,14 +451,14 @@ void py_cameraInitAcq(int tdiflag, float exposure, int gain)
     // image_ptr = (short unsigned int*)malloc(1000000*sizeof(short unsigned int));
 
 
-    // setup event context 
+    // setup event context
     p_log("STATUS:\tPolonator-acquirer: setup event context...");
     memset(&sPCI, 0, sizeof(tPhxCallbackInfo));
     sPCI.image_ready = 0;
     sPCI.num_imgs = 0;
     sPCI.image_ready = 0;
     sPCI.readout_started = 0;
-    
+
     /* setup capture */
     p_log_simple("STATUS:\tacquirer: setup capture...");
     eStat = PHX_ParameterSet( pyHandle, PHX_EVENT_CONTEXT, (void *) &sPCI );
@@ -456,7 +466,7 @@ void py_cameraInitAcq(int tdiflag, float exposure, int gain)
 }
 
 
-/* 
+/*
 executed every time a BUFFER_READY event is registered by the Pheonix API
 it is very important to release the callback quickly so it can be re-called
 upon the next interrupt event; if it is not released quickly enough,
@@ -570,14 +580,14 @@ int phxser(tHandle hCamera, char *szCmdBuff)
     eParamValue = PHX_COMMS_DATA_8;
     eStat = PHX_ParameterSet( hCamera, PHX_COMMS_DATA, &eParamValue );
     if ( PHX_OK != eStat ){
-        PHX_ErrCodeDecode(error, eStat); 
+        PHX_ErrCodeDecode(error, eStat);
         sprintf(log_string, "ERROR:\tphxser: PHX_COMMS_DATA %s", error);
         p_log_errorno(log_string);
     }
     eParamValue = PHX_COMMS_STOP_1;
     eStat = PHX_ParameterSet(hCamera, PHX_COMMS_STOP, &eParamValue );
     if ( PHX_OK != eStat ){
-        PHX_ErrCodeDecode(error, eStat); 
+        PHX_ErrCodeDecode(error, eStat);
         sprintf(log_string, "ERROR:\tphxser: PHX_COMMS_STOP %s", error);
         p_log_errorno(log_string);
     }
@@ -585,7 +595,7 @@ int phxser(tHandle hCamera, char *szCmdBuff)
     eParamValue = PHX_COMMS_PARITY_NONE;
     eStat = PHX_ParameterSet(hCamera, PHX_COMMS_PARITY, &eParamValue );
     if ( PHX_OK != eStat ){
-        PHX_ErrCodeDecode(error, eStat); 
+        PHX_ErrCodeDecode(error, eStat);
         sprintf(log_string, "ERROR:\tphxser: PHX_COMMS_PARITY %s", error);
         p_log_errorno(log_string);
     }
@@ -593,7 +603,7 @@ int phxser(tHandle hCamera, char *szCmdBuff)
     eParamValue = (etParamValue) 9600;
     eStat = PHX_ParameterSet(hCamera, PHX_COMMS_SPEED, &eParamValue );
     if ( PHX_OK != eStat ){
-        PHX_ErrCodeDecode(error, eStat); 
+        PHX_ErrCodeDecode(error, eStat);
         sprintf(log_string, "ERROR:\tphxser: PHX_COMMS_SPEED %s", error);
         p_log_errorno(log_string);
     }
@@ -601,7 +611,7 @@ int phxser(tHandle hCamera, char *szCmdBuff)
     eParamValue = PHX_COMMS_FLOW_NONE;
     eStat = PHX_ParameterSet(hCamera, (etParam)(PHX_COMMS_FLOW|PHX_CACHE_FLUSH), &eParamValue );
     if ( PHX_OK != eStat ){
-        PHX_ErrCodeDecode(error, eStat); 
+        PHX_ErrCodeDecode(error, eStat);
         sprintf(log_string, "ERROR:\tphxser: PHX_CACHE_FLUSH %s", error);
         p_log_errorno(log_string);
     }
@@ -635,7 +645,7 @@ int phxser(tHandle hCamera, char *szCmdBuff)
     eParamValue = (etParamValue)dwTxMssgLen;
     eStat = PHX_CommsTransmit( hCamera, (ui8*) szTxLineBuff, (ui32*) &eParamValue, 500 );
     if ( PHX_OK != eStat ){ p_log_errorno("ERROR:\tphxser: Failed to transmit all characters");}
-    if ( (ui32) eParamValue != dwTxMssgLen ) 
+    if ( (ui32) eParamValue != dwTxMssgLen )
     {
         p_log_errorno("ERROR:\tphxser: Failed to transmit all characters");
     }
@@ -647,7 +657,7 @@ int phxser(tHandle hCamera, char *szCmdBuff)
     eStat = PHX_ParameterGet( hCamera, PHX_COMMS_INCOMING, &dwRxMssgLen );
     if ( PHX_OK != eStat )
     {
-        PHX_ErrCodeDecode(error, eStat); 
+        PHX_ErrCodeDecode(error, eStat);
         sprintf(log_string, "ERROR:\tphxser: PHX_COMMS_INCOMING %s", error);
         p_log_errorno(log_string);
     }
@@ -672,8 +682,8 @@ int phxser(tHandle hCamera, char *szCmdBuff)
     /* Wait 200ms for a receive message; it should have all arrived by then */
     *szTxLineBuff = tolower(*szTxLineBuff);
 
-    /* If any characters are waiting to be read, go get them*/ 
-    if ( 0 != dwRxMssgLen ) 
+    /* If any characters are waiting to be read, go get them*/
+    if ( 0 != dwRxMssgLen )
     {
         eParamValue = (etParamValue)dwRxMssgLen;
         eStat = PHX_CommsReceive( hCamera, (ui8*) cRxLineBuff, (ui32*) &eParamValue, 500 );
@@ -683,11 +693,11 @@ int phxser(tHandle hCamera, char *szCmdBuff)
         eParamValue = (etParamValue)dwRxMssgLen;
         eStat = PHX_CommsReceive( hCamera, (ui8*) cRxLineBuff, (ui32*) &eParamValue, 500 );
         sprintf(log_string, "ERROR:\tphxser: return command does not match, szTxLineBuff = %s, cRxLineBuff = %s", szTxLineBuff, cRxLineBuff);
-        p_log(log_string); 
+        p_log(log_string);
         }
         ADDED ON 101309 FINISHED*/
 
-        if ( (ui32) eParamValue != dwRxMssgLen ) 
+        if ( (ui32) eParamValue != dwRxMssgLen )
         {
             p_log("ERROR:\tphxser: Failed to read all pending characters");
         }
@@ -701,7 +711,7 @@ int phxser(tHandle hCamera, char *szCmdBuff)
     /*else {
     sprintf(log_string, "ERROR:\tphxser: No characters received; re-calling with <%s>", szCmdBuff);
     p_log(log_string);
-    phxser(hCamera,szCmdBuff); 
+    phxser(hCamera,szCmdBuff);
     }*/
     sprintf(log_string, "STATUS:\tphxser: Received %s", cRxLineBuff);
     p_log_simple(log_string);
@@ -709,3 +719,4 @@ int phxser(tHandle hCamera, char *szCmdBuff)
     Finish:
     return 0;
 }
+
