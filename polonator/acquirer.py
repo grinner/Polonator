@@ -84,7 +84,7 @@ def main(argv=None):
     command_buffer =  "mkdir -p %s" % log_dir
     system(command_buffer)
 
-    logfilename = log_dir + "/" + config.get("Log", "logfilename") +\
+    logfilename = log_dir + "/" + config.get("Log", "logfilename") + \
                     "." + argv[1] + ".log"
     PL.start_logger(logfilename, 1)
     
@@ -148,7 +148,7 @@ def main(argv=None):
 
         PL.p_log(array_string)
 
-        if argv[1] == "0" or argv[1] == "1":
+        if array_string == "0" or array_string == "1":
             PL.p_log(array_string)
             send_initial_raw_images(1)
         else:
@@ -159,7 +159,7 @@ def main(argv=None):
             # now send the filename for the current image set
             log_string = "STATUS:\tPolonator-acquirer: server sending filename %s to processor, port %d..." % (argv[1], proc_portnum)
             PL.p_log(log_string)
-            net.py_network_sendfilename(argv[1])
+            net.py_network_sendfilename(array_string)
 
             # close connection, then re-open for flowcell number
             net.py_network_stopserver()
@@ -211,10 +211,8 @@ def main(argv=None):
     PL.p_log_simple("STATUS:\tPolonator-acquirer: processor ready to receive first image")
     net.py_network_sendimage(0, 0, 0, blank_image)
 
-
     # MAESTRO SETUP
     PL.p_log("STATUS:\tPolonator-acquirer: opening connection to Maestro...")
-    
 
     # IMAGE CAPTURE AND TRANSMIT
     # start capture on framegrabber
@@ -229,24 +227,9 @@ def main(argv=None):
     curr_averageimgnum = 0 
     averaging_complete = 0 
 
-
     time.sleep(5) 
 
     caught_readout = 0 
-
-    # added
-    mf.filter_goto("cy5")
-    mf.snap(60 * 1000.0, 1)
-    while not py_snapReceived():
-        pass
-    mf.filter_goto("cy3")
-    mf.snap(60 * 1000.0, 1)
-    while not py_snapReceived():
-        pass
-    mf.filter_goto("txred")
-    mf.snap(60 * 1000.0, 1)
-    while not py_snapReceived():
-        pass
 
     # capture all images for the current imaging cycle
     # we're at the end once curr_fc has been incremented
@@ -321,19 +304,18 @@ def main(argv=None):
                         while net.py_network_waitforsend() !=1:
                             PL.p_log("ERROR:\tPolonator-acquirer: processor requested the wrong kind of data (not an image)")
                             exit_on_error(mf)
+                        # end while
                     # end if
-                # end if
-                else:
-                    first_average_image = 0
-                # end else
+                    else:
+                        first_average_image = 0
+                    # end else
                     PL.p_log("STATUS:\tPolonator-acquirer: processor ready to receive image")
 
                     # transmit the image; acquisition of next image has already started
                     PL.p_log("STATUS:\tPolonator-acquirer: sending image to processor")
                     net.py_network_sendimage(fcnum, curr_array, curr_img, average_image)
                     PL.p_log("STATUS:\tPolonator-acquirer: finished sending image to processor")
-            # end if
-
+                # end if
             # end if (num_to_average)
             else:
                 # transmit the image; acquisition of next image has already started

@@ -550,7 +550,7 @@ int main(int argc, char *argv[])
                         {
                             p_log("ERROR:\tPolonator-acquirer: processor requested the wrong kind of data (not an image)");
                             exit_on_error(m_sock, hCamera, serv_sock);
-                        } // end if
+                        } // end while
                     } // end if
                     else
                     {
