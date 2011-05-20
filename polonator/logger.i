@@ -10,4 +10,7 @@
 %allocators(void, voidp);
 
 extern void p_log(char*);
+extern void p_log_errorno(char *message);
+extern void p_log_simple(char*);
 extern void start_logger(char*, int);
+

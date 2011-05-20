@@ -34,7 +34,9 @@ void sPCI_set_image_ready(int ready);
 void py_startAcquire(void);
 void py_get_buffer(void);
 void py_release_buffer(void);
-void py_get_buffer_ptr(unsigned short * raw_image);
+void py_get_buffer_cpy(unsigned short * raw_image);
+short unsigned int* py_get_buffer_ptr(void);
+
 void py_cameraInitAcq(int tdiflag, float exposure, int gain);
 static void acquirer_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
 

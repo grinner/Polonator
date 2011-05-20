@@ -17,6 +17,7 @@ extern void py_set_gain(int);
 extern short unsigned int* py_snapimage(void);
 extern int py_imagemean(short unsigned int*);
 
+extern short unsigned int* py_get_buffer_ptr(void);
 
 %include "numpy.i"
   
@@ -25,15 +26,17 @@ extern int py_imagemean(short unsigned int*);
 %}
 
 %apply (int DIM1, unsigned short * IN_ARRAY1) { (int len1, unsigned short * raw_image) }
-%rename (py_get_buffer_ptr) my_py_get_buffer_ptr;
+%rename (py_get_buffer_cpy) my_py_get_buffer_cpy;
 
 %inline %{
-    void my_py_get_buffer_ptr(int len1, unsigned short * raw_image)
+    void my_py_get_buffer_cpy(int len1, unsigned short * raw_image)
     {
-       py_get_buffer_ptr(unsigned short * raw_image);
+       py_get_buffer_cpy(unsigned short * raw_image);
     }
 
 %}
+
+
 
 extern int sPCI_readout_started(void);
 extern void sPCI_set_readout(int startstop);

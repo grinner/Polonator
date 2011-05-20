@@ -382,9 +382,14 @@ void py_release_buffer(void)
     PHX_Acquire(pyHandle, PHX_BUFFER_RELEASE, &py_img_buffer);
 }
 
-void py_get_buffer_ptr(unsigned short * raw_image)
+void py_get_buffer_cpy(unsigned short * raw_image)
 {
-    return memcpy(raw_image,py_img_buffer.pvAddress, 2*IMAGE_RESOLUTION_X*IMAGE_RESOLUTION_Y);
+    memcpy(raw_image,py_img_buffer.pvAddress, 2*IMAGE_RESOLUTION_X*IMAGE_RESOLUTION_Y);
+}
+
+short unsigned int*  py_get_buffer_ptr(void)
+{
+    return py_img_buffer.pvAddress;
 }
 
 // This function is explicitly for acquirer.py
