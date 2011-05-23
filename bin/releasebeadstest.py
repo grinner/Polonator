@@ -6,7 +6,8 @@ This file is used
 
 """  
 import numpy as np
-from PIL import Image
+# from PIL import Image
+import Image # for later versions of PIL
 import polonator.image.findObjects as FO
 import polonator.illum.mapping as PM
 from polonator.motion import maestro

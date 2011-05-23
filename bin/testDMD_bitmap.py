@@ -36,8 +36,8 @@ import os
 import polonator.illum.D4000 as PI
 import polonator.camera.asPhoenix as PC
 from polonator.motion import maestro
-from PIL import Image
-
+# from PIL import Image
+import Image # for later versions of PIL
 
 DEFAULT_CUBE = "spare"
 DEFAULT_TDI = 0

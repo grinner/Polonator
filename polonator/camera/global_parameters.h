@@ -2,24 +2,23 @@
 #define __GlOBAL_PARAMETERS_
 
 /*
- * =============================================================================
- *
- * Polonator G.007 Image Acquisition Software
- *
- * Wyss Institute
- * Written by Nick Conway
- * global_parameters.h: This is a header file intended to include all
- * definitions of the all constants including path names and constants
- * pertaining to images (e.g. resolution) and machine configuration
- * (e.g flow cell numbers)
- *
- * Revision 1.0 11/24/2009
- *
- * This software may be modified and re-distributed, but this header must appear
- * at the top of the file.
- *
- * =============================================================================
- */
+==============================================================================
+
+Polonator G.007 Image Acquisition Software
+
+Wyss Institute
+Written by Nick Conway
+global_parameters.h: This is a header file intended to include all
+definitions of the all constants including path names and constants
+pertaining to images (e.g. resolution) and machine configuration
+(e.g flow cell numbers)
+
+Revision 1.0 11/24/2009
+
+This software may be modified and re-distributed, but this header must appear
+at the top of the file.
+==============================================================================
+*/
 
 #define TOTAL_IMG_PER_LANE			2180	/* the total number of images per lane */
 #define TOTAL_IMG_PER_X_SCAN_LINE	218		/* the total number images in the X direction of a flowcell scan */

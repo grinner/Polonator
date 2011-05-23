@@ -17,12 +17,13 @@
 modified by Richard Terry Jun-6-2009 bug fix
 """
 
+import os
 import sys
 import time
 import logging
 
 #----------------------------- Input argument handling -------------------------
-log=logging.getLogger('biochem_utils');
+log = logging.getLogger('biochem_utils')
 
 if len(sys.argv) < 3:
     print '\n--> Error: not correct input!\n--> Usage: python ' + \
@@ -33,7 +34,8 @@ else:
     import ConfigParser                    
     from biochem import Biochem            
     config = ConfigParser.ConfigParser()
-    config.readfp(open(os.environ["POLONATOR_PATH"] + 'fluidics/src/config.txt'))
+    config.readfp(open(os.environ['POLONATOR_PATH'] + '/config_files/sequencing.cfg'))
+    home_dir = os.environ['HOME'] + config.get("communication","home_dir")
 
     # Initialize biochemistry object - cycle-name and flowcell-number 
     # need to be set later
@@ -46,7 +48,7 @@ else:
 
     # usage: biochem_utils.py fcnum cycle_ligation cyclename
     # cyclename must be a valid cyclename that has a nonamer/hyb
-    # valve/port mapping in config.txt
+    # valve/port mapping in sequencing.cfg
     # cyclename can be either 3 or 4 chars in length
     if method == 'cycle_ligation':
         biochem.flowcell = int(sys.argv[1])

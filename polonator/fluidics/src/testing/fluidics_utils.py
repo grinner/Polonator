@@ -22,7 +22,7 @@ import time
 #----------------------------- Input argument handling ---------------------------------
 
 if len(sys.argv) == 1:
-	print """\n
+    print """\n
      **********************************************************************         
      *         Welcome to the fluidics sub-system utility program         *
      *         Usage: python fluidics_utils.py flowcell-number method     *
@@ -235,114 +235,114 @@ if len(sys.argv) == 1:
      |      Waits until steady-state temperature is reached, or exits wait block if ramping
      |      time exceeds timeout parameter set in configuration file.\n\n"""
 
-	sys.exit()
+    sys.exit()
 
 elif len(sys.argv) < 3:
-	print '\n--> Error: not correct input!\n--> Usage: python fluidics_utils.py flowcell-number method\n'
-	sys.exit()
+    print '\n--> Error: not correct input!\n--> Usage: python fluidics_utils.py flowcell-number method\n'
+    sys.exit()
 
 else:
 
-	import ConfigParser						# Import configuration parser class.
-	from logger import Logger				# Import logger class.
-	from biochem import Biochem				# Import biochecmistry class.
+    import ConfigParser                     # Import configuration parser class.
+    from logger import Logger               # Import logger class.
+    from biochem import Biochem             # Import biochecmistry class.
 
-	#--------------------- G.007 fluidics sub-system initialization ------------------------
+    #--------------------- G.007 fluidics sub-system initialization ------------------------
 
-	config = ConfigParser.ConfigParser()
-	config.readfp(open('config.txt'))
+    config = ConfigParser.ConfigParser()
+    config.readfp(open('config.txt'))
 
-	t0 = time.time()                # get current time
-	logger = Logger(config)         # initialize logger object
+    t0 = time.time()                # get current time
+    logger = Logger(config)         # initialize logger object
 
-	biochem = Biochem('WL1', int(sys.argv[1]), logger)  # Initialize biochemistry object - cycle-name and flowcell-number need to be passed.
+    biochem = Biochem('WL1', int(sys.argv[1]), logger)  # Initialize biochemistry object - cycle-name and flowcell-number need to be passed.
 
-	#---------------------------------------------------------------------------------------
-	#				 			  FLUIDICS SUB-SYSTEM FUNCTIONS
-	#---------------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------------------
+    #                             FLUIDICS SUB-SYSTEM FUNCTIONS
+    #---------------------------------------------------------------------------------------
 
-	logger.info('***\t*\t--> Started %s method execution - fluidics_utils.py' % sys.arg[2])
+    logger.info('***\t*\t--> Started %s method execution - fluidics_utils.py' % sys.arg[2])
 
-	if method is 'clean_V1_to_syringe':
-		biochem.clean_V1_to_syringe()
+    if method is 'clean_V1_to_syringe':
+        biochem.clean_V1_to_syringe()
 
-	elif method is 'clean_V2_to_syringe':
-		biochem.clean_V2_to_syringe()
+    elif method is 'clean_V2_to_syringe':
+        biochem.clean_V2_to_syringe()
 
-	elif method is 'clean_flowcell_and_syringe':
-		biochem.clean_flowcell_and_syringe()
+    elif method is 'clean_flowcell_and_syringe':
+        biochem.clean_flowcell_and_syringe()
 
-	elif method is 'cycle_ligation':
-		biochem.cycle_ligation()
+    elif method is 'cycle_ligation':
+        biochem.cycle_ligation()
 
-	elif method is 'draw_air_to_mixer':
-		print "\n***\t*\t--> Please, enter air gap size [integer]: ",
-		gap_size = int(sys.stdin.readline().strip())  # use stdin explicitly and remove trailing new-line character
-		biochem.draw_air_to_mixer(gap_size)
+    elif method is 'draw_air_to_mixer':
+        print "\n***\t*\t--> Please, enter air gap size [integer]: ",
+        gap_size = int(sys.stdin.readline().strip())  # use stdin explicitly and remove trailing new-line character
+        biochem.draw_air_to_mixer(gap_size)
 
-	elif method is 'draw_air_to_syringe':
-		biochem.draw_air_to_syringe()
+    elif method is 'draw_air_to_syringe':
+        biochem.draw_air_to_syringe()
 
-	elif method is 'draw_air_to_valve':
-		print "\n***\t*\t--> Please, enter valve name air to be drawn (V1, V2, V3, V5) [string]: ",
-		valve = str(sys.stdin.readline().strip())  # use stdin explicitly and remove trailing new-line character
-		biochem.draw_air_to_valve(valve)
+    elif method is 'draw_air_to_valve':
+        print "\n***\t*\t--> Please, enter valve name air to be drawn (V1, V2, V3, V5) [string]: ",
+        valve = str(sys.stdin.readline().strip())  # use stdin explicitly and remove trailing new-line character
+        biochem.draw_air_to_valve(valve)
 
-	elif method is 'draw_into_flowcell':
-		print "\n***\t*\t--> Please, enter reagent to use (Wash 1 / dH2O) [string]: ",
-		reagent = str(sys.stdin.readline().strip())  # use stdin explicitly and remove trailing new-line character
+    elif method is 'draw_into_flowcell':
+        print "\n***\t*\t--> Please, enter reagent to use (Wash 1 / dH2O) [string]: ",
+        reagent = str(sys.stdin.readline().strip())  # use stdin explicitly and remove trailing new-line character
 
-		if reagent is 'Wash 1':
-			port = 2
-		else:
-			port = 8 
+        if reagent is 'Wash 1':
+            port = 2
+        else:
+            port = 8 
 
-		print "\n***\t*\t--> Please, enter volume to get into flowcell [integer]: ",
-		draw_volume = int(sys.stdin.readline().strip())
+        print "\n***\t*\t--> Please, enter volume to get into flowcell [integer]: ",
+        draw_volume = int(sys.stdin.readline().strip())
 
-		biochem.draw_into_flowcell(draw_volume, port)
+        biochem.draw_into_flowcell(draw_volume, port)
 
-	elif method is 'exo_start':
-		biochem.exo_start()
+    elif method is 'exo_start':
+        biochem.exo_start()
 
-	elif method is 'fill_with_air_to_valve':
-		print "\n***\t*\t--> Please, enter valve name air to be drawn (V1, V2, V3, V5) [string]: ",
-		valve = str(sys.stdin.readline().strip())  # use stdin explicitly and remove trailing new-line character
-		biochem.fill_with_air_to_valve(valve)
+    elif method is 'fill_with_air_to_valve':
+        print "\n***\t*\t--> Please, enter valve name air to be drawn (V1, V2, V3, V5) [string]: ",
+        valve = str(sys.stdin.readline().strip())  # use stdin explicitly and remove trailing new-line character
+        biochem.fill_with_air_to_valve(valve)
 
-	elif method is 'flush_flowcell':
-		print "\n***\t*\t--> Please, enter reagent to use (Wash 1 / dH2O) [string]: ",
-		reagent = str(sys.stdin.readline().strip())  # use stdin explicitly and remove trailing new-line character
+    elif method is 'flush_flowcell':
+        print "\n***\t*\t--> Please, enter reagent to use (Wash 1 / dH2O) [string]: ",
+        reagent = str(sys.stdin.readline().strip())  # use stdin explicitly and remove trailing new-line character
 
-		if reagent is 'Wash 1':
-			port = 2
-		else:
-			port = 8 
+        if reagent is 'Wash 1':
+            port = 2
+        else:
+            port = 8 
 
-		biochem.flush_flowcell(port)
+        biochem.flush_flowcell(port)
 
-	elif method is 'hyb':
-		biochem.hyb()
+    elif method is 'hyb':
+        biochem.hyb()
 
-	elif method is 'incubate_reagent':
-		print "\n***\t*\t--> Please, enter minutes for incubation [integer]: ",
-		time = int(sys.stdin.readline().strip())  # use stdin explicitly and remove trailing new-line character
-		biochem.incubate_reagent(time)
+    elif method is 'incubate_reagent':
+        print "\n***\t*\t--> Please, enter minutes for incubation [integer]: ",
+        time = int(sys.stdin.readline().strip())  # use stdin explicitly and remove trailing new-line character
+        biochem.incubate_reagent(time)
 
-	elif method is 'init':
-		biochem.init()
-
-
+    elif method is 'init':
+        biochem.init()
 
 
 
 
-	else:
-	 print '\n***\t*\t--> Error: not correct method input!\n--> Double check method name (2nd argument)\n'
-	 sys.exit()
 
-	#-------------------------- Duration of biochemistry test ------------------------------
 
-	delta = (time.time() - t0) / 60  # Calculate elapsed time for flowcell flush.
-	logger.warn('***\t*\t--> Finished %s method execution - duration: %0.2f minutes\n\n' % delta)
+    else:
+     print '\n***\t*\t--> Error: not correct method input!\n--> Double check method name (2nd argument)\n'
+     sys.exit()
+
+    #-------------------------- Duration of biochemistry test ------------------------------
+
+    delta = (time.time() - t0) / 60  # Calculate elapsed time for flowcell flush.
+    logger.warn('***\t*\t--> Finished %s method execution - duration: %0.2f minutes\n\n' % delta)
 

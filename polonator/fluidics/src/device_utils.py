@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 
 """
--------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------
  Author: Mirko Palla.
  Date: May 8, 2008.
 
@@ -23,7 +23,7 @@
 import sys
 import time
 
-#----------------------------- Input argument handling -------------------------
+#----------------------------- Input argument handling -----------------------
 
 if len(sys.argv) == 1:
     print """\n
@@ -139,10 +139,11 @@ else:
     from logger import Logger               # Import logger class.
     from biochem import Biochem             # Import biochecmistry class.
 
-    #--------------------- G.007 fluidics sub-system initialization ------------
+    #--------------------- G.007 fluidics sub-system initialization ----------
 
     config = ConfigParser.ConfigParser()
-    config.readfp(open('config.txt'))
+    config.readfp(open(os.environ['POLONATOR_PATH'] + '/config_files/sequencing.cfg'))
+    home_dir = os.environ['HOME'] + config.get("communication","home_dir")
 
     t0 = time.time()                # get current time
     logger = Logger(config)         # initialize logger object
@@ -155,9 +156,9 @@ else:
             % sys.argv[1])
     method = sys.argv[1]  # set method to second argument
 
-    #---------------------------------------------------------------------------
+    #-------------------------------------------------------------------------
     #                                TEMPERATURE CONTROL                    
-    #---------------------------------------------------------------------------
+    #-------------------------------------------------------------------------
 
     if method == 'set_to_temperature_control1':
         biochem.mux.set_to_temperature_control1()
@@ -263,9 +264,9 @@ else:
     elif method == 'discrete_valve7_close':
         biochem.mux.discrete_valve7_close()
 
-    #---------------------------------------------------------------------------
+    #-------------------------------------------------------------------------
     #                               MIXING CHAMBER CONTROL
-    #---------------------------------------------------------------------------
+    #-------------------------------------------------------------------------
 
     elif method == 'mixer_ON':
         biochem.mux.mixer_ON()
@@ -279,7 +280,7 @@ else:
         'Double check method name (1st argument)\n'
      sys.exit()
 
-    #-------------------------- Duration of biochemistry test ------------------
+    #-------------------------- Duration of biochemistry test ----------------
 
     delta = (time.time() - t0) / 60  # Calculate elapsed time for flowcell flush.
     logger.info( ('---\t-\t--> Finished %s method execution - ' + \ 

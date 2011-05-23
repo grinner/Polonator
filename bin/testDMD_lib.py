@@ -1,5 +1,5 @@
 """
-================================================================================
+==============================================================================
 
 Polonator G.007 Selective Illuminate Software
 
@@ -15,7 +15,7 @@ ReleaseFocus.c -- 1-9-2010 [Nick Conway]
 This software may be modified and re-distributed, but this header must appear
 at the top of the file.
 
-===============================================================================
+==============================================================================
 The Python Imaging Library (PIL) is
 
     Copyright © 1997-2006 by Secret Labs AB
@@ -31,7 +31,8 @@ import polonator.illum.D4000 as PI
 import polonator.camera.asPhoenix as PC
 
 import polonator.motion.maestro as maestro
-from PIL import Image
+# from PIL import Image
+import Image # for later versions of PIL
 
 DEFAULT_CUBE = "spare"  # this is the filter wheel hard coded position
 DEFAULT_TDI = 0

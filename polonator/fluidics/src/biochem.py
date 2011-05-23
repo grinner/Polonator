@@ -20,7 +20,8 @@ method "set_temp", and support for Illumina sequencing chemistry.  Significant
 tidying-up throughout, including removal of misleading comments, etc.  Changed
 logging throughout to be less obtuse.
 
-Modified by Richard Terry Jun-10-2009 to fix bugs and change custom experiment EXP
+Modified by Richard Terry Jun-10-2009 to fix bugs and change custom experiment 
+EXP
 
 """
 
@@ -55,7 +56,7 @@ log differently (i.e. a 'name' stamp describes whether the output is from
 """
 logging.basicConfig(level=logging.DEBUG, \
                     format='%(asctime)s: %(name)s: %(levelname)s:\t%(message)s',
-                    filename='/home/polonator/G.007/G.007_fluidics/logs/biochem.log',
+                    filename= os.environ['HOME'] + '/polonator/G.007/acquisition/logs/fluidics/biochem.log',
                     filemode='a')
 console=logging.StreamHandler(sys.stdout)
 console.setLevel(logging.INFO)
@@ -81,8 +82,7 @@ class Biochem(Thread):
         self.flowcell = flowcell
 
         self.config = ConfigParser.ConfigParser()
-        # fill it in with configuration parameters from file
-        self.config.read('/home/polonator/G.007/G.007_fluidics/src/config.txt')
+        self.config.readfp(open(os.environ['POLONATOR_PATH'] + '/config_files/sequencing.cfg'))
 
         Thread.__init__(self)  # instantiate thread
 
@@ -1936,9 +1936,9 @@ class Biochem(Thread):
 
 
 
-################################################################################
-################################################################################
-##################      BEGIN 'CUSTOMIZABLE' CODE              #################
+##############################################################################
+##############################################################################
+##################      BEGIN 'CUSTOMIZABLE' CODE              ###############
 
     """
     Example of a function to perform an 'experimental' biochemistry cycle on the
@@ -2108,12 +2108,12 @@ class Biochem(Thread):
 
 
 
-################################################################################
-################################################################################
-################################################################################
-################################################################################
-################################################################################
-################################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
     """
     FUNCTIONS BELOW ARE INDEPENDENT OF LEGACY CODE IN FILE BIOCHEM.PY
     THEY CAN BE USED TO BUILD STANDALONE METHODS FOR BIOCHEMISTRY WHICH

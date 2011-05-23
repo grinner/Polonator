@@ -3,7 +3,8 @@
 
 """
 import numpy as np
-from PIL import Image
+# from PIL import Image
+import Image # for later versions of PIL
 import polonator.image.findObjects as FO
 LEN = 1000000
 data_size = LEN#+4

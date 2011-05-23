@@ -1,20 +1,20 @@
-/* =============================================================================
-//
-// Polonator G.007 Image Processing Software
-//
-// Church Lab, Harvard Medical School
-// Written by Greg Porreca
-//
-// PolonatorUtils.c: functions for initialization, live imaging, stage control,
-// etc.
-//
-// Release 1.0 -- 04-15-2008
-//
-// This software may be modified and re-distributed, but this header must appear
-// at the top of the file.
-//
-// =============================================================================
-/*/
+/* ===========================================================================
+
+Polonator G.007 Image Processing Software
+
+Church Lab, Harvard Medical School
+Written by Greg Porreca
+
+PolonatorUtils.c: functions for initialization, live imaging, stage control,
+etc.
+
+Release 1.0 -- 04-15-2008
+
+This software may be modified and re-distributed, but this header must appear
+at the top of the file.
+
+==============================================================================
+*/
 
 #include "as_phoenix_functions.h"
 #include "maestro_functions.h"
@@ -28,7 +28,8 @@ void snap(float exposure, float gain, char *color, char *filename);
 static unsigned long long int wait_counter = 0;
 static unsigned int attempt_counter = 0;
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
     int m_sock,i,j, autoexp_gain;
     char autoe_filename[500];
     char autoe_dirname[500];
@@ -101,7 +102,8 @@ int main(int argc, char *argv[]){
         maestro_darkfield_on(m_sock);
         maestro_setcolor(m_sock, "none");
 
-    if(argc==4){
+    if(argc == 4)
+    {
         camera_live(argc, argv, 0);
     }
     else{
@@ -115,13 +117,15 @@ int main(int argc, char *argv[]){
         maestro_open(&m_sock);
         maestro_setcolor(m_sock, argv[4]);
 
-        if(strcmp(argv[4],"none")==0){
-	        maestro_darkfield_on(m_sock);
-	        maestro_shutterclose(m_sock);
+        if(strcmp(argv[4],"none") == 0)
+        {
+            maestro_darkfield_on(m_sock);
+            maestro_shutterclose(m_sock);
         }
-        else{
-	        maestro_darkfield_off(m_sock);
-	        maestro_shutteropen(m_sock);
+        else
+        {
+            maestro_darkfield_off(m_sock);
+            maestro_shutteropen(m_sock);
         }
 
         if(argc==5){
@@ -132,14 +136,14 @@ int main(int argc, char *argv[]){
         }
         if(strcmp(argv[4],"none")==0) maestro_darkfield_off(m_sock);
         else{
-	        maestro_shutterclose(m_sock);
+            maestro_shutterclose(m_sock);
         }
     }
 
     else if (strcmp(argv[1],"shutter_close")==0)
     {
-	    maestro_open(&m_sock);
-  	    maestro_shutterclose(m_sock);
+        maestro_open(&m_sock);
+        maestro_shutterclose(m_sock);
     }
     /* Acquire an image at the current stage position */
     else if((strcmp(argv[1], "snap") == 0) && (argc == 5)){
@@ -158,38 +162,31 @@ int main(int argc, char *argv[]){
         sprintf(command_buffer, "mkdir -p %s/autoexp_FL_images/txred", image_dir);
         system(command_buffer);
 
-        /*
-        sprintf(autoe_dirname, "mkdir /home/polonator/G.007/G.007_acquisition/autoexp_FL_images/%s",argv[2]);
-        system(autoe_dirname);
-        */
-        /*
-        system(autoe_dirname);system("mkdir /home/polonator/G.007/G.007_acquisition/autoexp_FL_images");
-        */
         for(j = 0;j < atoi(argv[5]);j++)
         {
-    	    maestro_open(&m_sock);
-    	    maestro_gotostagealign_position(m_sock, 0, j);
+            maestro_open(&m_sock);
+            maestro_gotostagealign_position(m_sock, 0, j);
 
-	        for(i = 0;i < 15;i++)
-	        {
-		        attempt_counter = 0;
-		        autoexp_gain = atoi(argv[4])+i*10;
-	    	    sprintf(autoe_filename, "   ... start acquring FL image in lane %d, for %s with autoexposure gain of %d ...   ",j, argv[2],autoexp_gain);
-	    	    p_log_simple(autoe_filename);
-	    	    sprintf(autoe_filename, "%s/autoexp_FL_images/%s/%d_image_%d.raw", image_dir,argv[2],j,autoexp_gain);
-	    	    p_log_simple(autoe_filename);
-	    	    wait_counter = 0;
-	    	    snap(atof(argv[3]), autoexp_gain, argv[2], autoe_filename);
-	    	    sprintf(autoe_filename, "   ... acquired FL image in %d ms ...\n", wait_counter);
-	    	    p_log_simple(autoe_filename);
+            for(i = 0;i < 15;i++)
+            {
+                attempt_counter = 0;
+                autoexp_gain = atoi(argv[4])+i*10;
+                sprintf(autoe_filename, "   ... start acquring FL image in lane %d, for %s with autoexposure gain of %d ...   ",j, argv[2],autoexp_gain);
+                p_log_simple(autoe_filename);
+                sprintf(autoe_filename, "%s/autoexp_FL_images/%s/%d_image_%d.raw", image_dir,argv[2],j,autoexp_gain);
+                p_log_simple(autoe_filename);
+                wait_counter = 0;
+                snap(atof(argv[3]), autoexp_gain, argv[2], autoe_filename);
+                sprintf(autoe_filename, "   ... acquired FL image in %d ms ...\n", wait_counter);
+                p_log_simple(autoe_filename);
 
-	    	    while((attempt_counter < 4) && (attempt_counter > 0))
-	    	    {
-		 	        sprintf(autoe_filename, "... ACQUIRING FAILED !!! Re-acquring FL image in lane %d, for %s with autoexposure gain of %d ...\n",atoi(argv[5]), argv[2],atoi(argv[4]));
-	    	    	p_log_errorno(autoe_filename);
-		    	    snap(atof(argv[3]), atof(argv[4]), argv[2], autoe_filename);
-	    	    }
-	        } // end for i
+                while((attempt_counter < 4) && (attempt_counter > 0))
+                {
+                    sprintf(autoe_filename, "... ACQUIRING FAILED !!! Re-acquring FL image in lane %d, for %s with autoexposure gain of %d ...\n",atoi(argv[5]), argv[2],atoi(argv[4]));
+                    p_log_errorno(autoe_filename);
+                    snap(atof(argv[3]), atof(argv[4]), argv[2], autoe_filename);
+                }
+            } // end for i
         } // end for j
     } // end else if
 

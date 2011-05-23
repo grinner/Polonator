@@ -41,7 +41,8 @@ import polonator.illum.D4000 as PI
 import polonator.camera.as_phoenix as PC
 import ConfigParser
 import polonator.motion.maestro as PM
-from PIL import Image
+# from PIL import Image
+import Image # for later versions of PIL
 import time
 
 ALIGNMENT_PARAM_PADBITS = 3;
@@ -62,7 +63,8 @@ class MappingFunctions:
         PL.p_log("STATUS:\tMappingFunctions: initializing")
 
         MappingFunctions.config = ConfigParser.ConfigParser()
-        MappingFunctions.config_dir ='./config_files'
+        MappingFunctions.config_dir = os.environ['POLONATOR_PATH'] + \
+                                        '/config_files'
         MappingFunctions.config_path = MappingFunctions.config_dir \
                                             + '/camera_to_DMD_params.config'
         MappingFunctions.A_map = numpy.empty(10,dtype=numpy.float)
@@ -133,7 +135,7 @@ class MappingFunctions:
         PL.p_log("STATUS:\tMappingFunctions: initializing")
         
         MappingFunctions.config = ConfigParser.ConfigParser()
-        MF.config_dir ='./config_files'
+        MF.config_dir = os.environ['POLONATOR_PATH'] + '/config_files'
         MF.config_path = MF.config_dir + '/camera_to_DMD_params.config'
 
         # make sure something is in the file

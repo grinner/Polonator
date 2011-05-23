@@ -4,14 +4,14 @@ import sys
 import time
 import ConfigParser
 
-from logger import Logger				
-from biochem import Biochem				
+from logger import Logger
+from biochem import Biochem
 
 config = ConfigParser.ConfigParser()
 config.readfp(open('config.txt'))
 
-t0 = time.time()                
-logger = Logger(config)   
+t0 = time.time()
+logger = Logger(config)
 
 b = Biochem('WL1', 0, logger)
 
