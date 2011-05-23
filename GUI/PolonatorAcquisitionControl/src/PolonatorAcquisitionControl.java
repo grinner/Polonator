@@ -2789,7 +2789,7 @@ private void acqDarkfieldScanActionPerformed(java.awt.event.ActionEvent evt) {//
         cyclename = "WL2";
         flowcell = "3";
     }
-    String command = acqbase_dir + "/src/manual_image.pl " +
+    String command = acqbase_dir + "/manual_image.pl " +
             cyclename +
             " " +
             flowcell;
@@ -2961,7 +2961,7 @@ private void acqCycleScanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         fcnum = "1";
     }
 
-    String command = acqbase_dir + "/src/manual_image.pl " +
+    String command = acqbase_dir + "/manual_image.pl " +
             acqCycleName.getText() + " " +
             fcnum + " " +
             (Integer)acqCycleIntFAM.getValue() + " " +
