@@ -55,7 +55,7 @@ if($ARGV[0] eq "acq"){
     print "$exec_cmd\n";
     system($exec_cmd);
 
-    $exec_cmd = $ENV{'POLONATOR_PATH'} . "polonator/fluidics/src/biochem_utils.pl 0 syringe_pump_init";
+    $exec_cmd = $ENV{'POLONATOR_PATH'} . "/polonator/fluidics/src/biochem_utils.pl 0 syringe_pump_init";
     print "$exec_cmd\n";
     system($exec_cmd);
 }
