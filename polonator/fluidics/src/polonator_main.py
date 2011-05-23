@@ -4,18 +4,20 @@
 --------------------------------------------------------------------------------
  Author: Richard Terry
  Date: March 19, 2008.
- For: G.007 polony sequencer design [software] at the Church Lab - 
+ For: G.007 polony sequencer design [software] at the Church Lab -
  Genetics Department, Harvard Medical School.
- 
+
  Purpose: This program contains the complete code for the iterative polony seq-
- uencing algorithm based on a given list of cycle-names in Python. It idles in 
+ uencing algorithm based on a given list of cycle-names in Python. It idles in
  an infinite loop until the touch sensor is activated to run.
 
  This software may be used, modified, and distributed freely, but this
- header may not be modified and must appear at the top of this file. 
-------------------------------------------------------------------------------- 
+ header may not be modified and must appear at the top of this file.
+-------------------------------------------------------------------------------
 """
 
+import os
+import errno
 import sys
 import time
 import getpass
@@ -26,8 +28,11 @@ from threading import Thread
 from logger import Logger
 
 from tel_net import Tel_net
-sys.path.append("../")
+
+#sys.path.append("../")
+sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')
 # sys.path.append("../../G.007_acquisition/src")
+sys.stdout.flush()
 import PolonatorImager
 from biochem import Biochem
 
@@ -36,6 +41,7 @@ print 'INFO\t ***\t*\t--> Please, slide your hand across touch sensor to ' + \
         'activate POLONATOR\n'
 
 print 'ping', commands.getstatusoutput('ping -c 1 10.0.0.56')
+sys.stdout.flush()
 
 error = 0
 packet_loss = 0
@@ -64,8 +70,18 @@ y_hmstat = 1
 #    time.sleep(0.1)
 
 config = ConfigParser.ConfigParser()
-config.readfp(open('config.txt'))
-home_dir = config.get("communication","home_dir")
+config.readfp(open(os.environ['POLONATOR_PATH'] + '/config_files/sequencing.cfg'))
+home_dir = os.environ['HOME'] + config.get("communication","home_dir")
+try:
+    os.makedirs(home_dir)
+except OSError, e:
+    if e.args[0] == errno.EEXIST: # file exists
+        pass
+    else: # it was something else
+        raise OSError(e)
+# end
+
+
 
 logger = Logger(config)         # initialize logger object
 one_time_through=1
@@ -80,7 +96,7 @@ while (one_time_through==1):
         #commands.getstatusoutput('mplayer -ao alsa speech/welcome.wav')
         #commands.getstatusoutput('mplayer -ao alsa speech/run.wav')
 
-        f = open('%s/cycle_list' % home_dir, 'r+')
+        f = open('%s/cycle_list' % (home_dir), 'r+')
         cycle_list = f.readlines()
         f.close()
 
@@ -89,11 +105,11 @@ while (one_time_through==1):
 
 
         if ((cycle_list[0] == 'WL1') or (cycle_list[0] == 'WL2')):
-            w = open('%s/WL' % home_dir, 'w')
+            w = open('%s/WL' % (home_dir), 'w')
             w.write(int(cycle_list[0].strip('WL')))
             installed_flowcells = int(cycle_list[0].strip('WL'))
         else:
-            w = open('%s/WL' % home_dir, 'r')
+            w = open('%s/WL' % (home_dir), 'r')
             installed_flowcells = int(w.read())
 
         w.close()
@@ -201,6 +217,6 @@ while (one_time_through==1):
 
 # calculate elapsed time for polony sequencing cycles
 delta = (time.time() - t0) / 60
-logger.warn(("***\t*\t--> Finished polony sequencing - duration: " + \ 
+logger.warn(("***\t*\t--> Finished polony sequencing - duration: " + \
             "%0.2f minutes\n") % delta)
 

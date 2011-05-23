@@ -8,7 +8,7 @@ Written by Greg Porreca
 modified by Nick Conway Wyss Institute
 
 renamed to maestro.py by Nick Conway 09-20-2010
-from MaestroFunctions.py: python maestro functionality; includes an interface to 
+from MaestroFunctions.py: python maestro functionality; includes an interface to
 polonator_maestro.c (through SWIG- generated polonator_maestro.py)
 
 Release 1.0 -- 04-15-2008
@@ -30,13 +30,13 @@ import os
 
 class MaestroFunctions:
     """
-    class for 
+    class for
     """
     global col  #controller object, for accessing C maestro functions
     global TS   #for python telnet session
     global device_filters
     global declared
-    
+
     def torF(self):
         k = 0
         while True:
@@ -49,8 +49,8 @@ class MaestroFunctions:
             else:
                 yield True
             # end else
-        # end while 
-       
+        # end while
+
     def __init__(self):
         if True:    # fix this with a static isDeclared variable
             MaestroFunctions.device_filters = {'fam': '1', 'cy3': '0', \
@@ -66,23 +66,23 @@ class MaestroFunctions:
     """
     MOTION CONTROL FUNCTIONS
     """
-    def setup_imaging(self,fluor, \ 
-                            integration_time, \
-                            num_imgs, num_lanes, \
-                            fcnum, shutter_flag, \
+    def setup_imaging(self,fluor,
+                            integration_time,
+                            num_imgs, num_lanes,
+                            fcnum, shutter_flag,
                             TDI_flag):
         # this is done by C code through SWIG
         MaestroFunctions.TS.parse_read_string('x.iprdy=0', '>')
         MaestroFunctions.col.py_maestro_setupimaging( \
             int(MaestroFunctions.device_filters[fluor]), \
-                integration_time, num_imgs, num_lanes, \ 
-                fcnum, shutter_flag, \ 
+                integration_time, num_imgs, num_lanes, \
+                fcnum, shutter_flag, \
                 TDI_flag)
         self.stage_waitformotioncomplete()
 
     def go_to_image(self,flowcell,lane,image_number):
         MaestroFunctions.col.py_maestro_goto_image(flowcell, lane, image_number)
-    
+
     def shutter_open(self):
         MaestroFunctions.col.py_maestro_shutter_open()
 
@@ -124,7 +124,7 @@ class MaestroFunctions:
     def filter_home(self):
         MaestroFunctions.col.py_maestro_hometheta()
     # end def
-    
+
     def filter_lock(self):
         MaestroFunctions.col.py_maestro_locktheta()
     # end def
@@ -134,7 +134,7 @@ class MaestroFunctions:
     # end def
     """
     ELECTRONIC CONTROL FUNCTIONS
-    """    
+    """
     def darkfield_on(self):
         MaestroFunctions.col.py_maestro_darkfield_on()
 
@@ -146,18 +146,19 @@ class MaestroFunctions:
 
     def cameraint_stop(self):
         MaestroFunctions.TS.parse_read_string('x.ob[1]=0', '>')
-        
+
     def snap(self):
         MaestroFunctions.col.py_maestro_snap(int_time, shutterflag)
-        
+
     def set_flag(self):
         MaestroFunctions.col.py_maestro_setflag()
-        
+
     def reset_flag(self):
         MaestroFunctions.col.py_maestro_resetflag()
-        
+
     def stop(self):
         MaestroFunctions.col.py_maestro_stop()
-        
+
     def status(self):
         MaestroFunctions.col.py_maestro_getstatus()
+

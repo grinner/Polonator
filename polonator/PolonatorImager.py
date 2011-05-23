@@ -20,12 +20,12 @@
 ## ========================================================================================
 
 
-import maestro
+from motion.maestro import MaestroFunctions
 import threading
 import time
 import datetime
 import os
-import AutoExposeGain
+from camera.autoexposegain import Autoexpose
 
 class Imager(threading.Thread):
     global maestro
@@ -48,7 +48,7 @@ class Imager(threading.Thread):
         self.maestro = MaestroFunctions.MaestroFunctions()
         self.cycle_name = cycle
         self.flowcell = fc
-        self.aexpose = AutoExposeGain.Autoexpose()
+        self.aexpose = Autoexpose()
 
         self.TDI_flag = 0
         self.num_arrays = 1
@@ -106,7 +106,7 @@ class Imager(threading.Thread):
             if(0):
                 self.aexpose = self.aexpose.autoe()
                 self.manual_gains = self.aexpose
-                print "using gains found with AutoExposGain.py"
+                print "using gains found with autoexposgain.py"
             else:
                 print "using gains entered by user"
             # this is the order of fluors in the integration and gain arrays;
@@ -175,7 +175,12 @@ class Imager(threading.Thread):
 
                 # this must be called w/ sudo so that the thread has a high enough priority
                 # to ensure images aren't missed often
-                cmd = ('sudo ' + os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer %s %d %d %d %d') % (curr_name, self.integration_times[fluors.index(imaging_order[i])]-5, self.manual_gains[fluors.index(imaging_order[i])], self.flowcell, self.num_arrays)
+                # cmd = ('sudo ' + os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer %s %d %d %d %d') \
+                #    % (curr_name, self.integration_times[fluors.index(imaging_order[i])]-5, \
+                #        self.manual_gains[fluors.index(imaging_order[i])], self.flowcell, self.num_arrays)
+                cmd = (os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer %s %d %d %d %d') \
+                    % (curr_name, self.integration_times[fluors.index(imaging_order[i])]-5, \
+                        self.manual_gains[fluors.index(imaging_order[i])], self.flowcell, self.num_arrays)
                 print cmd
                 cmd = os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer'
                 print cmd
@@ -222,7 +227,12 @@ class Imager(threading.Thread):
             # 0 for a single-flowcell run to either 2 or 3 for a dual flowcell run (fc 0 or 1, respectively)
             # the imaging software (Polonator-acquirer) understands this convention and converts the 2 or a 3
             # to a 0 or a 1 after sending the proper flag to the processing pipeline
-            cmd = ('sudo '+ os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer %s %d %d %d %d %d') % (self.cycle_name, self.WL_integration_time-5, self.WL_gain, self.flowcell, self.num_arrays, self.WL_num_to_avg)
+            # cmd = ('sudo '+ os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer %s %d %d %d %d %d') % \
+            #    (self.cycle_name, self.WL_integration_time-5, self.WL_gain, \
+            #    self.flowcell, self.num_arrays, self.WL_num_to_avg)
+            cmd = (os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer %s %d %d %d %d %d') % \
+                (self.cycle_name, self.WL_integration_time-5, self.WL_gain, \
+                self.flowcell, self.num_arrays, self.WL_num_to_avg)
             print cmd
             os.system(cmd)
             self.maestro.darkfield_off()

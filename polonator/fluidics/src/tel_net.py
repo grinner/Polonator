@@ -1,17 +1,17 @@
 """
--------------------------------------------------------------------------------- 
+--------------------------------------------------------------------------------
  Author: Richard Terry.
  Date: March 5, 2008.
 
- For: G.007 polony sequencer design [fluidics software] at the Church Lab - 
+ For: G.007 polony sequencer design [fluidics software] at the Church Lab -
  Genetics Department, Harvard Medical School.
- 
+
  Purpose: This program contains the complete code for class Tel_net, containing
  telnet communication subroutines in Python.
 
  This software may be used, modified, and distributed freely, but this
- header may not be modified and must appear at the top of this file. 
-------------------------------------------------------------------------------- 
+ header may not be modified and must appear at the top of this file.
+-------------------------------------------------------------------------------
 """
 
 import sys
@@ -34,7 +34,7 @@ class Tel_net:
         # search return string for maestro prompt
         m = self.telnet_session.read_until('>')
         self.telnet_session.write('\r')
-        # search return string for > 
+        # search return string for >
         d = self.telnet_session.read_until('>')
 
         if logger:
@@ -44,15 +44,15 @@ class Tel_net:
 
     def parse_read_string(self, write_string, find_string):
         """
-        Will read and parse string responses which return program code from 
+        Will read and parse string responses which return program code from
         the device
         """
-        
+
         self.telnet_session.write(write_string + '\r')
-        # search return string for > 
+        # search return string for >
         read_string = self.telnet_session.read_until(find_string)
-                return read_string
-                
+        return read_string
+
     def __del__(self):
         """
         Destructs telnet conncetion object - it closes any open session

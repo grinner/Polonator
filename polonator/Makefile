@@ -200,7 +200,7 @@ python_illum: $(ILLUMFUNCTIONS_DEP) $(ILL_DIR)/control_D4000.i
 
 python_camA: $(CAMERA2_DEP) $(LOG_DEP) $(CAM_DIR)/as_phoenix.i
 	swig -python $(CAM_DIR)/as_phoenix.i
-	gcc $(CAMERA2_SRC) $(LOG_SRC) $(CAM_DIR)/as_phoenix_wrap.c $(NUMPY_FLAGS) $(PYTHONFLAGS) \
+	gcc $(CAMERA2_SRC) $(MAESTRO_SRC) $(LOG_SRC) $(CAM_DIR)/as_phoenix_wrap.c $(NUMPY_FLAGS) $(PYTHONFLAGS) \
 	    $(CFLAGS) $(CAMERA2_INC) -o $(CAM_DIR)/_asPhoenix.so \
 	    $(PHX_CFLAGS) $(PHX_INCLUDE) $(PHX_LIBS) $(SHARELIBFLAGS) \
      #rm *.o
@@ -208,7 +208,7 @@ python_camA: $(CAMERA2_DEP) $(LOG_DEP) $(CAM_DIR)/as_phoenix.i
 
 python_camB: $(CAMERA3_DEP) $(LOG_DEP) $(CAM_DIR)/as_phoenix_live.i
 	swig -python $(CAM_DIR)/as_phoenix_live.i
-	gcc $(CAMERA3_SRC) $(LOG_SRC) $(CAM_DIR)/as_phoenix_live_wrap.c $(NUMPY_FLAGS) $(PYTHONFLAGS) \
+	gcc $(CAMERA3_SRC) $(MAESTRO_SRC) $(LOG_SRC) $(CAM_DIR)/as_phoenix_live_wrap.c $(NUMPY_FLAGS) $(PYTHONFLAGS) \
 	    $(CFLAGS) $(CAMERA3_INC) -o $(CAM_DIR)/_asPhoenixLive.so \
 	    $(PHX_CFLAGS) $(PHX_INCLUDE) $(PHX_LIBS) $(SHARELIBFLAGS)
      #rm *.o
