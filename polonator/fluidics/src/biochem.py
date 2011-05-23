@@ -1398,9 +1398,9 @@ class Biochem(Thread):
 
         log.info("%s\t%i\t--> Prime fluidics system: [%s]" % \
             (self.cycle_name, self.flowcell, self.state))
-        self.prime_flowcells()  #RCT prime both flowcells with "Wash"
+        self.prime_flowcells()      #RCT prime both flowcells with "Wash"
         self.prime_reagent_block()  #RCT prime reagent block chambers with "Wash"
-        self.prime_flowcells()  #RCT prime both flowcells with "Wash"
+        self.prime_flowcells()      #RCT prime both flowcells with "Wash"
 
     """
     INITIALIZATION FUNCTIONS
@@ -1652,8 +1652,9 @@ class Biochem(Thread):
 
         log.info("Move primer into flowcell from valve %s, port %d (%d ul)" % \
             (primer_valve, primer_port, self.primer_volume))
+        #RCT push anchor primer into flowcell with Wash
         self.draw_into_flowcell(9, primer_valve, primer_port, \
-            self.primer_volume) #RCT push anchor primer into flowcell with Wash
+            self.primer_volume) 
 
         log.info("Incubate primer for time1 at temp1")
         # incubate reagent for hyb_time1 min
