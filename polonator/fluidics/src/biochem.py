@@ -1,6 +1,6 @@
 """
 
---------------------------------------------------------------------------------
+------------------------------------------------------------------------------
  Author: Mirko Palla.
  Date: April 29, 2008.
  Modified: Richard Terry
@@ -14,13 +14,13 @@
 
  This software may be used, modified, and distributed freely, but this
  header may not be modified and must appear at the top of this file.
--------------------------------------------------------------------------------
+------------------------------------------------------------------------------
 Modified by Greg Porreca 01-23-2009 to add a user-friendly temperature control
 method "set_temp", and support for Illumina sequencing chemistry.  Significant
 tidying-up throughout, including removal of misleading comments, etc.  Changed
 logging throughout to be less obtuse.
 
-Modified by Richard Terry Jun-10-2009 to fix bugs and change custom experiment 
+Modified by Richard Terry Jun-10-2009 to fix bugs and change custom experiment
 EXP
 
 """
