@@ -104,11 +104,14 @@ while (one_time_through==1):
         logger.info("---\t-\t--> Started polony sequencing")
 
 
-        if ((cycle_list[0] == 'WL1') or (cycle_list[0] == 'WL2')):
+        if ((cycle_list[0] == 'WL1\n') or (cycle_list[0] == 'WL2')):
+            print 'Nick was right'
             w = open('%s/WL' % (home_dir), 'w')
-            w.write(int(cycle_list[0].strip('WL')))
+            # w.write(int(cycle_list[0].strip('WL')))
+            w.write(cycle_list[0].strip('WL'))
             installed_flowcells = int(cycle_list[0].strip('WL'))
         else:
+            print cycle_list[0], "fail"
             w = open('%s/WL' % (home_dir), 'r')
             installed_flowcells = int(w.read())
 

@@ -252,7 +252,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     //
     // MAESTRO SETUP
     /*/
-    p_log("STATUS:\tPolonator-stagealign: Opening connection to Maestro...");
+    p_log_simple("STATUS:\tPolonator-stagealign: Opening connection to Maestro...");
     maestro_open(&m_sock);
     /*
     //--------------------------------------------------------------------------
@@ -263,7 +263,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     //
     // CAMERA SETUP
     /*/
-    p_log("STATUS:\tPolonator-stagealign: Opening camera handle...");
+    p_log_simple("STATUS:\tPolonator-stagealign: Opening camera handle...");
     py_cameraInit(0); /* use non-TDI config file */
     py_set_gain(stagealign_gain);
     py_setupSnap(); /* setup capture software to wait for images from camera */
@@ -280,34 +280,34 @@ void stagealign(int fcnum, int lane_num, int initialize)
 
     /* IF INITIALIZING, RESET OFFSETS */
     if(initialize){
-        p_log("INITIALIZING STAGEALIGN");
+        p_log_simple("INITIALIZING STAGEALIGN");
         sprintf(command, "PolonatorScan.OFFSET_X[%d]=0\n\r", lane_index);
-        p_log(command);
+        p_log_simple(command);
         send(m_sock, command, strlen(command), 0);
         maestro_readresponse(m_sock, response, &response_length);
-        p_log(response);
+        p_log_simple(response);
 
         sprintf(command, "PolonatorScan.OFFSET_Y[%d]=0\n\r", lane_index);
-        p_log(command);
+        p_log_simple(command);
         send(m_sock, command, strlen(command), 0);
         maestro_readresponse(m_sock, response, &response_length);
-        p_log(response);
+        p_log_simple(response);
     }
     /* GET OFFSETS IN CASE ALIGNMENT FAILS */
     else{
-        p_log("Storing current offsets...");
+        p_log_simple("Storing current offsets...");
         sprintf(command, "PolonatorScan.OFFSET_X[%d]\n\r", lane_index);
-        p_log(command);
+        p_log_simple(command);
         send(m_sock, command, strlen(command), 0);
         maestro_readresponse(m_sock, response, &response_length);
-        p_log(response);
+        p_log_simple(response);
         curr_offset_x = atoi(response);
 
         sprintf(command, "PolonatorScan.OFFSET_Y[%d]\n\r", lane_index);
-        p_log(command);
+        p_log_simple(command);
         send(m_sock, command, strlen(command), 0);
         maestro_readresponse(m_sock, response, &response_length);
-        p_log(response);
+        p_log_simple(response);
         curr_offset_y = atoi(response);
     }
 

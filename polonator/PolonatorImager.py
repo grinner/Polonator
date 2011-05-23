@@ -45,7 +45,7 @@ class Imager(threading.Thread):
     global auto_exposure
 
     def __init__(self, cycle, fc):
-        self.maestro = MaestroFunctions.MaestroFunctions()
+        self.maestro = MaestroFunctions()
         self.cycle_name = cycle
         self.flowcell = fc
         self.aexpose = Autoexpose()

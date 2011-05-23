@@ -25,6 +25,7 @@ EXP
 
 """
 
+import os
 import sys
 import time
 import commands
