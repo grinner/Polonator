@@ -2,7 +2,7 @@
 #
 # Kills acqiusition-associated processes running on either the acquisition
 # computer (by passing "acq" as the first argument) or the processing
-# computer (by passing "proc" as the argument).  If running on the acq, 
+# computer (by passing "proc" as the argument).  If running on the acq,
 # will execute the complete-scan routine after killing the processes.
 #
 # Written by Greg Porreca (Church Lab) 08-08-2008
@@ -51,11 +51,12 @@ for($i=0; $i<$num_cmds; $i++){
 }
 
 if($ARGV[0] eq "acq"){
-    $exec_cmd = "/home/polonator/G.007/G.007_acquisition/PolonatorUtils complete-scan";
+    $exec_cmd = $ENV{'POLONATOR_PATH'} . "/bin/PolonatorUtils complete-scan";
     print "$exec_cmd\n";
     system($exec_cmd);
 
-    $exec_cmd = "/home/polonator/G.007/G.007_fluidics/src/biochem_utils.pl 0 syringe_pump_init";
+    $exec_cmd = $ENV{'POLONATOR_PATH'} . "polonator/fluidics/src/biochem_utils.pl 0 syringe_pump_init";
     print "$exec_cmd\n";
     system($exec_cmd);
-}   
+}
+
