@@ -33,7 +33,7 @@ else:
     import ConfigParser                    
     from biochem import Biochem            
     config = ConfigParser.ConfigParser()
-    config.readfp(open('/home/polonator/G.007/G.007_fluidics/src/config.txt'))
+    config.readfp(open(os.environ["POLONATOR_PATH"] + 'fluidics/src/config.txt'))
 
     # Initialize biochemistry object - cycle-name and flowcell-number 
     # need to be set later
