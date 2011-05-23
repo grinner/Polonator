@@ -53,6 +53,7 @@ public class PolonatorAcquisitionControl extends javax.swing.JFrame {
     String acqbase_dir = base_dir + "/bin";
     // String fluidicsbase_dir = "/home/polonator/G.007/G.007_fluidics";
     String fluidicsbase_dir = base_dir + "/polonator/fluidics/src";
+    String sequencing_home_dir = project_dir + "/sequencing_run";
     //String stagealign_dir = acqbase_dir + "/stagealign"; // TODO Fix stagealign stuff, source code files are missing
     String stagealign_dir = project_dir + "/stagealign";
     Vector polonatorCycleListVector = new Vector();
@@ -68,7 +69,7 @@ public class PolonatorAcquisitionControl extends javax.swing.JFrame {
         worker.execute();
         aboutVersion.setText(currentVersion);
         aboutDate.setText(currentDate);
-        stagealign_fcnum=0;
+        stagealign_fcnum = 0;
     }
 
     /** This method is called from within the constructor to
@@ -2600,7 +2601,7 @@ private void utilsSnapButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 }//GEN-LAST:event_utilsSnapButtonActionPerformed
 
 private void flUtilPrimeFlowcellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flUtilPrimeFlowcellActionPerformed
-    String command = fluidicsbase_dir + "/src/biochem_utils.pl " +
+    String command = fluidicsbase_dir + "/biochem_utils.pl " +
             Integer.toString(flUtilsFCNum) +
             " flush_flowcell";
 
@@ -2622,7 +2623,7 @@ private void flUtilFlowcell1ActionPerformed(java.awt.event.ActionEvent evt) {//G
 }//GEN-LAST:event_flUtilFlowcell1ActionPerformed
 
 private void flUtilInitializeSyringeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flUtilInitializeSyringeActionPerformed
-    String command = fluidicsbase_dir + "/src/biochem_utils.pl " +
+    String command = fluidicsbase_dir + "/biochem_utils.pl " +
             Integer.toString(flUtilsFCNum) +
             " syringe_pump_init";
 
@@ -2639,7 +2640,7 @@ private void flUtilPrimeReagentBlockActionPerformed(java.awt.event.ActionEvent e
     else{
         primeV4 = "0";
     }
-    String command = fluidicsbase_dir + "/src/biochem_utils.pl " +
+    String command = fluidicsbase_dir + "/biochem_utils.pl " +
             Integer.toString(flUtilsFCNum) +
             " prime_reagent_block " +
             primeV4;
@@ -2650,7 +2651,7 @@ private void flUtilPrimeReagentBlockActionPerformed(java.awt.event.ActionEvent e
 }//GEN-LAST:event_flUtilPrimeReagentBlockActionPerformed
 
 private void flUtilStartStripActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flUtilStartStripActionPerformed
-    String command = fluidicsbase_dir + "/src/biochem_utils.pl " +
+    String command = fluidicsbase_dir + "/biochem_utils.pl " +
             Integer.toString(flUtilsFCNum) +
             " strip_chem " +
             (String)flUtilStripValve.getSelectedItem();
@@ -2661,7 +2662,7 @@ private void flUtilStartStripActionPerformed(java.awt.event.ActionEvent evt) {//
 }//GEN-LAST:event_flUtilStartStripActionPerformed
 
 private void flUtilStartHybActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flUtilStartHybActionPerformed
-    String command = fluidicsbase_dir + "/src/biochem_utils.pl " +
+    String command = fluidicsbase_dir + "/biochem_utils.pl " +
             Integer.toString(flUtilsFCNum) +
             " hyb " +
             (String)flUtilHybValve.getSelectedItem() +
@@ -2674,7 +2675,7 @@ private void flUtilStartHybActionPerformed(java.awt.event.ActionEvent evt) {//GE
 }//GEN-LAST:event_flUtilStartHybActionPerformed
 
 private void flUtilStartLigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flUtilStartLigActionPerformed
-    String command = fluidicsbase_dir + "/src/biochem_utils.pl " +
+    String command = fluidicsbase_dir + "/biochem_utils.pl " +
             Integer.toString(flUtilsFCNum) +
             " lig_stepup_peg " +
             (String)flUtilLigValve.getSelectedItem() +
@@ -2729,7 +2730,7 @@ private void flUtilStartReactActionPerformed(java.awt.event.ActionEvent evt) {//
                 (String)flUtilReactBufferVolume.getText();
     }
 
-    String command = fluidicsbase_dir + "/src/biochem_utils.pl " +
+    String command = fluidicsbase_dir + "/biochem_utils.pl " +
             Integer.toString(flUtilsFCNum) +
             " react " +
             (String)flUtilReactValve.getSelectedItem() +
@@ -2799,7 +2800,7 @@ private void acqDarkfieldScanActionPerformed(java.awt.event.ActionEvent evt) {//
 }//GEN-LAST:event_acqDarkfieldScanActionPerformed
 
 private void flUtilStartCycleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flUtilStartCycleActionPerformed
-    String command = fluidicsbase_dir + "/src/biochem_utils.pl " +
+    String command = fluidicsbase_dir + "/biochem_utils.pl " +
             Integer.toString(flUtilsFCNum) +
             " cycle_ligation " +
             (String)flUtilCycleName.getText();
@@ -2874,15 +2875,15 @@ private void polonatorStartActionPerformed(java.awt.event.ActionEvent evt) {//GE
     disableALLButtons();
 
     polonatorCycleListVector.clear();
-    for(i=0; i<entry.length; i++){
+    for(i = 0; i < entry.length; i++){
         polonatorCycleListVector.add(i, entry[i]);
     }
     polonatorCycleList.setListData(polonatorCycleListVector);
 
     // write cycle names to cycle_list file
     try{
-        out = new BufferedWriter(new FileWriter(fluidicsbase_dir + "/src/cycle_list"));
-        for(i=0; i<entry.length; i++){
+        out = new BufferedWriter(new FileWriter(sequencing_home_dir + "/cycle_list"));
+        for(i = 0; i < entry.length; i++){
             out.write((String)polonatorCycleListVector.elementAt(i));
             out.newLine();
         }
@@ -2897,8 +2898,7 @@ private void polonatorStartActionPerformed(java.awt.event.ActionEvent evt) {//GE
     }
 
     // now execute polonator_main
-    String command = fluidicsbase_dir + "/src/polonator_main.py "+
-            touchFlag;
+    String command = "/usr/bin/python " + fluidicsbase_dir + "/polonator_main.py " + touchFlag;
     System.out.println(command);
     SwingWorker<Integer, String> worker = createWorker(command, polonatorTextArea, "polonatorStart");
     worker.execute();
@@ -2920,7 +2920,7 @@ private void polonatorCycleEntryValidateActionPerformed(java.awt.event.ActionEve
     String[] newEntry = new String[entry.length];
 
     // validate each line; keep track if we need to change something
-    for(i=0; i<entry.length; i++){
+    for(i = 0; i < entry.length; i++){
         if(entry[i].length() > 4){
             entry[i] = entry[i].substring(0, 4);
             changed = true;
@@ -2934,7 +2934,7 @@ private void polonatorCycleEntryValidateActionPerformed(java.awt.event.ActionEve
     }
 
     // build new text for window and display
-    for(i=0; i<newEntryIndex; i++){
+    for(i = 0; i < newEntryIndex; i++){
         newEntryText = newEntryText + newEntry[i] + "\n";
     }
     polonatorCycleEntry.setText(newEntryText);
@@ -3145,7 +3145,7 @@ private void stagealign_viewscoreActionPerformed(java.awt.event.ActionEvent evt)
 
 private void SBSHybRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SBSHybRunActionPerformed
     disableSBSButtons();
-    String command = fluidicsbase_dir + "/src/biochem_utils.pl " +
+    String command = fluidicsbase_dir + "/biochem_utils.pl " +
             Integer.toString(SBSFCNum) +
             " ilmnHyb " +
             (String)SBSHybValve.getSelectedItem();
@@ -3169,7 +3169,7 @@ private void SBSFlowcell1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 
 private void SBSDeblockRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SBSDeblockRunActionPerformed
     disableSBSButtons();
-    String command = fluidicsbase_dir + "/src/biochem_utils.pl " +
+    String command = fluidicsbase_dir + "/biochem_utils.pl " +
             Integer.toString(SBSFCNum) +
             " ilmnDeblock " +
             (String)SBSDeblockValve.getSelectedItem();
@@ -3181,7 +3181,7 @@ private void SBSDeblockRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN
 
 private void SBSIncorpRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SBSIncorpRunActionPerformed
     disableSBSButtons();
-    String command = fluidicsbase_dir + "/src/biochem_utils.pl " +
+    String command = fluidicsbase_dir + "/biochem_utils.pl " +
             Integer.toString(SBSFCNum) +
             " ilmnCycle " +
             (String)SBSIncorpValve.getSelectedItem();
@@ -3193,7 +3193,7 @@ private void SBSIncorpRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 
 private void SBSCycleRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SBSCycleRunActionPerformed
     disableSBSButtons();
-    String command = fluidicsbase_dir + "/src/biochem_utils.pl " +
+    String command = fluidicsbase_dir + "/biochem_utils.pl " +
             Integer.toString(SBSFCNum) +
             " illumina " +
             (String)SBSCycleDeblockValve.getSelectedItem() +

@@ -8,24 +8,24 @@
 
  For: G.007 polony sequencer design [fluidics software] at the Church Lab -
  Genetics Department, Harvard Medical School.
- 
+
  Purpose: This program contains the complete code for module Biochem,
  containing re-occurring biochecmistry subroutines in Python.
 
  This software may be used, modified, and distributed freely, but this
- header may not be modified and must appear at the top of this file. 
-------------------------------------------------------------------------------- 
+ header may not be modified and must appear at the top of this file.
+-------------------------------------------------------------------------------
 Modified by Greg Porreca 01-23-2009 to add a user-friendly temperature control
 method "set_temp", and support for Illumina sequencing chemistry.  Significant
 tidying-up throughout, including removal of misleading comments, etc.  Changed
 logging throughout to be less obtuse.
 
-Modified by Richard Terry Jun-10-2009 to fix bugs and change custom experiment EXP 
+Modified by Richard Terry Jun-10-2009 to fix bugs and change custom experiment EXP
 
 """
 
-import sys 
-import time 
+import sys
+import time
 import commands
 import math
 
@@ -36,13 +36,13 @@ from threading import Thread
 from serial_port import Serial_port
 
 # supports serial port multiplexing to address multiple hardware devices
-from mux import Mux 
+from mux import Mux
 # interface to syringe pump and associated valve
 from syringe_pump import Syringe_pump
-# interface to a single rotary valve; the valve in use is 
+# interface to a single rotary valve; the valve in use is
 # specified by the mux state
 from rotary_valve import Rotary_valve
-# interface to single temp controller; controller in use is 
+# interface to single temp controller; controller in use is
 # specified by mux state
 from temperature_control import Temperature_control
 
@@ -75,10 +75,10 @@ class Biochem(Thread):
         self.state = 'biochemistry object'
 
         # set cycle-name parameter to specified value (4 chars)
-        self.cycle_name = cycle_name  
+        self.cycle_name = cycle_name
         # set cycle parameter to specified value (first 3 chars)
-        self.cycle = cycle_name[0:3]  
-        self.flowcell = flowcell 
+        self.cycle = cycle_name[0:3]
+        self.flowcell = flowcell
 
         self.config = ConfigParser.ConfigParser()
         # fill it in with configuration parameters from file
@@ -86,17 +86,17 @@ class Biochem(Thread):
 
         Thread.__init__(self)  # instantiate thread
 
-        self.mux = Mux() 
-        self.ser = Serial_port(self.config) 
+        self.mux = Mux()
+        self.ser = Serial_port(self.config)
 
-        self.rotary_valve = Rotary_valve(self.config, self.ser, self.mux) 
-        self.syringe_pump = Syringe_pump(self.config, self.ser, self.mux) 
-        self.temperature_control = Temperature_control(self.config, self.ser) 
+        self.rotary_valve = Rotary_valve(self.config, self.ser, self.mux)
+        self.syringe_pump = Syringe_pump(self.config, self.ser, self.mux)
+        self.temperature_control = Temperature_control(self.config, self.ser)
 
         # retrieve all configuatrion parameters from file
         self.get_config_parameters()
-        log.info("%s\t%i\t--> Biochemistry object is constructed: [%s]" % \ 
-            (self.cycle_name, self.flowcell, self.state))
+        log.info("%s\t%i\t--> Biochemistry object is constructed: [%s]" % \
+            (self.cycle_name, self.flowcell, self.state) )
 
 
     """
@@ -106,7 +106,7 @@ class Biochem(Thread):
 
     """
     Get_config_parameters
-    """-
+    """
 
     def setCycleName(self, cyc_name):
         self.cycle_name = cyc_name
@@ -114,9 +114,9 @@ class Biochem(Thread):
 
     def get_config_parameters(self):
         """
-        Retieves all biochemistry and device related configuration parameters 
-        from the configuration file using the ConfigParser facility. It assigns 
-        each parameter to a field of the biochemistry object, thus it can access 
+        Retieves all biochemistry and device related configuration parameters
+        from the configuration file using the ConfigParser facility. It assigns
+        each parameter to a field of the biochemistry object, thus it can access
         it any time during a run.
         """
 
@@ -209,7 +209,7 @@ class Biochem(Thread):
 
         self.guadinine_extra = int(self.config.get("stripping_parameters",\
                                                             "guadinine_extra"))
-        self.NaOH_extra = int(self.config.get("stripping_parameters",\ 
+        self.NaOH_extra = int(self.config.get("stripping_parameters",\
                                                                   "NaOH_extra"))
 
         """
@@ -220,7 +220,7 @@ class Biochem(Thread):
                                                                "primer_volume"))
 
         self.hyb_temp1 = int(self.config.get("hyb_parameters","hyb_temp1"))
-        self.hyb_set_temp1 = int(self.config.get("hyb_parameters",\ 
+        self.hyb_set_temp1 = int(self.config.get("hyb_parameters",\
                                                                "hyb_set_temp1"))
         self.hyb_poll_temp1 = int(self.config.get("hyb_parameters", \
                                                                "hyb_poll_temp1"))
@@ -243,19 +243,19 @@ class Biochem(Thread):
                                                     "buffer_volume"))
         self.ligase_volume = int(self.config.get("lig_parameters", \
                                                     "ligase_volume"))
-        self.nonamer_volume = int(self.config.get("lig_parameters", \ 
+        self.nonamer_volume = int(self.config.get("lig_parameters", \
                                                      "nonamer_volume"))
         self.reagent_volume = self.ligase_volume + self.nonamer_volume
 
         self.lig_step1 = int(self.config.get("lig_parameters","lig_step1"))
         self.lig_set_step1 = int(self.config.get("lig_parameters", \
                                                     "lig_set_step1"))
-        self.lig_poll_step1 = int(self.config.get("lig_parameters", \ 
+        self.lig_poll_step1 = int(self.config.get("lig_parameters", \
                                                     "lig_poll_step1"))
         self.lig_time1 = int(self.config.get("lig_parameters","lig_time1"))
 
         self.lig_step2 = int(self.config.get("lig_parameters","lig_step2"))
-        self.lig_set_step2 = int(self.config.get("lig_parameters", \ 
+        self.lig_set_step2 = int(self.config.get("lig_parameters", \
                                                     "lig_set_step2"))
         self.lig_poll_step2 = int(self.config.get("lig_parameters", \
                                                             "lig_poll_step2"))
@@ -301,7 +301,7 @@ class Biochem(Thread):
 
     def gap_volume(self, reagent_volume):
         """
-        Determines the positioning gap needed to center the reagent volume 
+        Determines the positioning gap needed to center the reagent volume
         in the flowcell.
         """
 
@@ -314,7 +314,7 @@ class Biochem(Thread):
 
     def clean_V_to_V4(self, rotary_valve):
         """
-        Fills tube path V to V4 with Wash1 and dumps previous tube content 
+        Fills tube path V to V4 with Wash1 and dumps previous tube content
         to waste.
         """
 
@@ -411,7 +411,7 @@ class Biochem(Thread):
         if (rotary_valve == 'V4'):
             FC_draw = self.V4_to_FC_end
         else:
-            FC_draw = self.V_to_FC_end    
+            FC_draw = self.V_to_FC_end
 
         self.draw_reagent(rotary_valve, rotary_port, reagent_volume)
 
@@ -440,7 +440,7 @@ class Biochem(Thread):
         log.info("%s\t%i\t--> Push reagent into flowcell with %i ul of Wash" % \
                 (self.cycle_name, self.flowcell, \
                     FC_draw-self.gap_volume(reagent_volume) - self.air_gap +0))
-        # RCT do iterative flushes with last 200 ul stroke at slow 
+        # RCT do iterative flushes with last 200 ul stroke at slow
         # syringe speed and eject to waste
         self.move_reagent_slow(FC_draw - self.gap_volume(reagent_volume) - \
                                 self.air_gap +0, self.pull_speed, \
@@ -467,16 +467,16 @@ class Biochem(Thread):
         if (rotary_valve == 'V4'):
             FC_draw = self.V4_to_FC_end
         else:
-            FC_draw = self.V_to_FC_end    
+            FC_draw = self.V_to_FC_end
 
         # calculate amount of buffer to pull after slug to center slug in flowcell
         move_distance = FC_draw - \
                         self.gap_volume(reagent_volume) - \
                         self.air_gap +0
         if buffervol > move_distance:
-            log.info( ("ERROR: buffer volume %d ul specified, max allowed is" +\
+            log.info( "ERROR: buffer volume %d ul specified, max allowed is" + \
                         " %d; will only use %d ul\n" % \
-                        (buffervol, move_distance, move_distance));
+                        (buffervol, move_distance, move_distance))
             buffervol = move_distance
         move_distance = move_distance - buffervol
 
@@ -524,9 +524,9 @@ class Biochem(Thread):
     def move_reagent(self, fill_volume, from_speed, \
                             from_port, to_speed, to_port):
         """
-        Moves a given volume of reagent [1] into syringe at speed [2] through 
-        specified valve position [3], then transfers syringe content through 
-        valve position [4] into an other location in the fluidic system. 
+        Moves a given volume of reagent [1] into syringe at speed [2] through
+        specified valve position [3], then transfers syringe content through
+        valve position [4] into an other location in the fluidic system.
         All parameters biochem.pyare integers respectively.
         """
 
@@ -536,7 +536,7 @@ class Biochem(Thread):
 
             if fill_volume <= self.full_stroke:
                 # draw into syringe
-                self.syringe_pump.set_speed(from_speed)  
+                self.syringe_pump.set_speed(from_speed)
                 self.syringe_pump.set_valve_position(from_port)
                 self.syringe_pump.set_absolute_volume(fill_volume)
 
@@ -565,7 +565,7 @@ class Biochem(Thread):
                     else:
                         self.syringe_pump.set_valve_position(to_port)
                     self.syringe_pump.set_absolute_volume(0)
-                    
+
                 if remainder != 0:
                     # draw remainder into syringe
                     self.syringe_pump.set_speed(from_speed)
@@ -586,11 +586,11 @@ class Biochem(Thread):
     def move_reagent_slow(self, fill_volume, from_speed, \
                                 from_port, to_speed, to_port):
         """
-        Moves a given volume of reagent [1] into syringe at speed [2] through 
-        specified valve position [3], then transfers syringe content through 
-        valve position [4] into an other location in the fluidic system. 
-        The last 200 ul reagent is drawn into the flowcell with slower speed to 
-        avoid air bubble build up in the chambers. All parameters are integers 
+        Moves a given volume of reagent [1] into syringe at speed [2] through
+        specified valve position [3], then transfers syringe content through
+        valve position [4] into an other location in the fluidic system.
+        The last 200 ul reagent is drawn into the flowcell with slower speed to
+        avoid air bubble build up in the chambers. All parameters are integers
         respectively.
         """
 
@@ -645,7 +645,7 @@ class Biochem(Thread):
                         else:
                             self.syringe_pump.set_valve_position(to_port)
 
-                        self.syringe_pump.set_absolute_volume(0)    
+                        self.syringe_pump.set_absolute_volume(0)
             else:
                 #  calculate first push volume
                 first_push_volume = fill_volume - self.slow_push_volume
@@ -711,7 +711,7 @@ class Biochem(Thread):
         if gap_size is None:
             # if no argument given, use default air gap size
             gap_size = self.air_gap
-        
+
         if gap_size == 0:
             time.sleep(0.001)
 
@@ -719,7 +719,7 @@ class Biochem(Thread):
             log.info("%s\t%i\t--> Draw air bubble to valve %s COM-port: [%s]" % \
                     (self.cycle_name, self.flowcell, valve, self.state))
             if valve == 'V1':
-                # switch communication to ten port rotary valve V4 
+                # switch communication to ten port rotary valve V4
                 self.mux.set_to_rotary_valve4()
                 self.rotary_valve.set_valve_position(1)
                 # switch communication to ten port rotary valve V1
@@ -727,7 +727,7 @@ class Biochem(Thread):
                 self.rotary_valve.set_valve_position(10)
 
             elif valve == 'V2':
-                # switch communication to ten port rotary valve V4 
+                # switch communication to ten port rotary valve V4
                 self.mux.set_to_rotary_valve4()
                 self.rotary_valve.set_valve_position(2)
                 # switch communication to ten port rotary valve V2
@@ -803,8 +803,8 @@ class Biochem(Thread):
 
     def wait_for_SS(self, set_temp, poll_temp, tolerance=None):
         """
-        Waits until steady-state temperature is reached, or exits wait 
-        block if ramping time exceeds timeout parameter set in configuration 
+        Waits until steady-state temperature is reached, or exits wait
+        block if ramping time exceeds timeout parameter set in configuration
         file.
         """
 
@@ -847,7 +847,7 @@ class Biochem(Thread):
 
                     delta = time.time() - t0 # elapsed time in seconds
                     sys.stdout.flush()
-                         
+
                     if delta > self.time_limit * 60:
                         log.warn( ("%s\t%i\t --> Time limit %s exceeded -> " + \
                             "[current: %0.2f, target: %0.2f] C: [%s]" ) %  \
@@ -869,7 +869,7 @@ class Biochem(Thread):
 
     def incubate_reagent(self, time_m):
         """
-        Incubates reagent for given amount of time and dynamically counts 
+        Incubates reagent for given amount of time and dynamically counts
         elapsed time in seconds to update user about incubation state.
         """
 
@@ -1055,7 +1055,7 @@ class Biochem(Thread):
         """
         Primes reagent block chambers in ten port rotary valve V2.
         """
-        log.info("%s\t%i\t--> Prime rotary valve V2 reagent block " + \ 
+        log.info("%s\t%i\t--> Prime rotary valve V2 reagent block " + \
             "chambers: [%s]" % (self.cycle_name, self.flowcell, self.state))
         # switch communication to ten port rotary valve V4
         self.mux.set_to_rotary_valve4()
@@ -1252,7 +1252,7 @@ class Biochem(Thread):
         log.info(("%s\t%i\t--> Prime rotary valve V4 reagent block chambers:" + \
                 " [%s]") % (self.cycle_name, self.flowcell, self.state))
 
-        log.info("%s\t%i\t--> Prime position 1 with %i ul pre-loaded fluid" \ 
+        log.info("%s\t%i\t--> Prime position 1 with %i ul pre-loaded fluid" \
                 % (self.cycle_name, self.flowcell, self.V_to_V4))
         # switch communication to ten port rotary valve V1
         self.mux.set_to_rotary_valve1()
@@ -1389,9 +1389,9 @@ class Biochem(Thread):
 
     def prime_fluidics_system(self):
         """
-        Primes all fluid lines, flowcells and reagent block chambers with 
+        Primes all fluid lines, flowcells and reagent block chambers with
         'Wash 1'.
-        Assume that all reagent block chambers and bottles are filled with 
+        Assume that all reagent block chambers and bottles are filled with
         'Wash 1'.
         """
 
@@ -1459,7 +1459,7 @@ class Biochem(Thread):
 
     def syringe_pump_init(self):
         """
-        Initializes syringe pump by moving it to zero position 
+        Initializes syringe pump by moving it to zero position
         and setting speed to 20.
         """
 
@@ -1491,7 +1491,7 @@ class Biochem(Thread):
         self.syringe_pump_init()
 
         log.info("Initialize reagent block")
-        # set reagent block to constant temperature, 4 Celsius degrees 
+        # set reagent block to constant temperature, 4 Celsius degrees
         # AND PRIME VALVES
         self.reagent_block_init()
 
@@ -1514,7 +1514,7 @@ class Biochem(Thread):
 
     def strip_chem(self, isoprop_valve, isoprop_port):
         """
-        Performs chemical stripping protocol for polony sequencing. 
+        Performs chemical stripping protocol for polony sequencing.
         Does the following:
 
         - flush flowcell with dH2O
@@ -1559,7 +1559,7 @@ class Biochem(Thread):
         # incubate reagent for guanidine_time minutes
         self.incubate_reagent(self.guadinine_time)
 
-        #move 500ul isoprop into flowcell (port isoprop_port), 
+        #move 500ul isoprop into flowcell (port isoprop_port),
         # followed by Water 1 (port 9)
         self.draw_into_flowcell_bufferchase(9, 'V4', 5, 200,7,500)
         self.draw_into_flowcell(7, 'V4', 7, 1000) #one water wash.
@@ -1578,23 +1578,23 @@ class Biochem(Thread):
 
 
         # DO AN ISOPROPANOL FLUSH TO REMOVE ANY BUBBLES THAT HAVE ACCUMULATED
-        # move 500ul isoprop into flowcell (port isoprop_port), followed by 
+        # move 500ul isoprop into flowcell (port isoprop_port), followed by
         # Water 1 (port 9)
         self.draw_into_flowcell_bufferchase(9, 'V4', 5, 200,7,500)
-        # move 500ul wash into flowcell (port isoprop_port), followed by 
+        # move 500ul wash into flowcell (port isoprop_port), followed by
         # Wash 1 (port 9)
         self.draw_into_flowcell(9, 'V4', 9, 1000)
 
 #        log.info("Flush flowcell w/ Wash 1")
-# JSE commented out.  Too many washes slowing down the cycle time.  
+# JSE commented out.  Too many washes slowing down the cycle time.
 # We are doing a wash at the beginning of the hyb.
 # should uncomment this for running without the hyb step.
 #        self.flush_flowcell(9)
-        
+
 
         delta = (time.time() - t0) / 60  # calculate elapsed time for stripping
 
-        log.warn( ("%s\t%i\t--> Finished checmical strip - duration: " + \ 
+        log.warn( ("%s\t%i\t--> Finished checmical strip - duration: " + \
             "%0.2f minutes\n") % (self.cycle_name, self.flowcell, delta))
 
 
@@ -1606,7 +1606,7 @@ class Biochem(Thread):
 
     def hyb(self, primer_valve, primer_port):
         """
-        Runs primer hybridization protocol for polony sequencing. 
+        Runs primer hybridization protocol for polony sequencing.
         Does the following:
 
         - incubate primer at 'hyb_temp1' for 'hyb_time1' minutes
@@ -1696,7 +1696,7 @@ class Biochem(Thread):
         # calculate elapsed time for primer hybridization
         delta = (time.time() - t0) / 60
 
-        log.warn(("%s\t%i\t--> Finished primer hybridization - duration: " + \ 
+        log.warn(("%s\t%i\t--> Finished primer hybridization - duration: " + \
             "%0.2f minutes\n") % (self.cycle_name, self.flowcell, delta))
 
     """
@@ -1708,7 +1708,7 @@ class Biochem(Thread):
     #
     def lig_stepup_peg(self, nonamer_valve, nonamer_port):
         """
-        Runs stepup peg ligation reaction protocol for polony sequencing. 
+        Runs stepup peg ligation reaction protocol for polony sequencing.
         Does the following:
 
         - prime flowcell with Quick ligase buffer
@@ -1723,7 +1723,7 @@ class Biochem(Thread):
 
         t0 = time.time()  # get current time
         # update function state of biochemistry object
-        self.state = 'lig_stepup_peg' 
+        self.state = 'lig_stepup_peg'
 
         log.info("%s\t%i\t--> In %s subroutine" % \
         (self.cycle_name, self.flowcell, self.state))
@@ -1743,9 +1743,9 @@ class Biochem(Thread):
             self.mux.set_to_temperature_control2()
 
         log.info("Set temperature to lig_set_step1: %d" %(self.lig_set_step1))
-        self.temperature_control.set_temperature(self.lig_set_step1)  
+        self.temperature_control.set_temperature(self.lig_set_step1)
 
-        # MOVE REAGENTS INTO FLOWCELL (NONAMER MIX, PRECEDED BY LIGATION BUFFER 
+        # MOVE REAGENTS INTO FLOWCELL (NONAMER MIX, PRECEDED BY LIGATION BUFFER
         # AND FOLLOWED BY WASH)
         log.info( ("Move nonamer mix (%s,%d), preceded by ligation buffer " + \
                 "(%s,%d), into flowcell") % \
@@ -1769,7 +1769,7 @@ class Biochem(Thread):
 
         # INCUBATE
         log.info("Incubate ligation step 1")
-        self.incubate_reagent(self.lig_time1) 
+        self.incubate_reagent(self.lig_time1)
 
 
         # SET TO REACTION TEMPERATURE 2
@@ -1781,13 +1781,13 @@ class Biochem(Thread):
             self.mux.set_to_temperature_control2()
 
         log.info("Set temperature to lig_set_step2: %d" %(self.lig_set_step2))
-        self.temperature_control.set_temperature(self.lig_set_step2) 
+        self.temperature_control.set_temperature(self.lig_set_step2)
         # self.wait_for_SS(self.lig_set_step2, self.lig_poll_step2, \
         # self.temp_tolerance)  # wait until steady-state temperature is reached
-        
+
         # INCUBATE
         log.info("Incubate ligation step 2")
-        self.incubate_reagent(self.lig_time2) 
+        self.incubate_reagent(self.lig_time2)
 
 
         # SET TO REACTION TEMPERATURE 3
@@ -1799,13 +1799,13 @@ class Biochem(Thread):
             self.mux.set_to_temperature_control2()
 
         log.info("Set temperature to lig_set_step3: %d" %(self.lig_set_step3))
-        self.temperature_control.set_temperature(self.lig_set_step3) 
+        self.temperature_control.set_temperature(self.lig_set_step3)
         # self.wait_for_SS(self.lig_set_step3, self.lig_poll_step3, \
         # self.temp_tolerance)  # wait until steady-state temperature is reached
 
         # INCUBATE
         log.info("Incubate ligation step 3")
-        self.incubate_reagent(self.lig_time3) 
+        self.incubate_reagent(self.lig_time3)
 
 
         # SET TO REACTION TEMPERATURE 4
@@ -1817,21 +1817,21 @@ class Biochem(Thread):
             self.mux.set_to_temperature_control2()
 
         log.info("Set temperature to lig_set_step4: %d" %(self.lig_set_step4))
-        self.temperature_control.set_temperature(self.lig_set_step4) 
+        self.temperature_control.set_temperature(self.lig_set_step4)
         # wait until steady-state temperature is reached
         # self.wait_for_SS(self.lig_set_step4, self.lig_poll_step4, \
         # self.temp_tolerance)
 
         # INCUBATE
         log.info("Incubate ligation step 4")
-        self.incubate_reagent(self.lig_time4) 
+        self.incubate_reagent(self.lig_time4)
 
         # SET TEMPERATURE CONTROL TO ROOM TEMP
         self.set_to_RT()  #RCT set flowcell temperature to room temperature
 
         # FLUSH FLOWCELL
         self.flush_flowcell(9)  # flush entire flowcell with Wash
-        self.flush_flowcell(9)  # flush entire flowcell with Wash; 
+        self.flush_flowcell(9)  # flush entire flowcell with Wash;
                                 # ADDED BY GP 10-07-2008
 
         # calculate elapsed time for stepup peg ligation
@@ -1852,7 +1852,7 @@ class Biochem(Thread):
 
     def run(self):
         """
-        Runs polony sequencing cycle(s) based on cycle-name and flowcell-number 
+        Runs polony sequencing cycle(s) based on cycle-name and flowcell-number
         list already contained in biochemistry object.
         """
 
@@ -1871,7 +1871,7 @@ class Biochem(Thread):
             log.info( ("%s\t%i\t--> Device initialization and Exonuclease " + \
                 "I digestion is done: [%s]\n") % \
                 (self.cycle_name, self.flowcell, self.state))
-        
+
         # if white light image cycle on flowcell 1
         elif self.cycle[0:2] == 'WL' and self.flowcell == 1:
             self.init()
@@ -1943,11 +1943,11 @@ class Biochem(Thread):
     """
     Example of a function to perform an 'experimental' biochemistry cycle on the
      Polonator.
-    This can be modified to suit the particular biochemical steps you need to 
+    This can be modified to suit the particular biochemical steps you need to
     perform.
-    strip_chem(), hyb(), and lig_stepup_peg() are special cases of biochemistry 
-    reactions that are used by the standard Polonator SBL biochemistry.  
-    React() allows you to run arbitrary reactions.  
+    strip_chem(), hyb(), and lig_stepup_peg() are special cases of biochemistry
+    reactions that are used by the standard Polonator SBL biochemistry.
+    React() allows you to run arbitrary reactions.
     By chaining these together, as in the example below, you can do pretty much
     any ligase- or polymerase- based biochemistry.
 
@@ -1957,7 +1957,7 @@ class Biochem(Thread):
     def runCustomExperiment(self):
         """
         hard-coded reagent locations and reaction parameters for this experiment
-    
+
         DO NOT use port 8 for anything, as lig_stepup_peg assumes that port 8 of
         the valve which contains the nonamer it's using has been filled with
         ligation buffer
@@ -1972,7 +1972,7 @@ class Biochem(Thread):
         lig2_port = 2
         react_valve = 'V3' # location (valve) of the PNK reaction mix
         react_port = 1     # location (port) of the PNK reaction mix
-        react_temp = 35    # un-calibrated PNK reaction temperature 
+        react_temp = 35    # un-calibrated PNK reaction temperature
                            # (i.e. temp at the glass will vary slightly)
         react_time = 30    # PNK reaction time in minutes
 
@@ -1993,7 +1993,7 @@ class Biochem(Thread):
         """
         ligate hexamer spacer onto anchor
         lig_stepup_peg assumes port 8 on the lig_valve has been filled w/ buffer
-        temperatures and times for the ligation reaction are pulled from 
+        temperatures and times for the ligation reaction are pulled from
         config.txt
         """
         # RCT self.lig_stepup_peg(lig1_valve, lig1_port)
@@ -2001,9 +2001,9 @@ class Biochem(Thread):
         # 5'-phosphorylate hexamer so it can be ligated to
         # for this reaction, we will not 'prime' the flowcell with a buffer
         #RCTself.react(react_valve, react_port, react_temp, react_time)
-        self.react('V1', 2, 55, 20, 0, 0)    
+        self.react('V1', 2, 55, 20, 0, 0)
         self.react('V1', 3, 55, 20, 0, 0)
-        self.react('V1', 1, 55, 5, 0, 0)    
+        self.react('V1', 1, 55, 5, 0, 0)
 
         # now perform the query nonamer ligation
         #RCT self.lig_stepup_peg(lig2_valve, lig2_port)
@@ -2011,17 +2011,17 @@ class Biochem(Thread):
 
 
     """
-    Call this function to perform any arbitrary reaction in the flowcell. 
+    Call this function to perform any arbitrary reaction in the flowcell.
      Arguments are the following:
-    reagent_valve:  STRING specifying the valve where the reagent (and 
-                    optionally buffer) has been loaded; valid values are 
+    reagent_valve:  STRING specifying the valve where the reagent (and
+                    optionally buffer) has been loaded; valid values are
                     "V1", "V2", and "V3"
-    reagent_port:   INTEGER specifying the port on the reagent valve where the 
+    reagent_port:   INTEGER specifying the port on the reagent valve where the
                     reagent has been loaded; valid values are [1..8]
-    temp:           INTEGER specifying the temperature the reaction should be 
-                    run at; 
-                    the flowcell will be brought to temperature temp before the 
-                    reagent is moved in; 
+    temp:           INTEGER specifying the temperature the reaction should be
+                    run at;
+                    the flowcell will be brought to temperature temp before the
+                    reagent is moved in;
                     valid values are [18..60]
     react_time:     INTEGER specifying the time in minutes to allow the reaction
                      to incubate
@@ -2038,8 +2038,8 @@ class Biochem(Thread):
                     if a buffer is used.  If a buffer is used, and buffer_volume
                      is not specified,
                     react() will use reagent_volume for buffer_volume. If a
-                     buffer is not used, buffer_volume need not be specified.  
-                     If a buffer is not used and buffer_volume is specified, 
+                     buffer is not used, buffer_volume need not be specified.
+                     If a buffer is not used and buffer_volume is specified,
                      it will be ignored.
 
     ASSUMES REACTION WILL BE PERFORMED ON FLOWCELL 0
@@ -2082,7 +2082,7 @@ class Biochem(Thread):
 
         # wait for the flowcell to reach the reaction temperature
         #self.waitForTemp(temp, timeout, flowcellnum, tolerance)t)
-            
+
         # move the reagent into the flowcell; if there was a buffer first, this
         # will automatically be pushed through
         # different functions must be used if we're chasing w/ buffer
@@ -2093,7 +2093,7 @@ class Biochem(Thread):
         else:
             self.draw_into_flowcell(9, reagent_valve, \
                 reagent_port, reagent_volume)
-            
+
         # allow reaction to incubate for react_time minutes
         self.incubate_reagent(react_time)
 
@@ -2123,11 +2123,11 @@ class Biochem(Thread):
 
     """
     """
-    Call this function to 'rinse' the flowcell; generally speaking, 
+    Call this function to 'rinse' the flowcell; generally speaking,
     it pulls a large volume of liquid
-    over the flowcell from rinse_port on rinse_valve.  It first pulls fast_vol 
+    over the flowcell from rinse_port on rinse_valve.  It first pulls fast_vol
     microliters at fast_speed
-    (generally pulling a vacuum, so volume is not accurate), then pulls 
+    (generally pulling a vacuum, so volume is not accurate), then pulls
     slow_vol microliters at slow_speed
 
     added by Greg Porreca, Jan-23-2009
@@ -2147,11 +2147,11 @@ class Biochem(Thread):
              self.empty_speed)
 
     """
-    Call this function to 'pump' reagent into the system from a specific port on 
+    Call this function to 'pump' reagent into the system from a specific port on
     a specific valve
-    Note this just pulls the reagent into the system, and doesn't know anything 
+    Note this just pulls the reagent into the system, and doesn't know anything
     about where the reagent
-    ends up (i.e in the tubing, in the flowcell, etc).  One should understand 
+    ends up (i.e in the tubing, in the flowcell, etc).  One should understand
     the path length between
     reagent block and flowcell, and the flowcell volume, before using this
 
@@ -2163,10 +2163,10 @@ class Biochem(Thread):
         self.syringe_pump.draw(volume, flowcellnum, speed, self.empty_speed)
 
     """
-    Call this function after a call to temperature_control.set_temperature() 
+    Call this function after a call to temperature_control.set_temperature()
     (which changes the temperature
-    controller's setpoint).  This will block until either: 1) the difference 
-    between the temperature read 
+    controller's setpoint).  This will block until either: 1) the difference
+    between the temperature read
     and setpoint is <= tolerance, or 2) the elapsed time is >= timeout seconds
 
     added by Greg Porreca, Oct-16-2008
@@ -2198,9 +2198,9 @@ class Biochem(Thread):
 
 
     """
-    Call this to set the temperature for flowcell flowcellnum to temperature 
+    Call this to set the temperature for flowcell flowcellnum to temperature
     temp
-    
+
     added by Greg Porreca, Oct-17-2008
     """
     def setTemp(self, flowcellnum, temp):
@@ -2209,7 +2209,7 @@ class Biochem(Thread):
 
 
     """
-    Call this to set the mux to a flowcell temperature controller; used by 
+    Call this to set the mux to a flowcell temperature controller; used by
     setTemp and waitForTemp
 
     added by Greg Porreca, Oct-17-2008
@@ -2229,7 +2229,7 @@ class Biochem(Thread):
             maxValveRange = 4 # valves 1-3
 
         for valve in range(1,maxValveRange):
-            # do ports 1-9 in reverse order; port 10 should be plugged, 
+            # do ports 1-9 in reverse order; port 10 should be plugged,
             # so don't prime this
             for port in range(9,0,-1):
                 log.info('Prime valve %d, port %s with %d ul' % \
@@ -2239,7 +2239,7 @@ class Biochem(Thread):
                 if((valve == 4) and (port == 8)):
                     log.info('Skip current position because it is plugged')
                 else:
-                    self.syringe_pump.draw(prime_volume[valve], \ 
+                    self.syringe_pump.draw(prime_volume[valve], \
                         flowcellnum, prime_speed, 0)
 
 
@@ -2317,11 +2317,11 @@ class Biochem(Thread):
 
 
     """
-    Perform Illumina's standard 'deblock' protocol using default reaction 
+    Perform Illumina's standard 'deblock' protocol using default reaction
     conditions
 
     added by Greg Porreca, Jan-23-2009
-    """ 
+    """
     def ilmnDeblock(self, flowcellnum, CB_valve, CB_port, CM_valve, CM_port, \
         IB_valve, IB_port, HS_valve, HS_port, SB_valve, SB_port):
         log.info(("Executing ilmnDeblock %d CB<%s,%d> CM<%s,%d> IB<%s,%d> " + \
@@ -2339,7 +2339,7 @@ class Biochem(Thread):
 
         # pump 1 ml of cleavage buffer (CB)
         volume = 1000
-        log.info(" pump %d ul of cleavage buffer from <%s,%d>" % \ 
+        log.info(" pump %d ul of cleavage buffer from <%s,%d>" % \
             (volume, CB_valve, CB_port))
         self.pumpReagent(flowcellnum, volume, CB_valve, CB_port)
 
@@ -2365,7 +2365,7 @@ class Biochem(Thread):
         self.pumpReagent(flowcellnum, volume, CM_valve, CM_port)
         time.sleep(wait_time)
 
-        # pump 200ul of cleavage buffer (CB), then wait 4 minutes; 
+        # pump 200ul of cleavage buffer (CB), then wait 4 minutes;
         # incubation is still with CM because of fluid line volume
         wait_time=240
         volume=200
@@ -2374,7 +2374,7 @@ class Biochem(Thread):
                 (volume, CB_valve, CB_port, wait_time))
         self.pumpReagent(flowcellnum, volume, CB_valve, CB_port)
         time.sleep(wait_time)
-        
+
         # set temperature to 25C and allow to ramp during fluid moves
         set_temp=25
         log.info(" set temperature to %dC" %(set_temp))
@@ -2382,7 +2382,7 @@ class Biochem(Thread):
 
         # pump 600ul incorporation buffer (IB)
         volume = 600
-        log.info(" pump %d ul of incorporation buffer from <%s,%d>" % \ 
+        log.info(" pump %d ul of incorporation buffer from <%s,%d>" % \
             (volume, IB_valve, IB_port))
         self.pumpReagent(flowcellnum, volume, IB_valve, IB_port)
 
@@ -2419,7 +2419,7 @@ class Biochem(Thread):
     # using default reaction conditions
     #
     # added by Greg Porreca, Jan-23-2009
-    #    
+    #
     def ilmnCycle(self, flowcellnum, IB_valve, \
                         IB_port, IM_valve, IM_port, \
                         HS_valve, HS_port, \
@@ -2451,7 +2451,7 @@ class Biochem(Thread):
         # pump 800ul incorporation mix (IM), wait for 4 minutes
         wait_time=240
         volume=800
-        log.info((" pump %d ul of incorporation mix from <%s,%d> and " + \ 
+        log.info((" pump %d ul of incorporation mix from <%s,%d> and " + \
             "incubate for %d seconds") %(volume, IM_valve, IM_port, wait_time))
         self.pumpReagent(flowcellnum, volume, IM_valve, IM_port)
         time.sleep(wait_time)
@@ -2460,12 +2460,12 @@ class Biochem(Thread):
         wait_time=240
         volume=200
         log.info( (" pump %d ul of incorporation mix from <%s,%d> and " + \
-                "incubate for %d seconds") % \ 
+                "incubate for %d seconds") % \
                 (volume, IM_valve, IM_port, wait_time))
         self.pumpReagent(flowcellnum, volume, IM_valve, IM_port)
         time.sleep(wait_time)
 
-        # pump 200ul incorporation buffer (IB), 
+        # pump 200ul incorporation buffer (IB),
         # wait for 4 minutes (this moves IM into flowcell)
         wait_time=240
         volume=200
@@ -2520,13 +2520,13 @@ class Biochem(Thread):
     # using default reaction conditions
     #
     # added by Greg Porreca, Jan-26-2009
-    #    
+    #
     def ilmnHyb(self, flowcellnum, HYB_valve, HYB_port, WASH_valve, WASH_port):
         log.info("Executing ilmnHyb %d HYB<%s,%d> WASH<%s,%d>" %(flowcellnum,
                                        HYB_valve, HYB_port,
                                        WASH_valve, WASH_port))
-        
-           
+
+
         # set temperature to 50C, wait for up to 5 minutes
         set_temp=50
         timeout=300
@@ -2587,5 +2587,6 @@ class Biochem(Thread):
         log.info(" waiting for up to %d seconds for temperature to reach %d" % \
             (timeout, set_temp))
         self.waitForTemp(set_temp, timeout, flowcellnum)
-        
+
         log.info("Finished executing ilmnHyb()")
+

@@ -1,20 +1,21 @@
 """
--------------------------------------------------------------------------------- 
+--------------------------------------------------------------------------------
  Author: Mirko Palla.
  Date: March 14, 2008.
 
- For: G.007 polony sequencer design [fluidics software] at the Church Lab - 
+ For: G.007 polony sequencer design [fluidics software] at the Church Lab -
  Genetics Department, Harvard Medical School.
- 
+
  Purpose: This program contains the complete code for class Logger, containing
  device operation logging facility in Python.
 
  This software may be used, modified, and distributed freely, but this
- header may not be modified and must appear at the top of this file. 
-------------------------------------------------------------------------------- 
+ header may not be modified and must appear at the top of this file.
+-------------------------------------------------------------------------------
 """
 
 import os
+import errno
 import time
 import logging
 import sys
@@ -27,8 +28,15 @@ class Logger:
         """
 
         if os.access(config.get("communication","log_dir"), os.F_OK) is False:
-            os.mkdir(config.get("communication","log_dir"))
-
+            try:
+                os.makedirs(os.environ['HOME']+ config.get("communication","log_dir"))
+            except OSError, e:
+                if e.args[0] == errno.EEXIST: # file exists
+                    pass
+                else: # it was something else
+                    raise OSError(e)
+            # end try thing
+        # end if
         # set logger format configuration parameters
         logging.basicConfig(level=logging.DEBUG,
             format='%(asctime)s.%(msecs)03d %(name)-12s %(levelname)-8s %(message)s',
@@ -77,3 +85,4 @@ class Logger:
         Diplays a debugging message via logging facility.
         """
         logging.debug(message)
+

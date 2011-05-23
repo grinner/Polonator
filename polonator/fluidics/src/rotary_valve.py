@@ -5,20 +5,20 @@
  Modified by: Mirko Palla
  Date: March 5, 2008.
 
- For: G.007 polony sequencer design [fluidics software] at the Church Lab - 
+ For: G.007 polony sequencer design [fluidics software] at the Church Lab -
  Genetics Department, Harvard Medical School.
- 
- Purpose: This program contains the complete code for class Rotary_valve, 
+
+ Purpose: This program contains the complete code for class Rotary_valve,
  containing rotary valve communication subroutines in Python.
 
  This software may be used, modified, and distributed freely, but this
- header may not be modified and must appear at the top of this file. 
+ header may not be modified and must appear at the top of this file.
 -------------------------------------------------------------------------------
 """
 import time
 import logging
 
-log=logging.getLogger("r_valve")
+log = logging.getLogger("r_valve")
 
 class Rotary_valve:
 
@@ -31,7 +31,7 @@ class Rotary_valve:
         self._read_length = int(config.get("communication","read_length"))
         self._sleep_time = float(config.get("communication","sleep_time"))
 
-        self.serport = serial_port        
+        self.serport = serial_port
         self.mux = mux
         self.state = 'rotary valve initialized'
 
@@ -41,8 +41,8 @@ class Rotary_valve:
     def usePort(self, valve_name, valve_port):
         log.debug("---\t-\t-->     use rotary valve %s position %d" % \
             (valve_name, valve_port))
-        log.debug("---\t-\t-->     set valve %s to position %d" % \ 
-            (valve_name, valve_port))
+        log.debug("---\t-\t-->     set valve %s to position %d" % \
+            (valve_name, valve_port) )
 
         self.mux.setToDevice(valve_name)
         self.set_valve_position(valve_port)
@@ -52,9 +52,8 @@ class Rotary_valve:
                 ('V4', int(valve_name[1])))
             self.mux.setToDevice('V4')
             self.set_valve_position(int(valve_name[1]))
-
-
-
+        # end if
+    # end def
 
     """
     Rheodyne rotary valve
@@ -62,10 +61,10 @@ class Rotary_valve:
     # FUNCTIONS
     """
 
-    Performs low-level functional commands (e.g. set rotary valve position). 
-    Each command implemented here must know the command set of the hardware 
-    being controlled, but does not need to know how to communicate with the 
-    device (how to poll it, etc). Each functional command will block until 
+    Performs low-level functional commands (e.g. set rotary valve position).
+    Each command implemented here must know the command set of the hardware
+    being controlled, but does not need to know how to communicate with the
+    device (how to poll it, etc). Each functional command will block until
     execution is complete.
 
     """
@@ -104,6 +103,4 @@ class Rotary_valve:
         response_string_size = 3
 
         self.serport.parse_read_string('S\r', find_string, response_string_size)
-
-
 

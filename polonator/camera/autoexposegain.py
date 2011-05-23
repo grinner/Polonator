@@ -5,7 +5,7 @@ Polonator G.007 Image Acquisition Software
 Church Lab, Harvard Medical School
 Written by Richard C Terry
 
-AutoExposeGain.py: automated routine to determine EM gain for each 
+AutoExposeGain.py: automated routine to determine EM gain for each
 fluorescent channel
 
 Release 1.0 -- 07-08-2009
@@ -16,19 +16,19 @@ at the top of the file.
 """
 
 import sys
-import CameraFunctions
-import MaestroFunctions
-import LoggerFunctions
-import tel_net
+import asPhoenix as PC
+from motion.maestro import MaestroFunctions
+import logger
+import fluidics.src.tel_net as tel_net
 import random
 import time
 import subprocess
 import os
 
 class Autoexpose:
-    global camera
+    global PC
     global telnet
-    global maestro
+    global MaestroFunctions
     global device_filters
     global autoex_gains
 
@@ -40,7 +40,7 @@ class Autoexpose:
         #self.logger = LoggerFunctions.Logger_Functions('../logs/autoexpose-log')
 
     def autoe(self):
-        
+
         utilPath = os.environ['POLONATOR_PATH']+'/bin/PolonatorUtils'
         p = subprocess.Popen(utilPath + ' gotostagealignpos 0 0', \
                             shell=True, \
@@ -64,7 +64,7 @@ class Autoexpose:
                                     shell=True, \
                                     stdout=subprocess.PIPE, \
                                     stderr=subprocess.PIPE)
-                stdout_value, stderr_value = p.communicate() 
+                stdout_value, stderr_value = p.communicate()
                 print 'stdout_value \n' , stdout_value
                 image_mean_stdout_value = stdout_value.find('Image mean: ') + 12
                 print 'image mean stdout_value' , image_mean_stdout_value, '\n'
@@ -79,3 +79,4 @@ class Autoexpose:
         print 'fluors ', fluors, ' gains ', autoex_gains
         print "Done"
         return autoex_gains
+

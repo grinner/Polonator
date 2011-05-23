@@ -5,15 +5,15 @@
  Modified by: Mirko Palla
  Date: March 5, 2008.
 
- For: G.007 polony sequencer design [fluidics software] at the Church Lab - 
+ For: G.007 polony sequencer design [fluidics software] at the Church Lab -
  Genetics Department, Harvard Medical School.
- 
+
  Purpose: This program contains the complete code for class Serial_port,
  containing a set of serial port device communication subroutines in Python.
 
  This software may be used, modified, and distributed freely, but this
- header may not be modified and must appear at the top of this file. 
-------------------------------------------------------------------------------- 
+ header may not be modified and must appear at the top of this file.
+-------------------------------------------------------------------------------
 """
 
 import time
@@ -49,9 +49,9 @@ class Serial_port:
 
     """
     SERIAL FUNCTIONS
-    Serial command interface protocols in Linux for handling G.007 device 
-    regulation. Only one port can be read from, written to at a time. That is, 
-    ser.close() must be called before talking to a different piece of hardware 
+    Serial command interface protocols in Linux for handling G.007 device
+    regulation. Only one port can be read from, written to at a time. That is,
+    ser.close() must be called before talking to a different piece of hardware
     with the ser.open() command.
     """
 
@@ -73,9 +73,9 @@ class Serial_port:
     def write_serial(self, data):
         "Flush input buffer, then write string data to serial port."
         self.ser.flushInput()
-               #log.debug("---\t-\t--> Flush Input")
+        #log.debug("---\t-\t--> Flush Input")
         self.ser.write(data)
-               #log.debug("---\t-\t--> Write data")
+        #log.debug("---\t-\t--> Write data")
 
     def parse_read_string(self, write_string, find_string, find_string_size):
         """
@@ -88,22 +88,22 @@ class Serial_port:
 
         while read_string_char == '-1':
             self.write_serial(write_string)
-                  read_chars = self.read_serial(find_string_size)
+            read_chars = self.read_serial(find_string_size)
             read_string = read_chars.find(find_string)
-                  read_string_char = str(read_string)
+            read_string_char = str(read_string)
             time.sleep(0.001)
             #log.debug("---\t-\t--> Read Chars %s" % (read_chars))
         return read_chars
 
     def read_serial(self, num_expected):
         """
-        Return the number of chars in the receive buffer and compare it 
+        Return the number of chars in the receive buffer and compare it
         to expected character number passed as an argument.
         """
 
         total_received = 0
-        read_chars = ""    
-    
+        read_chars = ""
+
         while total_received < num_expected:
             iw = self.ser.inWaiting()
 
@@ -118,11 +118,11 @@ class Serial_port:
 
     def read_serial_r(self, num_expected):
         """
-        Return the number of chars in the receive buffer and compare it to 
+        Return the number of chars in the receive buffer and compare it to
         expected character number passed as an argument.
         """
 
-        read_chars = ""    
+        read_chars = ""
         iw = self.ser.inWaiting()
         read_chars = read_chars + self.ser.read(iw)
         # log.debug("---\t-\t--> READCHAR %s" % (read_chars))

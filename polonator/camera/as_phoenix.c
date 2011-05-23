@@ -1,5 +1,5 @@
 /* =============================================================================
-// 
+//
 // Polonator G.007 Image Acquisition Software
 //
 // Wyss Insittute, Harvard Medical School
@@ -83,7 +83,7 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
 	    py_cameraInit(0); /* use non-TDI config file */
 	    py_set_gain(gain);
 	    maestro_open(&m_sock);
-	    camera_open = 1; 
+	    camera_open = 1;
 	    py_setupSnap();
 	}
         else
@@ -95,7 +95,7 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
 	//maestro_locktheta(msock);
 	//maestro_setcolor(m_sock, color);
 	/*maestro_darkfield_off(m_sock);*/
-	
+
 
 	/* determine whether or not to use the shutter */
 	if(!strcmp(color, "none"))
@@ -132,8 +132,8 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
 	/* close hardware */
 	maestro_darkfield_off(m_sock);
 	/* TODO Do we need to close the maestro socket? */
-	    //fprintf(stdout, "The color is %s\n", color);
-        return image;
+    //fprintf(stdout, "The color is %s\n", color);
+    return image;
 }
 
 void py_snapPtr(unsigned short * raw_image, float exposure, float gain, char *color)
@@ -160,7 +160,7 @@ void cameraClose(void)
     {
         py_cameraClose();
         camera_open = 0;
-    } 
+    }
 }
 
 int cameraLive(int argc, char **argv, int tdiflag)
@@ -172,3 +172,4 @@ unsigned short getPixel(unsigned short *image, int i)
 {
     return image[i];
 }
+
