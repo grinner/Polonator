@@ -1,7 +1,10 @@
 # used to test PolonatorImager.py
 
-import PolonatorImager
+import os
 import sys
+sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')
+import PolonatorImager
+
 
 cyclename = sys.argv[1];
 fcnum = int(sys.argv[2]);
