@@ -13,25 +13,25 @@ ReleaseBeads.py:
 
 Release 1.0 -- 01-04-2010
 
-"""  
+"""
 
-import polonator.illum.mapping as PM
-from polonator.motion import maestro
-import polonator.polProcDMD
-import polonator.camera.asPhoenix as PC
-import polonator.logger
-import time
 import os
+import sys
+sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')  
+import time
 import glob
-import basecall   
-import objectTable
+
+from polonator.illum.mapping import MappingFunctions
+from polonator.motion.maestro import MaestroFunctions
+import polonator.polProcDMD as PA # this is polonator acquirier
+import polonator.camera.asPhoenix as PC
+import polonator.logger as logger
+import polonator.dataio.basecall as bc
+import polonator.dataio.objectTable as ot
 import numpy as np
    
-MF = maestro.MaestroFunctions()
-MapFunc = PM.MappingFunctions()
-PA = polProcDMD # this is polonator acquirier
-bc = basecall
-ot = objectTable
+MF = MaestroFunctions()
+MapFunc = MappingFunctions()
 
 beadpos_xcol = np.empty(MAX_BEADS_PERFRAME, dtype=np.uint16)
 beadpos_yrow = np.empty(MAX_BEADS_PERFRAME, dtype=np.uint16)
@@ -281,7 +281,7 @@ def goto_flagged_images(self):
     #end while True loop
     if num_beads > 0:
         # this function does the coordinate transform and illuminates!!!!
-        #MapFunc.transform_camera_to_DMD( coord_list, num_beads - 1)
+        # MapFunc.transform_camera_to_DMD( coord_list, num_beads - 1)
         MapFunc.vector(beadpos_xcol,beadpos_yrow, num_beads,spot_size=0)
         time.sleep(EXPOSURE_TIME)
         MapFunc.closeDMD()

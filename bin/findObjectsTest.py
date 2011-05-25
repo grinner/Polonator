@@ -2,6 +2,10 @@
 """
 
 """
+import sys
+import os
+sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')  
+
 import numpy as np
 # from PIL import Image
 import Image # for later versions of PIL

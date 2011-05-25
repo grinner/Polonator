@@ -26,6 +26,8 @@ and run ./processor.pl
 import sys
 import getopt
 import os
+sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')  
+
 import time
 import polonator.camera.asPhoenix as PC
 from polonator.motion import maestro

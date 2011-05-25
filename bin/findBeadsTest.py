@@ -12,23 +12,26 @@ The primary use of this script is to scan a flowcell and position by position:
 
 This script is not intended to sequence. 
 """
+
+import time
+import sys
+import os
+sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')  
   
 import numpy as np
 # from PIL import Image
 import Image # for later versions of PIL
 import polonator.image.findObjects as FO
-import polonator.illum.mapping as PM
-from polonator.motion import maestro
+from polonator.illum.mapping import MappingFunctions
+from polonator.motion.maestro import MaestroFunctions
 import polonator.camera.asPhoenix as PC
 import polonator.image.imgTools as IT
-import time
-import sys
 
 # assumes we've alreay created a mapping file
-MapFunc = PM.MappingFunctions()
+MapFunc = MappingFunctions()
 MapFunc.readMappingFile()
 
-MaestroF = maestro.MaestroFunctions()
+MaestroF = MaestroFunctions()
 
 #my_color = "spare"
 #my_color = "txred"

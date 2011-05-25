@@ -24,11 +24,10 @@ import os
 
 sys.path.append(os.environ['POLONATOR_PATH']+ '/polonator')
 
-import illum.D4000 as PI
+import polonator.illum.D4000 as PI
+import polonator.camera.asPhoenix as PC
+from polonator.motion.maestro import MaestroFunctions
 
-import camera.asPhoenix as PC
-
-import motion.maestro as maestro
 # from PIL import Image
 import Image # for later versions of PIL
 
@@ -56,7 +55,7 @@ def thing(expos=0.008, gain=2, mycube='spare', TDI_flag = 0):
     CameraHeight = 1000
 
     #MF = MaestroFunctions.Maestro_Functions()
-    MF = maestro.MaestroFunctions()
+    MF = MaestroFunctions()
 
     # process the numeric arguments
     int_time = float(expos)

@@ -17,10 +17,14 @@ Release 1.0 -- 09-15-2010
 ================================================================================
 """
 
+import sys
+import os
+sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')  
+
 #import MappingFunctions
-import polonator.illum.mapping as PM
+from polonator.illum.mapping import MappingFunctions
    
-MapFunc = PM.MappingFunctions()
+MapFunc = MappingFunctions()
 
 def calibrate_camera_to_DMD_mapping():
     """

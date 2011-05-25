@@ -160,8 +160,9 @@ short unsigned int* py_getSnapImage(){
 
 
 
-/* returns the mean of the 1mpix image pointed to by int* img.
-   mean is cast as an integer
+/* 
+returns the mean of the 1mpix image pointed to by int* img.
+mean is cast as an integer
 */
 int py_imagemean(short unsigned int* img)
 {
@@ -176,8 +177,8 @@ int py_imagemean(short unsigned int* img)
     }
 
     mean = (int)(sum / 1000000);
-    for(i=0; i<1000000; i++){
-        sigma+=(long long int)(pow((*(img+i)-mean),2));
+    for(i = 0; i < 1000000; i++){
+        sigma += (long long int)(pow((*(img+i)-mean),2));
     }
 
     std = sqrt((1.0/((double)1000000-1)) * sigma);

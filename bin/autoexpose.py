@@ -6,7 +6,8 @@ Polonator G.007 Image Acquisition Software
 Church Lab, Harvard Medical School
 Written by Greg Porreca
 
-autoexpose.py: automated routine to determine EM gain for each fluorescent channel
+autoexpose.py: automated routine to determine EM gain for each fluorescent 
+channel
 
 Release 1.0 -- 04-15-2008
 
@@ -16,10 +17,14 @@ at the top of the file.
 ================================================================================
 """
 
-import CameraFunctions
-import MaestroFunctions
-import LoggerFunctions
-import tel_net
+import sys
+import os
+sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')  
+
+import polonator.camera.asPhoenixFunctions as PC
+from polonator.motion.maestro import MaestroFunctions
+import logger
+from polonator.tel_net import Tel_net
 import random
 import time
 
@@ -31,9 +36,9 @@ class Autoexpose:
     global logger
     
     def __init__(self):
-        self.camera = CameraFunctions.Camera_Functions()
-        self.maestro = MaestroFunctions.Maestro_Functions()
-        self.telnet = tel_net.Tel_net()
+        self.camera = PC
+        self.maestro = Maestro_Functions()
+        self.telnet = Tel_net()
         self.logger = LoggerFunctions.Logger_Functions('../logs/autoexpose-log')
 
     def autoe(self, flowcell, fluors, integration_times):
@@ -57,14 +62,14 @@ class Autoexpose:
 
         # first, we need to determine which chambers we want to use;
         # we use one chamber from each column of 6 (3 total choices)
-        chamber = [] # holds the indices of the chambers to visit
-        chamberXC = [] #holds the X positions of the centers of the chambers
-        chamberYC = [] #holds the Y positions of the centers of the chambers
-        chamberX = [] #holds the X positions of all positions in all chambers
-        chamberY = [] #holds the Y positions of all positions in all chambers
-        chamberXAE = [] #X positions the autoexposure algorithm will visit 
+        chamber = []    # holds the indices of the chambers to visit
+        chamberXC = []  # holds the X positions of the centers of the chambers
+        chamberYC = []  # holds the Y positions of the centers of the chambers
+        chamberX = []   # holds the X positions of all positions in all chambers
+        chamberY = []   # holds the Y positions of all positions in all chambers
+        chamberXAE = [] # X positions the autoexposure algorithm will visit 
                         # for all colors
-        chamberYAE = [] #Y positions the autoexposure algorithm will visit 
+        chamberYAE = [] # Y positions the autoexposure algorithm will visit 
                         # for all colors
         best_mean = []
         best_gain = []
@@ -99,25 +104,26 @@ class Autoexpose:
                                  + 'center X: %d, Y: %d' % \
                                 (i, chamber[i], chamberXC[i], chamberYC[i]))
 
-        # We want to be sure our algorithm samples the arrays at
-        # representative spots (assuming signal will be non-uniform).
-        # So, we start by looking at 3 points in each of 3 chambers.
-        # The 3 points are across the center of the chamber in X
-        # (X is the fast axis of the stage), so we do left edge, center,
-        # and right edge.
-        #
-        # For each chamber, we 'use' the position which gives the median
-        # metric value.  We therefore end up with a list of 3 points, one
-        # per chamber.  These 3 points are the ones used to determine the gains
-        # for all colors.  We determine the 'optimal' gain according to our
-        # metric, then take the median of these optima, and that becomes
-        # our gain for that color during the current cycle of acquisition.
-        #
-        # start by imaging all 9 positions in one color (Cy5)
-        # for each of the positions in chamberX/Y, we need to expand
-        # from the single, center, position to center, left and right
-        # of the array
-        #
+        """
+        We want to be sure our algorithm samples the arrays at
+        representative spots (assuming signal will be non-uniform).
+        So, we start by looking at 3 points in each of 3 chambers.
+        The 3 points are across the center of the chamber in X
+        (X is the fast axis of the stage), so we do left edge, center,
+        and right edge.
+
+        For each chamber, we 'use' the position which gives the median
+        metric value.  We therefore end up with a list of 3 points, one
+        per chamber.  These 3 points are the ones used to determine the gains
+        for all colors.  We determine the 'optimal' gain according to our
+        metric, then take the median of these optima, and that becomes
+        our gain for that color during the current cycle of acquisition.
+
+        start by imaging all 9 positions in one color (Cy5)
+        for each of the positions in chamberX/Y, we need to expand
+        from the single, center, position to center, left and right
+        of the array
+        """
         # generate the list of positions to visit
         for i in range(0,3): #for each chamber
             for j in range(0,3): #for each position within the chamber
@@ -130,7 +136,7 @@ class Autoexpose:
 
         # start with the first element of the arg list
         self.maestro.filter_goto(fluors[0])
-        self.camera.set_exposure(integration_times[0])
+        self.camera.py_set_exposure(integration_times[0])
         #pick the best position in each chamber
         for i in range(0,2): #for each chamber
             # reset mean and gain arrays
@@ -150,9 +156,9 @@ class Autoexpose:
                 for k in range(0, 10): #for each gain setting from gain_min in 
                                        # increments of gain_incr
                     curr_gain = gain_min[fluors[0]] + (k * gain_incr)
-                    self.camera.set_gain(curr_gain)
+                    self.camera.py_set_gain(curr_gain)
                     self.maestro.shutter_open()
-                    curr_mean = self.camera.imagemean(self.camera.snapimage());
+                    curr_mean = self.camera.py_imagemean(self.camera.py_snapimage());
                     self.maestro.shutter_close()
                     self.logger.log('For position %d,%d, chamber %d, gain of '+ \
                                     '%d gave mean of %d' % \
@@ -203,7 +209,7 @@ class Autoexpose:
             if(fluor != fluors[0]): #we already did the cy5 autoexposure
                 
                 self.maestro.filter_goto(fluor)
-                self.camera.set_exposure(integration_times[fluors.index(fluor)])
+                self.camera.py_set_exposure(integration_times[fluors.index(fluor)])
                 best_gain = []
                 best_mean = []
 
@@ -212,9 +218,9 @@ class Autoexpose:
                     for k in range(0, 10): # for each gain setting from gain_min 
                                            # in increments of gain_incr
                         curr_gain = gain_min[fluor] + (k * gain_incr)
-                        self.camera.set_gain(curr_gain)
+                        self.camera.py_set_gain(curr_gain)
                         self.maestro.shutter_open()
-                        curr_mean = self.camera.imagemean(self.camera.snapimage());
+                        curr_mean = self.camera.py_imagemean(self.camera.py_snapimage());
                         self.maestro.shutter_close()
                         self.logger.log('For fluor %s, chamber %d, gain of %d '+ \
                                         'gave mean of %d' % \

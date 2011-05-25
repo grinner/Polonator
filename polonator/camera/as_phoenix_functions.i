@@ -1,4 +1,4 @@
-%module AS_PhoenixFunctions
+%module asPhoenixFunctions
 %{
 #include "as_phoenix_functions.h"
 %}

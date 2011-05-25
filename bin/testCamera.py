@@ -1,35 +1,37 @@
 """
-## ============================================================================
-## Polonator G.007 Selective Illuminate Software
-##
-## Wyss Institute
-## Written by Nick Conway
-##
-## testCamera.py: Test script to determine if SWIG handles 
-## for imaging, maestro, and DMD work
-##
-## Ported to python from c and extended from Daniel Levner's
-##    ReleaseFocus.c -- 1-9-2010 [Nick Conway]
-##
-## This software may be modified and re-distributed, but this header must appear
-## at the top of the file.
-##
-##    1) move to spot with global offset
-##    2) take image
-##    3) send image to processing
-##    4) receive from processing the offset and list of points
-##    5) perform release on offset
-##     
-## ============================================================================
-##
+================================================================================
+Polonator G.007 Selective Illuminate Software
+
+Wyss Institute
+Written by Nick Conway
+
+testCamera.py: Test script to determine if SWIG handles 
+for imaging, maestro, and DMD work
+
+Ported to python from c and extended from Daniel Levner's
+ReleaseFocus.c -- 1-9-2010 [Nick Conway]
+
+This software may be modified and re-distributed, but this header must appear
+at the top of the file.
+
+1) move to spot with global offset
+2) take image
+3) send image to processing
+4) receive from processing the offset and list of points
+5) perform release on offset
+ 
+================================================================================
+
 """
 
 import sys
 import getopt
 import os
+sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')  
+
 import polonator.illum.D4000 as PI
 import polonator.camera.asPhoenix as PC
-from polonator.motion import maestro
+from polonator.motion.maestro import MaestroFunctions
 
 
 DEFAULT_CUBE = "spare"
@@ -70,7 +72,7 @@ def main(argv=None):
         sys.exit(-1)
     #end if
     
-    MF = polMaestro.Maestro_Functions()
+    MF = MaestroFunctions()
     
     # process the numeric arguments 
     int_time = float(argv[1])

@@ -1,5 +1,5 @@
 """
-=============================================================================
+================================================================================
 
 Polonator G.007 Selective Illuminate Software
 
@@ -23,11 +23,7 @@ at the top of the file.
 4) receive from processing the offset and list of points
 5) perform release on offset
     
-=============================================================================
-The Python Imaging Library (PIL) is
-
-    Copyright © 1997-2006 by Secret Labs AB
-    Copyright © 1995-2006 by Fredrik Lundh 
+================================================================================
 """
 
     
@@ -38,7 +34,7 @@ import glob
 import numpy
 import polonator.logger as PL
 import polonator.illum.D4000 as PI
-import polonator.camera.as_phoenix as PC
+import polonator.camera.asPhoenix as PC
 import ConfigParser
 import polonator.motion.maestro as PM
 # from PIL import Image
@@ -51,7 +47,7 @@ ALIGNMENT_PARAM_NUM = 1;
 
 class MappingFunctions:
     
-    global MF
+    MF = MappingFunctions
     
     def __init__(self):
         """
@@ -59,53 +55,52 @@ class MappingFunctions:
         configuration file
 
         """
-        # read in the config file.  must be formated correctly
         PL.p_log("STATUS:\tMappingFunctions: initializing")
 
-        MappingFunctions.config = ConfigParser.ConfigParser()
-        MappingFunctions.config_dir = os.environ['POLONATOR_PATH'] + \
+        self.MF.config = ConfigParser.ConfigParser()
+        self.MF.config_dir = os.environ['POLONATOR_PATH'] + \
                                         '/config_files'
-        MappingFunctions.config_path = MappingFunctions.config_dir \
+        self.MF.config_path = self.MF.config_dir \
                                             + '/camera_to_DMD_params.config'
-        MappingFunctions.A_map = numpy.empty(10,dtype=numpy.float)
+        self.MF.A_map = numpy.empty(10,dtype=numpy.float)
         # make sure something is in the file
-        if MappingFunctions.config.read(MappingFunctions.config_path) == []:
+        if self.MF.config.read(self.MF.config_path) == []:
             self.defaultConfigFile()
-            MappingFunctions.config.read(MappingFunctions.config_path)
+            self.MF.config.read(self.MF.config_path)
         #end if
-        elif not MappingFunctions.config.has_section('Main'):
+        elif not self.MF.config.has_section('Main'):
             print "No main"
             self.defaultConfigFile()
         # end elif
-        MappingFunctions.IlluminateWidth = \
-            int(MappingFunctions.config.get(  'Main', 'IlluminateWidth'))
-        MappingFunctions.IlluminateHeight = \
-            int(MappingFunctions.config.get(  'Main', 'IlluminateHeight'))
-        MappingFunctions.CameraWidth = \
-            int(MappingFunctions.config.get(  'Main',  'CameraWidth'))
-        MappingFunctions.CameraHeight = \
-            int(MappingFunctions.config.get(  'Main', 'CameraHeight'))
-        MappingFunctions.ImageExposure = \
-            float(MappingFunctions.config.get('Main', 'ImageExposure'))
-        MappingFunctions.ImageGain = \
-            int(MappingFunctions.config.get(  'Main', 'ImageGain'))
-        MappingFunctions.ImageColor = \
-            MappingFunctions.config.get(      'Main', 'ImageColor')
-        MappingFunctions.ImageFilename = \
-            MappingFunctions.config.get(      'Main', 'ImageFilename')
-        MappingFunctions.ImageCCD_BytesPerPixel = \
-            int(MappingFunctions.config.get(  'Main', 'ImageCCD_BytesPerPixel'))
-        MappingFunctions.MaestroF = PM.MaestroFunctions()
-        MappingFunctions.mask_number0 = 0
-        MappingFunctions.mask_radius0 = 1
-        MappingFunctions.mask_number1 = 1
-        MappingFunctions.mask_radius1 = 0
-        MappingFunctions.mask_number2 = 2
-        MappingFunctions.mask_radius2 = 1
-        MappingFunctions.mask_number3 = 3
-        MappingFunctions.mask_radius3 = 3
-        MappingFunctions.expose = 0.25
-        MappingFunctions.gain = 200
+        self.MF.IlluminateWidth = \
+            int(self.MF.config.get(  'Main', 'IlluminateWidth'))
+        self.MF.IlluminateHeight = \
+            int(self.MF.config.get(  'Main', 'IlluminateHeight'))
+        self.MF.CameraWidth = \
+            int(self.MF.config.get(  'Main',  'CameraWidth'))
+        self.MF.CameraHeight = \
+            int(self.MF.config.get(  'Main', 'CameraHeight'))
+        self.MF.ImageExposure = \
+            float(self.MF.config.get('Main', 'ImageExposure'))
+        self.MF.ImageGain = \
+            int(self.MF.config.get(  'Main', 'ImageGain'))
+        self.MF.ImageColor = \
+            self.MF.config.get(      'Main', 'ImageColor')
+        self.MF.ImageFilename = \
+            self.MF.config.get(      'Main', 'ImageFilename')
+        self.MF.ImageCCD_BytesPerPixel = \
+            int(self.MF.config.get(  'Main', 'ImageCCD_BytesPerPixel'))
+        self.MF.MaestroF = PM.MaestroFunctions()
+        self.MF.mask_number0 = 0
+        self.MF.mask_radius0 = 1
+        self.MF.mask_number1 = 1
+        self.MF.mask_radius1 = 0
+        self.MF.mask_number2 = 2
+        self.MF.mask_radius2 = 1
+        self.MF.mask_number3 = 3
+        self.MF.mask_radius3 = 3
+        self.MF.expose = 0.25
+        self.MF.gain = 200
         self.illumInit()
     # end def
 
@@ -130,11 +125,11 @@ class MappingFunctions:
         configuration file
         
         """
-        MF = MappingFunctions
         # read in the config file.  must be formated correctly
         PL.p_log("STATUS:\tMappingFunctions: initializing")
         
-        MappingFunctions.config = ConfigParser.ConfigParser()
+        MF = self.MF
+        MF.config = ConfigParser.ConfigParser()
         MF.config_dir = os.environ['POLONATOR_PATH'] + '/config_files'
         MF.config_path = MF.config_dir + '/camera_to_DMD_params.config'
 
@@ -198,7 +193,7 @@ class MappingFunctions:
         
         We need to solve for A0, A1, A2, A3, A4, and A5
         """
-        MF = MappingFunctions
+        MF = self.MF
         
         # load A6, A7, A8, and A9 from DMD config file
         # don't need these assignments, but adds clarity
@@ -212,6 +207,7 @@ class MappingFunctions:
         # create empty array, 2x num_coords rows x 6 columns
         #this will be the states
         Q = numpy.empty([2*num_coords, 6])
+
 
         # create empty array 2x num_coords rows x 1 column
         R_bar = numpy.empty([2*num_coords, 1])
@@ -262,8 +258,8 @@ class MappingFunctions:
             within the class and is in memory
             To a file
         """
+        MF = self.MF
         # write mapping to file
-        MF = MappingFunctions
         PL.p_log("Status:\tMF: writing camera to DMD map to file")
         mapping_file = open('camera_to_DMD.map', 'w')
         mapping_file.write('#This is the mapping file for the camera to DMD\n')
@@ -289,7 +285,7 @@ class MappingFunctions:
             mapping file already exists
             TODO: Should add exception in the case the file does not exist
         """
-        MF = MappingFunctions
+        MF = self.MF
         PL.p_log("Status:\tMF: reading camera to DMD map to file")
         mapping_file = open('camera_to_DMD.map', 'r')
         for line in mapping_file:
@@ -316,7 +312,7 @@ class MappingFunctions:
         [     ]         =  [    ]  +  [      ] * [          ]  +  [    ]
         [illuminate_y]     [ A1 ]     [A4  A5]   [Cam_y - A7]     [ A9 ]
         """
-        A = MappingFunctions.A_map
+        A = self.MF.A_map
         x_out = A[0]+A[8] \
             -A[2]*A[6]-A[3]*A[7] \
             +A[2]*x+A[3]*y
@@ -335,7 +331,7 @@ class MappingFunctions:
         [     ]         =  [    ]  +  [      ] * [          ]  +  [    ]
         [illuminate_y]     [ A1 ]     [A4  A5]   [Cam_y - A7]     [ A9 ]
         """
-        A = MappingFunctions.A_map
+        A = self.MF.A_map
         x_out = A[0]+A[8] \
             -A[2]*A[6]-A[3]*A[7] \
             +A[2]*array_x+A[3]*array_y
@@ -352,7 +348,7 @@ class MappingFunctions:
         image copied from the frame buffer
         skips loading from a file.
         """
-        MF = MappingFunctions
+        MF = self.MF
         return PC.snapPtr( MF.ImageExposure,\
                             MF.ImageGain, \
                             MF.ImageColor, \
@@ -396,7 +392,7 @@ class MappingFunctions:
         generate a good and sufficient mapping basis coordinates are given
         as a range from -1 to 1 with 0,0 being the image center
         """
-        MF = MappingFunctions
+        MF = self.MF
         print("STATUS:\tMappingFunctions: opening frame buffer\n")
         mapping_basis = open(MF.config_dir +'/mapping_basis.coordinates')
         print(  "STATUS:\tMappingFunctions: getting list of points \
@@ -547,7 +543,7 @@ class MappingFunctions:
         calling illumInit()
         
         """
-        MF = MappingFunctions
+        MF = self.MF
         # snap an image with settings from the config file
         PC.snap(MF.ImageExposure, \
                 MF.ImageGain, \
@@ -563,7 +559,7 @@ class MappingFunctions:
         by calling illumInit()
         """
         # snap an image with settings from the config file
-        MF = MappingFunctions
+        MF = self.MF
         return PC.snapPtr(  MF.ImageExposure,\
                             MF.ImageGain, \
                             MF.ImageColor)
@@ -582,7 +578,7 @@ class MappingFunctions:
         mode. SafeConfigParser does not allow such assignments to
         take place.
         """
-        MF = MappingFunctions
+        MF = self.MF
         MF.config.add_section('Main')
         MF.config.set('Main', 'IlluminateWidth', 1920)
         MF.config.set('Main', 'IlluminateHeight', 1080)
@@ -648,7 +644,7 @@ class MappingFunctions:
             initialize the illumination system for use in the mapping process   
         """
      
-        MF = MappingFunctions
+        MF = self.MF
         print "Initializing release system\n"
         PI.py_clear_memory();
         
@@ -693,7 +689,7 @@ class MappingFunctions:
     
     
     def vector(self,vx,vy, num_points,spot_size=0):
-        MF = MappingFunctions
+        MF = self.MF
         
         outpoints = self.n_ccd_to_dmd(vx,vy)
         a = outpoints[0]
@@ -716,7 +712,7 @@ class MappingFunctions:
             function exists primarily for testing
 
         """
-        MF = MappingFunctions
+        MF = self.MF
         coord = self.ccd_to_dmd(x,y)
         # TODO:
         # multiplying by 4 because of confusing SUBPIXEL stuff fix in image 
@@ -748,7 +744,7 @@ class MappingFunctions:
         function exists primarily for testing
 
         """
-        MF = MappingFunctions
+        MF = self.MF
 
         #im = Image.open("wyss_1000.bmp")
         #im = Image.open("wyss_1000_i2.bmp")
@@ -781,7 +777,7 @@ class MappingFunctions:
         function exists primarily for testing
 
         """
-        MF = MappingFunctions
+        MF = self.MF
 
         im = Image.open("../../data/wyss_1000_i2.bmp")
 
@@ -824,7 +820,7 @@ class MappingFunctions:
         function exists primarily for testing
 
         """
-        MF = MappingFunctions
+        MF = self.MF
 
         im = Image.open("../../data/George_Church_05.bmp")
 
@@ -850,7 +846,7 @@ class MappingFunctions:
         function exists primarily for testing
 
         """
-        MF = MappingFunctions
+        MF = self.MF
 
 
         pix = numpy.zeros((1000,1000), dtype=numpy.uint8)

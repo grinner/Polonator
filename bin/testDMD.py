@@ -28,9 +28,12 @@ at the top of the file.
 import sys
 import getopt
 import os
+
+sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')  
+
 import polonator.illum.D4000 as PI
 import polonator.camera.asPhoenix as PC
-from polonator.motion import maestro
+from polonator.motion.maestro import MaestroFunctions
 
 
 DEFAULT_CUBE = "spare"
@@ -70,7 +73,7 @@ def main(argv=None):
         sys.exit(-1)
     #end if
     
-    MF = maestro.MaestroFunctions()
+    MF = MaestroFunctions()
     
     # process the numeric arguments 
     int_time = float(argv[1])

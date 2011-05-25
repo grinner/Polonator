@@ -24,18 +24,16 @@ at the top of the file.
     Need .001 30 + for general illumination 
 python testDMD_bitmap.py 0.06 220 spare 0
 ================================================================================
-The Python Imaging Library (PIL) is
-
-    Copyright © 1997-2006 by Secret Labs AB
-    Copyright © 1995-2006 by Fredrik Lundh 
 """
 
 import sys
 import getopt
 import os
+sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')  
+
 import polonator.illum.D4000 as PI
 import polonator.camera.asPhoenix as PC
-from polonator.motion import maestro
+from polonator.motion.maestro import MaestroFunctions
 # from PIL import Image
 import Image # for later versions of PIL
 
@@ -75,7 +73,7 @@ def main(argv=None):
         sys.exit(-1)
     #end if
     
-    MF = maestro.Maestro_Functions()
+    MF = MaestroFunctions()
     
     # process the numeric arguments 
     int_time = float(argv[1])

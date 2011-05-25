@@ -4,10 +4,11 @@
 viewraw.py
 Short code to convert a raw image to a png and then show it
 """
-
-import convert14to8 as convert
 import os
 import sys
+sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')  
+
+import dataio.convert14to8 as convert
 
 def show_usage():
     print "viewraw <filename>"
