@@ -21,42 +21,42 @@
 #
 
 if($ARGV[0] eq "acq"){
-    @findcmd = ("polonator_main", "test-img", "manual_image", "Polonator-stagealign", "Polonator-acquirer", "biochem_utils", "PolonatorUtils");
-    $acq=1;
+	@findcmd = ("polonator_main", "test-img", "manual_image", "Polonator-stagealign", "Polonator-acquirer", "biochem_utils", "PolonatorUtils");
+	$acq=1;
 }
 elsif($ARGV[0] eq "proc"){
-    @findcmd = ("perl ./initialize_processor", "initialize_processor", "perl ./processor", "processor");
+	@findcmd = ("perl ./initialize_processor", "initialize_processor", "perl ./processor", "processor");
 }
 
 
 $num_cmds = @findcmd;
 for($i=0; $i<$num_cmds; $i++){
-    open (PS_F, "ps -Af|");
-    $discard = <PS_F>;
-    while(<PS_F>){
-	($user, $pid, $ppid, $nice, $stime, $tty, $rtime, $command) = split(" +", $_, 8);
-	chop $command;
-	if($command=~/$findcmd[$i]/){
-	    if($acq eq 1){
-		$exec_cmd = "sudo kill $pid";
-	    }
-	    else{
-		$exec_cmd = "kill $pid";
-	    }
-	    print "$exec_cmd\n";
-	    system($exec_cmd);
+	open (PS_F, "ps -Af|");
+	$discard = <PS_F>;
+	while(<PS_F>){
+		($user, $pid, $ppid, $nice, $stime, $tty, $rtime, $command) = split(" +", $_, 8);
+		chop $command;
+		if($command=~/$findcmd[$i]/){
+		    if($acq eq 1){
+				$exec_cmd = "sudo kill $pid";
+		    }
+		    else{
+				$exec_cmd = "kill $pid";
+			}
+			print "$exec_cmd\n";
+			system($exec_cmd);
+		}
 	}
-    }
-    close (PS_F);
+	close (PS_F);
 }
 
 if($ARGV[0] eq "acq"){
-    $exec_cmd = $ENV{'POLONATOR_PATH'} . "/bin/PolonatorUtils complete-scan";
-    print "$exec_cmd\n";
-    system($exec_cmd);
+	$exec_cmd = $ENV{'POLONATOR_PATH'} . "/bin/PolonatorUtils complete-scan";
+	print "$exec_cmd\n";
+	system($exec_cmd);
 
-    $exec_cmd = $ENV{'POLONATOR_PATH'} . "/polonator/fluidics/src/biochem_utils.pl 0 syringe_pump_init";
-    print "$exec_cmd\n";
-    system($exec_cmd);
+	$exec_cmd = $ENV{'POLONATOR_PATH'} . "/polonator/fluidics/src/biochem_utils.pl 0 syringe_pump_init";
+	print "$exec_cmd\n";
+	system($exec_cmd);
 }
 

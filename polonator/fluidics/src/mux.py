@@ -1,5 +1,5 @@
 """
---------------------------------------------------------------------------------
+------------------------------------------------------------------------------
  Author: Mirko Palla.
  Date: February 19, 2008.
  Modified: Richard Terry
@@ -12,7 +12,7 @@
 
  This software may be used, modified, and distributed freely, but this
  header may not be modified and must appear at the top of this file. 
-------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------
 """
 
 import sys
@@ -22,7 +22,7 @@ import logging
 
 from tel_net import Tel_net
 
-log=logging.getLogger("mux\t")
+log = logging.getLogger("mux\t")
 
 class Mux:
 
@@ -74,8 +74,12 @@ class Mux:
 
         log.debug("---\t-\t--> MUX: mux object constructed")
 
-    # Added by Greg Porreca 01-23-2009 to easily select an arbitrary device
+    
     def setToDevice(self, device_name):
+        """
+        Added by Greg Porreca 01-23-2009 to easily select an arbitrary 
+        device
+        """
         log.debug("---\t-\t-->      switch to device %s" %(device_name))
         if(device_name == 'V1'):
             self.set_to_rotary_valve1()
@@ -93,13 +97,13 @@ class Mux:
             self.set_to_temperature_control2()
         if(device_name == 'TCRB'): # reagent block temperature controller
             self.set_to_reagent_block_cooler()
+    # end def
 
 
 
-
-#------------------------------------------------------------------------------#
-#     Ultimac Mux R/P PCB FUNCTIONS     #
-#------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------
+#     Ultimac Mux R/P PCB FUNCTIONS
+#-----------------------------------------------------------------------------
 
     # Discrete valves
 
