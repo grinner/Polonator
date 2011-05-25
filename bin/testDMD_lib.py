@@ -16,21 +16,19 @@ This software may be modified and re-distributed, but this header must appear
 at the top of the file.
 
 ==============================================================================
-The Python Imaging Library (PIL) is
-
-    Copyright © 1997-2006 by Secret Labs AB
-    Copyright © 1995-2006 by Fredrik Lundh 
 """
 
 import sys
 import getopt
 import os
 
-import polonator.illum.D4000 as PI
+sys.path.append(os.environ['POLONATOR_PATH']+ '/polonator')
 
-import polonator.camera.asPhoenix as PC
+import illum.D4000 as PI
 
-import polonator.motion.maestro as maestro
+import camera.asPhoenix as PC
+
+import motion.maestro as maestro
 # from PIL import Image
 import Image # for later versions of PIL
 
@@ -50,7 +48,7 @@ def show_usage():
 
 def thing(expos=0.008, gain=2, mycube='spare', TDI_flag = 0):
     """
-    Process command line.  This is used 
+    Process command line.  This is used
     """
     IlluminateWidth = 1920
     IlluminateHeight = 1080
@@ -59,7 +57,7 @@ def thing(expos=0.008, gain=2, mycube='spare', TDI_flag = 0):
 
     #MF = MaestroFunctions.Maestro_Functions()
     MF = maestro.MaestroFunctions()
-    
+
     # process the numeric arguments
     int_time = float(expos)
     em_gain  = int(gain)
@@ -111,7 +109,7 @@ def thing(expos=0.008, gain=2, mycube='spare', TDI_flag = 0):
     im.save("testout.png")
     """
     #im = Image.open("wyss_HD_R3.bmp")
-    im = Image.open("alignment_DMD5.bmp")
+    im = Image.open("../data/alignment_DMD5.bmp")
     #im = Image.open("George_Church_03.bmp")
     #im = Image.open("all_white.bmp")
     #im = im.rotate(90)
@@ -127,7 +125,7 @@ def thing(expos=0.008, gain=2, mycube='spare', TDI_flag = 0):
     PI.py_clear_framebuffer()
     #PI.py_clear_memory()    # must run this or you will get line artifacts!!!!
 
-    PI.py_illum_mask_radius_dmd(0,mask_number)
+    PI.py_illum_mask_radius(0,mask_number)
     #done = 0
     for y in range(0,IlluminateHeight,y_step):
         for x in range(0,IlluminateWidth,x_step):
@@ -227,3 +225,4 @@ def snapAllPics(exposure, gain):
     # end for
     im.save(filename4 +".png", "png")
 # end def
+

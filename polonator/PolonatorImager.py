@@ -73,7 +73,7 @@ class Imager(threading.Thread):
             self.WL_num_to_avg = 1
 
             # specifies the integration time (in msec) for brightfield imaging
-            self.WL_integration_time = 250
+            self.WL_integration_time = 35
             self.WL_gain = 70;
 
             # construct cycle name for WL imaging
@@ -142,8 +142,8 @@ class Imager(threading.Thread):
                 cmd = (os.environ["POLONATOR_PATH"] + '/bin/Polonator-stagealign %d') % (self.flowcell)
                 print cmd
                 os.system(cmd)
-
-                if(self.auto_exposure == 1):
+                print "STARTING CHECK ........................"
+                if self.auto_exposure == 1:
                     j = 60
                     curr_name_new = '%s' % (imaging_order[i])
                     cmd = os.environ["POLONATOR_PATH"] + '/bin/PolonatorUtils gotostagealignpos 0 0'
@@ -163,7 +163,7 @@ class Imager(threading.Thread):
 
                 # turn the darkfield illuminator off if it was left on
                 self.maestro.darkfield_off()
-
+                print "STARTING SETUP IMAGE........................"
                 # setup controller for current color
                 self.maestro.setup_imaging(imaging_order[i], self.integration_times[fluors.index(imaging_order[i])]-5, 1, self.num_arrays, self.flowcell, 0, self.TDI_flag)
 
@@ -178,17 +178,18 @@ class Imager(threading.Thread):
                 # cmd = ('sudo ' + os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer %s %d %d %d %d') \
                 #    % (curr_name, self.integration_times[fluors.index(imaging_order[i])]-5, \
                 #        self.manual_gains[fluors.index(imaging_order[i])], self.flowcell, self.num_arrays)
-                cmd = (os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer %s %d %d %d %d') \
+                tcmd = (os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer %s %d %d %d %d') \
                     % (curr_name, self.integration_times[fluors.index(imaging_order[i])]-5, \
                         self.manual_gains[fluors.index(imaging_order[i])], self.flowcell, self.num_arrays)
-                print cmd
+                print tcmd
                 cmd = os.environ["POLONATOR_PATH"] + '/bin/Polonator-acquirer'
-                print cmd
+                # print cmd
+                print "STARTING ACQUIRE........................"
 
                 # spawn thread to receive the images and wait for it to return;
                 # it will exit w/ value of 10 if it did not acquire all images -- in
                 # this case, repeat the current color
-                if(os.spawnlp(os.P_WAIT, 'sudo', 'sudo', cmd,
+                if(os.spawnlp(os.P_WAIT, cmd, cmd,
                              curr_name,
                              str(self.integration_times[fluors.index(imaging_order[i])]),
                              str(self.manual_gains[fluors.index(imaging_order[i])]),
@@ -196,6 +197,16 @@ class Imager(threading.Thread):
                              str(self.num_arrays)) != 10):
                     # move on to next color if all images were received
                     i+=1
+                    print
+                    #if(os.spawnlp(os.P_WAIT, 'sudo', 'sudo', cmd,
+                    #             curr_name,
+                    #             str(self.integration_times[fluors.index(imaging_order[i])]),
+                    #             str(self.manual_gains[fluors.index(imaging_order[i])]),
+                    #             str(self.flowcell),
+                    #             str(self.num_arrays)) != 10):
+                    # move on to next color if all images were received
+                    #    i+=1
+                    #    print tcmd
                 else:
                     print 'Polonator-acquirer exited with error'
 

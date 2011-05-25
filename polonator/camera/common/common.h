@@ -72,27 +72,27 @@ typedef struct {
  */
 /*#define DEFAULT_CFG_FILENAME "default.pcf"*/
 /*#define DEFAULT_CFG_FILENAME "em9100-02.pcf"*/
-#define DEFAULT_CFG_FILENAME "/home/polonator/G.007/G.007_acquisition/em9100-02.pcf"
+#define DEFAULT_CFG_FILENAME "/config_files/em9100-02.pcf"
 
-#if defined _PHX_MACOSX
-#define DEFAULT_UP_DIR "/../../../../../../../"
+//#if defined _PHX_MACOSX
+//#define DEFAULT_UP_DIR "/../../../../../../../"
 
-#elif defined _PHX_POSIX
-#define DEFAULT_UP_DIR "./"
+//#elif defined _PHX_POSIX
+//#define DEFAULT_UP_DIR "./"
 
-#elif defined _PHX_WIN32
-#define DEFAULT_UP_DIR ".\\..\\..\\..\\"
+//#elif defined _PHX_WIN32
+//#define DEFAULT_UP_DIR ".\\..\\..\\..\\"
 
-#elif defined _PHX_DOS32
-#define DEFAULT_UP_DIR ".\\..\\..\\"
+//#elif defined _PHX_DOS32
+//#define DEFAULT_UP_DIR ".\\..\\..\\"
 
-#elif defined _PHX_VXWORKS
-#define DEFAULT_UP_DIR ".\\..\\..\\..\\"
+//#elif defined _PHX_VXWORKS
+//#define DEFAULT_UP_DIR ".\\..\\..\\..\\"
 
-#else
-#error Unrecognised target environment directive (e.g. _PHX_WIN32)
+//#else
+//#error Unrecognised target environment directive (e.g. _PHX_WIN32)
 
-#endif
+//#endif
 
 
 /* Function prototypes
@@ -106,3 +106,4 @@ int    PhxCommonKbRead  ( void );
 int    PhxCommonKbHit   ( void );
 
 #endif   /* _PHX_COMMON */
+

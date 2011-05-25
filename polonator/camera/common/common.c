@@ -21,7 +21,7 @@
 /* Header file for the support sevices
  */
 #include <common.h>
-
+#include <stdlib.h>
 
 
 #ifdef _PHX_POSIX
@@ -59,9 +59,11 @@ static etStat PhxCommonDefaultConfig(
          eStat = PHX_ERROR_SYSTEM_CALL_FAILED;
          goto Exit;
       }
-      pPcfFile = malloc( strlen( pPcfDirName ) + strlen( DEFAULT_UP_DIR ) + strlen( DEFAULT_CFG_FILENAME ) + 3 );
-      strcpy( pPcfFile, pPcfDirName );
-      strcat( pPcfFile, DEFAULT_UP_DIR );
+      /* pPcfFile = malloc( strlen( pPcfDirName ) + strlen( DEFAULT_UP_DIR ) + strlen( DEFAULT_CFG_FILENAME ) + 3 ); */
+      pPcfFile = malloc( strlen( pPcfDirName ) + strlen( getenv("POLONATOR_PATH") ) + strlen( DEFAULT_CFG_FILENAME ) + 3 );
+      /* strcpy( pPcfFile, pPcfDirName ); */
+      /* strcat( pPcfFile, DEFAULT_UP_DIR );*/
+      strcpy( pPcfFile, getenv("POLONATOR_PATH") );
       strcat( pPcfFile, DEFAULT_CFG_FILENAME );
    }
 
@@ -81,14 +83,15 @@ static etStat PhxCommonDefaultConfig(
    {
       (void) szProgName;
 
-      pPcfFile = (char *) malloc( strlen(DEFAULT_UP_DIR ) + strlen(DEFAULT_CFG_FILENAME ) + 2 );
+      //pPcfFile = (char *) malloc( strlen(DEFAULT_UP_DIR ) + strlen(DEFAULT_CFG_FILENAME ) + 2 );
+      pPcfFile = (char *) malloc( strlen(getenv("POLONATOR_PATH")) + strlen(DEFAULT_CFG_FILENAME ) + 2 );
       if( !pPcfFile )
       {
          eStat = PHX_ERROR_MALLOC_FAILED;
          goto Exit;
       }
-
-      strcpy( pPcfFile, DEFAULT_UP_DIR );
+      strcpy( pPcfFile, getenv("POLONATOR_PATH") );
+      /* strcpy( pPcfFile, DEFAULT_UP_DIR ); */
       strcat( pPcfFile, DEFAULT_CFG_FILENAME );
    }
 
@@ -392,7 +395,7 @@ int PhxD24(
 int PhxRun ( int (*pFn)(int, int, int, int, int, int ,int, int, int, int),
              int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10
 )
-{   
+{
    int nStatus;
 
    PhxCommonKbInit();
@@ -400,3 +403,4 @@ int PhxRun ( int (*pFn)(int, int, int, int, int, int ,int, int, int, int),
    PhxCommonKbClose();
 }
 #endif
+

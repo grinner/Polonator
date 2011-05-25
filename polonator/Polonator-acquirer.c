@@ -113,13 +113,13 @@ int main(int argc, char *argv[])
     char log_string[255];
     char config_value[255];
     char logfilename[255];
-    
+
 
     int caught_readout;
     int auto_exposure = 0;
     char * polpath;
     char acqcfgpath[127];
-    
+
     char command_buffer[255];
     char base_dir[255];
     char log_dir[255];
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
     sprintf(command_buffer, "mkdir -p %s", log_dir);
     system(command_buffer);
     /* Open config file */
-    
+
     polpath = getenv("POLONATOR_PATH");
     strcpy(acqcfgpath, polpath);
     strcat(acqcfgpath, "/config_files/polonator-acq.cfg");
@@ -608,6 +608,8 @@ int main(int argc, char *argv[])
             p_log("STATUS:\tPolonator-acquirer: re-entering image-receive loop...");
         } // end if (sPCI.image_ready)
     } // end while
+
+    sleep(5);
     fprintf(stdout, "\n");
     p_log("STATUS:\tPolonator-acquirer: last image received from camera...");
     maestro_resetflag(m_sock);
