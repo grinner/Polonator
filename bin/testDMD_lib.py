@@ -198,13 +198,13 @@ def snapAllPics(exposure, gain):
     """
     color0 = "cy3"
     color1 = "cy5"
-    color2 = "txred"
+    color2 = "txr"
     color3 = "fam"
     filename0 = "colorsnap-cy3"
     filename1 = "colorsnap-cy5"
-    filename2 = "colorsnap-txred"
+    filename2 = "colorsnap-txr"
     filename3 = "colorsnap-fam"
-    filename4 = "overlay-cy3-cy5-txRed"
+    filename4 = "overlay-cy3-cy5-txr"
     snapPicPNG(exposure[0], gain[0], color0, filename0)
     snapPicPNG(exposure[1], gain[1], color1, filename1)
     snapPicPNG(exposure[2], gain[2], color2, filename2)
@@ -212,7 +212,7 @@ def snapAllPics(exposure, gain):
     im = Image.new('RGB', (1000,1000))
     imR = Image.open(filename1 +".png") # cy5 is red
     imG = Image.open(filename0 +".png") # cy3 is green
-    imB = Image.open(filename2 +".png") # txred is blue
+    imB = Image.open(filename2 +".png") # txr is blue
     pix = im.load()
     pixR = imR.load()
     pixG = imG.load()

@@ -435,7 +435,7 @@ class MappingFunctions:
         #end for
 
         """
-            Set up imaging
+        Set up imaging
         """
         MaestroF = MF.MaestroF
         
@@ -445,7 +445,7 @@ class MappingFunctions:
         time.sleep(1)
         #MaestroF.filter_unlock()
         """
-            set up release hardware
+        set up release hardware
         """
 
         #self.illumInit()
@@ -532,9 +532,6 @@ class MappingFunctions:
         
     # end def
     
-
-
-    
     def snapImageAndSave(self):
         """
         A wrapper function that allows MappingFunctions.py to snap and
@@ -549,6 +546,16 @@ class MappingFunctions:
                 MF.ImageGain, \
                 MF.ImageColor, \
                 MF.ImageFilename)
+    # end def
+    
+    def snapImageFilename(self):
+        """
+
+        A wrapper function that allows file viewing
+        """
+        MF = self.MF
+        # snap an image with settings from the config file
+        return MF.ImageFilename
     # end def
     
     def snapImage(self):

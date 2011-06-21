@@ -15,6 +15,13 @@ def show_usage():
     print "filename - is the raw 14 bit image (16 bit per pixel) to convert"
 # end def
 
+def viewraw(filename):
+    print "cooooooooool ", filename
+    fileshow = convert.onePNG(filename, 1)
+    # launch eye of gnome
+    os.system("eog " + fileshow)
+# end def
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -25,10 +32,7 @@ def main(argv=None):
         sys.exit(-1)
     # end if
     filename = argv[1]
-    print "cooooooooool ", filename
-    fileshow = convert.onePNG(filename, 1)
-    # launch eye of gnome
-    os.system("eog " + fileshow)
+    viewraw(filename)
 # end def
 
 if __name__ == '__main__':

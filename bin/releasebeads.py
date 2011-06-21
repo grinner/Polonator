@@ -8,16 +8,23 @@ Polonator G.007 Image Acquisition Software
 Wyss Institute
 Written by Nick Conway
 
-ReleaseBeads.py: 
-
-
 Release 1.0 -- 01-04-2010
+
+List of important paths
+polonator_data_dir = $HOME/polonator/G.007/acquisition
+base_dir = polonator_data_dir/output_data 
+
+This script releases all of the beads in the Basecall files (*.basecalls) in 
+the 'base_dir' path, one basecall file at a time
+
+also required are the object table file in the 'polonator_data_dir' and the 
+hit summary file, '*.hit_summary', in the base_dir
 
 """
 
 import os
 import sys
-sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')  
+sys.path.append( os.environ['POLONATOR_PATH'] + '/polonator' )  
 import time
 import glob
 
@@ -29,8 +36,9 @@ import polonator.logger as logger
 import polonator.dataio.basecall as bc
 import polonator.dataio.objectTable as ot
 import numpy as np
+from viewraw import viewraw
    
-MF = MaestroFunctions()
+MaestroF = MaestroFunctions()
 MapFunc = MappingFunctions()
 
 beadpos_xcol = np.empty(MAX_BEADS_PERFRAME, dtype=np.uint16)
@@ -40,9 +48,41 @@ EXPOSURE_TIME = 60 # in seconds, time to expose beads
 
 def calibrate_camera_to_DMD_mapping():
     """
-        this exists just to be able to generate the mapping from this module
+    Convenience function this exists just to be able to generate the 
+    mapping from this module
     """
-    MapFunc.map_coordinate()
+    # this will move the filter wheel to position and generate a mapping_file
+    # after this, we DO NOT want to move the filter wheel at all!!!!
+    MapFunc.mapGen()
+    
+    # show a bitmap to confirm to user that the calibration went appropriately
+    MapFunc.george()
+    MapFunc.snapImageAndSave()
+    # show a picture of a snap for confirmation
+    viewraw(MapFunc.snapImageFilename())
+    
+    # Request user interaction to confirm mapping.
+    isOKtoBegin = raw_input("Press y to continue...")
+    if isOKtoBegin == 'y':
+        stop_release()
+    # end if
+    else:
+        print("It appears the mapping didn't work out...")
+        stop_release()
+        sys.exit(1)
+    # end else
+# end def
+
+def stop_release():
+    """
+    Convenience command for command line
+    Turns the DMD array entirely off by:
+    1) floating the pixels
+    2) clears the framebuffer
+    3) closes the shutter
+    """
+    MapFunc.closeDMD()
+    MaestroF.shutter_close()
 # end def
     
 def goto_flagged_images(self):
@@ -120,6 +160,7 @@ def goto_flagged_images(self):
     last_bead = 0
     num_beads = 0       # initialize to zero
     
+    # start network communication for getting the image offset
     PA.py_start_network_server()
     
     coord_list = MapFunc.create_point_table(0xFFFF)
@@ -208,7 +249,6 @@ def goto_flagged_images(self):
                         pass
                     # end else
 
-                    
                     # match image number
                     if the_OT.get_image_num() < image_number:
                         the_OT.seek_image(image_number)
@@ -222,8 +262,7 @@ def goto_flagged_images(self):
                     else:
                         pass
                     # end else
-
-                        
+    
                     # now do the move
                     if last_cell != flowcell:   # move to new flowcell and 
                                                 # align if necessary
@@ -233,15 +272,18 @@ def goto_flagged_images(self):
                         os.system(cmd)
                         last_cell = flowcell                            
                     #end if
-                    MF.goto_image(flowcell,lane,image_number)  # move to new 
+                    MaestroF.goto_image(flowcell,lane,image_number)  # move to new 
                                                                # image
                     last_image = image_number
                     print 'Moved to image number %d ' % image_number
                     time.sleep(0.1)
+                    
                     # call image grabber
                     MapFunc.snap_image_and_save()
+                    
                     # let proc do alignment
                     PA.py_send_DMD_register_image(lane,image_number)
+                    
                     # get the sub_alignment of pixels these are ints
                     x_offset = int(PA.py_get_X_offset())
                     y_offset = int(PA.py_get_Y_offset())
@@ -278,7 +320,7 @@ def goto_flagged_images(self):
                 # end else
             #end if
         #end else       
-    #end while True loop
+    # end while True loop
     if num_beads > 0:
         # this function does the coordinate transform and illuminates!!!!
         # MapFunc.transform_camera_to_DMD( coord_list, num_beads - 1)
@@ -293,3 +335,15 @@ def goto_flagged_images(self):
     the_OT.close()
     PA.py_stop_network_server()
 #end def
+
+def main():
+    """
+    Calibrate mapping, confirm mapping, then release
+    """
+    calibrate_camera_to_DMD_mapping()
+    
+    goto_flagged_images()
+# end def
+
+if __name__ == '__main__':
+    main()

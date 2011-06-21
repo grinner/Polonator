@@ -27,8 +27,8 @@ i = PolonatorImager.Imager(cyclename,fcnum)
 # if integration times/gains were specified, override the
 # defaults in PolonatorImager by setting them here
 if(len(sys.argv) == 11):
-    # order of fluors in PolonatorImager is cy5, fam, cy3, txred
-    # order of fluors in GUI is fam, cy5, cy3, txred
+    # order of fluors in PolonatorImager is cy5, fam, cy3, txr
+    # order of fluors in GUI is fam, cy5, cy3, txr
     # fam:
     i.integration_times[0] = int(sys.argv[5]);
     i.manual_gains[0] = int(sys.argv[6]);
@@ -38,7 +38,7 @@ if(len(sys.argv) == 11):
     # cy3:
     i.integration_times[2] = int(sys.argv[7]);
     i.manual_gains[2] = int(sys.argv[8]);
-    # txred:
+    # txr:
     i.integration_times[3] = int(sys.argv[9]);
     i.manual_gains[3] = int(sys.argv[10]);
 ##

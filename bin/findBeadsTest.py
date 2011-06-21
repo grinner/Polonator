@@ -16,7 +16,7 @@ This script is not intended to sequence.
 import time
 import sys
 import os
-sys.path.append(os.environ['POLONATOR_PATH']+'/polonator')  
+sys.path.append(os.environ['POLONATOR_PATH'] + '/polonator')  
   
 import numpy as np
 # from PIL import Image
@@ -34,7 +34,7 @@ MapFunc.readMappingFile()
 MaestroF = MaestroFunctions()
 
 #my_color = "spare"
-#my_color = "txred"
+#my_color = "txr"
 #my_color_ind = 2
 my_color = "cy3"
 my_color_ind = 0
@@ -42,13 +42,13 @@ no_color = "none"
 
 color0 = "cy3"
 color1 = "cy5"
-color2 = "txred"
+color2 = "txr"
 color3 = "fam"
 filename0 = "colorsnap-cy3"
 filename1 = "colorsnap-cy5"
-filename2 = "colorsnap-txred"
+filename2 = "colorsnap-txr"
 filename3 = "colorsnap-fam"
-filename4 = "overlay-cy3-cy5-txRed"    
+filename4 = "overlay-cy3-cy5-txr"    
 
 filenames = [filename0, filename1,filename2,filename3]
 colors = [color0,color1,color2,color3]
@@ -142,7 +142,7 @@ def snapAllPics(exposure, gain,suffix):
     im = Image.new('RGB', (1000,1000))
     imR = Image.open(filenames[1] + suffix + ".png") # cy5 is red
     imG = Image.open(filenames[0] + suffix + ".png") # cy3 is green
-    imB = Image.open(filenames[2] + suffix + ".png") # txred is blue
+    imB = Image.open(filenames[2] + suffix + ".png") # txr is blue
     pix = im.load()
     pixR = imR.load()
     pixG = imG.load()
@@ -322,7 +322,7 @@ def find():
         img_file.close()
         del img_array_1D
     # end for
-    # R = cy5, G = cy3, B = txRed
+    # R = cy5, G = cy3, B = txr
     # yellow = fam ==> RGB:255,255,0
     img_total = (img_1D_list[1] + \
                 img_1D_list[2] + \
@@ -410,7 +410,7 @@ def overlayPNG(prefix,suffix):
         image_1D_list.append(img_array_1D.reshape(shape))
         image_file.close()
     # end for
-    # R = cy5, G = cy3, B = txRed
+    # R = cy5, G = cy3, B = txr
     # yellow = fam ==> RGB:255,255,0
     image_3D = np.dstack([image_1D_list[1] + image_1D_list[3], \
                           image_1D_list[0]+image_1D_list[3], \
