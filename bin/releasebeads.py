@@ -8,8 +8,6 @@ Polonator G.007 Image Acquisition Software
 Wyss Institute
 Written by Nick Conway
 
-Release 1.0 -- 01-04-2010
-
 List of important paths
 polonator_data_dir = $HOME/polonator/G.007/acquisition
 base_dir = polonator_data_dir/output_data 
@@ -30,7 +28,7 @@ import glob
 
 from polonator.illum.mapping import MappingFunctions
 from polonator.motion.maestro import MaestroFunctions
-import polonator.polProcDMD as PA # this is polonator acquirier
+import polonator.polProcDMD as PA               # this is polonator acquirier
 import polonator.camera.asPhoenix as PC
 import polonator.logger as logger
 import polonator.dataio.basecall as bc
@@ -46,6 +44,25 @@ beadpos_yrow = np.empty(MAX_BEADS_PERFRAME, dtype=np.uint16)
 num_beads = 0
 EXPOSURE_TIME = 60 # in seconds, time to expose beads
 
+"""
+The following methods provide a means to exit gracefully from the script and
+shut down the DMD
+
+Use Ctrl+c to exit
+"""
+import signal
+# Set the signal handler and a 5-second alarm
+signal.signal(signal.SIGINT, exit_handler)
+def exit_handler(signum, frame):
+    """
+    the SIGINT callback
+    """
+    stop_release()  # stop the DMD
+    print 'DMD stopped, Signal handler called with signal', signum
+    sys.exit(1)
+# end def
+
+
 def calibrate_camera_to_DMD_mapping():
     """
     Convenience function this exists just to be able to generate the 
@@ -57,6 +74,8 @@ def calibrate_camera_to_DMD_mapping():
     
     # show a bitmap to confirm to user that the calibration went appropriately
     MapFunc.george()
+    time.sleep(1)
+    # end if
     MapFunc.snapImageAndSave()
     # show a picture of a snap for confirmation
     viewraw(MapFunc.snapImageFilename())
@@ -148,10 +167,8 @@ def goto_flagged_images(self):
     
     print the_files
         
-    #in_file  = open(the_files[0], 'r')
     the_basecall = bc.BaseCall(the_files[0])
         
-    #object_table = open(the_object_table_file,'rb')
     the_OT = ot.ObjectTable(the_object_table_file)
         
     last_image = -1     # outside the range of possible image numbers
@@ -169,10 +186,13 @@ def goto_flagged_images(self):
     
     
     print('STATUS: begin reading basescall file')
+    # loop to read basecall entries
     while True:
-        the_basecall.read_entry()
-        if (the_base_call.isEOF()):   # breaks the loop when a line length is 
-                                      # zero indicating EOF
+    
+        the_basecall.read_entry()       # read an entry/line
+        
+        # breaks the loop when a line length is zero indicating EOF
+        if (the_base_call.isEOF()):
             #print 'breaking'
             #print 'a'+ base_call_line + 'b'
             print('STATUS: reached end of basescall file, line of zero length')
@@ -207,7 +227,7 @@ def goto_flagged_images(self):
                         raw = theOT.read(4)
                         if len(raw) == 0:     # if the read returned zero bytes 
                                               # we reached EOF
-                            print "Error: ReleaseBeads.py:' \
+                            print "Error: releasebeads.py:' \
                                     + ' reached end of file too early likely!"
                             break
                         #end if
@@ -272,8 +292,9 @@ def goto_flagged_images(self):
                         os.system(cmd)
                         last_cell = flowcell                            
                     #end if
-                    MaestroF.goto_image(flowcell,lane,image_number)  # move to new 
-                                                               # image
+                    
+                    # move to new image
+                    MaestroF.goto_image(flowcell,lane,image_number)
                     last_image = image_number
                     print 'Moved to image number %d ' % image_number
                     time.sleep(0.1)
@@ -309,10 +330,6 @@ def goto_flagged_images(self):
                 # end elif
                 else: 
                     print 'STATUS: Release Beads: adding point to list'
-                    # MapFunc.add_point_to_table(x_point, \ 
-                    #                            y_point, \
-                    #                            num_beads, \
-                    #                           coord_list)
                     beadpos_xcol[num_beads] = x_point
                     beadpos_yrow[num_beads] = y_point
                     bead_last = bead
@@ -323,17 +340,18 @@ def goto_flagged_images(self):
     # end while True loop
     if num_beads > 0:
         # this function does the coordinate transform and illuminates!!!!
-        # MapFunc.transform_camera_to_DMD( coord_list, num_beads - 1)
         MapFunc.vector(beadpos_xcol,beadpos_yrow, num_beads,spot_size=0)
         time.sleep(EXPOSURE_TIME)
-        MapFunc.closeDMD()
-        MaestroF.shutter_close()
+        # disable to DMD and get ready to move
+        stop_release()
         num_beads = 0 
     # end if
-    #MapFunc.delete_point_table(coord_list) 
+
+    # close files
     the_basecall.close()
     the_OT.close()
     PA.py_stop_network_server()
+
 #end def
 
 def main():
@@ -341,7 +359,6 @@ def main():
     Calibrate mapping, confirm mapping, then release
     """
     calibrate_camera_to_DMD_mapping()
-    
     goto_flagged_images()
 # end def
 
