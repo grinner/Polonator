@@ -1,5 +1,8 @@
 
 """
+Nick Conway Wyss Institute  02-02-2010
+
+This parses a Polonator G.007 object table file
       
 The object table is parsed as follows since it is a binary file
         
@@ -23,9 +26,10 @@ beadpos_xcol     {0..NUM_XCOLS - 1}       2 bytes    X image position of
 beadpos_yrow     {0..NUM_YROWS - 1}       2 bytes    Y image position of 
                                                      centroid for current bead
 
-        TODO add skip lane and skip flowcell functions
+TODO add skip lane and skip flowcell functions
 """
-import struct
+
+import struct   # struct is used for unpacking binary data from a file
 
 class ObjectTable:
     def __init__(self,filename):
@@ -33,47 +37,54 @@ class ObjectTable:
         initializes the class opens the file and 
         loads the first entry of the class
         """
-        self.file = open(filename, 'rb')
-        self.entry = 0
-        self.point = 0
-        self.EOF = False
+        self._file = self.open(filename)
+        self._entry = 0
+        self._point = 0
+        self._EOF = False
         self.read_entry()
-        self.flag_index = len(self.entry)-1
-        self.base_count = self.flag_index-6+1   # 6 fields minimum
-        self.bead_num = -1;                     # a bead number index of 
-                                                # the point currently read 
-                                                # into the class variable 
-                                                # self.point
-        self.lane_max = 7                       # index of maximum lane number
-        self.image_num_max = 2180               # maximum image tile index
+        self._flag_index = len(self._entry) - 1
+        self._base_count = self._flag_index-6 + 1   # 6 fields minimum
+        
+        """
+        this is reset every for every image read and keeps track of the 
+        number of objects ('num_objects' above) in an image to make sure 
+        we read the appropriate number of bytes.
+        a bead number index of the point currently read into 
+        the class variable self._point
+        """
+        self._bead_num = -1;                        
+        self._lane_max = 7                       # index of maximum lane number
+        self._image_num_max = 2180               # maximum image tile index
     #end def
     
     def open(self,filename): 
-        self.file = open(filename, 'r')
+        return open(filename, 'rb')
     # end def
     
     def close(self):
-         self.file.close()
+         self._file.close()
         #end def
             
     def read_entry(self):   
         """
-        return a tuple of data from an entry in the obejct table binary file 
+        return a tuple of data from an entry in the object table binary file 
         loads header data into the class variable
         """
-        raw = self.file.read(4)
-        self.EOF = not len(raw)
-        if self.EOF:   # if EOF
-            self.entry = []
+        raw = self._file.read(4)
+        self._EOF = not len(raw)
+        if self._EOF:   # if EOF
+            self._entry = []
             print('STATUS: reached end of object table file, line of zero length')
             return 0
         # end if
         else:
+            # use the struct module to unpack the binary data according to 
+            # the file type listed above
             val = struct.unpack('i',raw)
             if (int(val[0]) == -1): 
-                raw = self.file.read(16)
-                self.entry = struct.unpack('iiii',raw)
-                self.bead_num = -1;     # reset bead number index
+                raw = self._file.read(16)
+                self._entry = struct.unpack('iiii',raw)
+                self._bead_num = -1;     # reset bead number index
             # end if
             else:
               print('ERROR: objectTable: expected header start of -1')  
@@ -87,46 +98,68 @@ class ObjectTable:
         number of objects
         assumes a header has just been read to save the operation
         """
-        raw = self.file.read(4)
-        self.point = struct.unpack('hh',raw)
-        self.bead_num += 1
+        raw = self._file.read(4)
+        self._point = struct.unpack('hh',raw)
+        self._bead_num += 1
     # end def
     
     def get_x(self):
-        return self.point[0]
+        """
+        Get the x pixel location of the object location of the entry
+        """
+        return self._point[0]
     # end def
     
     def get_y(self):
-        return self.point[1]
+        """
+        Get the y pixel location of the object location of the entry
+        """
+        return self._point[1]
     # end def
     
     def isEOF(self):
-        return self.EOF
+        return self._EOF
     #end def
         
     
     def get_entry(self):
-        return self.entry
+        """
+        Return an entire 
+        """
+        return self._entry
     # end def
     
     def get_flowcell(self):
-        return int(self.entry[0])
+        """
+        Return the integer Flowcell number of the entry, 0 or 1 for the G.007
+        """
+        return int(self._entry[0])
     #end
     
     def get_lane(self):
-        return int(self.entry[1])
+        """
+        Return the integer Flowcell number of the entry, 0 to 7 for the G.007
+        """
+        return int(self._entry[1])
     # end def
     
     def get_image_num(self):
-        return int(self.entry[2])
+        """
+        Return the integer image number of the entry, 0 to 2179 for the G.007
+        """
+        return int(self._entry[2])
     # end def
     
     def get_num_objects(self):
-        return int(self.entry[3])
+        """
+        Return the integer number of objects in the image of the entry, 
+        0 to 65535 for the G.007
+        """
+        return int(self._entry[3])
     # end def
     
     def get_bead_num(self):
-        return self.bead_num
+        return self._bead_num
     #end def
         
     def seek_bead_num(self, bead):
@@ -137,8 +170,8 @@ class ObjectTable:
         entry desired
         """
         
-        self.file.seek(4*(bead-self.bead_num-1))
-        self.bead_num = bead-self.bead_num-1
+        self._file.seek( 4*(bead - self._bead_num - 1) )
+        self._bead_num = bead - self._bead_num - 1
     # end def
     
     def skip_to_next_image(self):
@@ -155,11 +188,11 @@ class ObjectTable:
         skip to the end of least the current image for N = 1
         """
         self.skip_to_next_image()       # current image
-        ind = N-1
+        ind = N - 1
         if (ind > 0):
             for i in range(ind):
                 self.read_entry()
-                if self.EOF:
+                if self._EOF:
                     print("EOF hit not enough images")
                     break
                 # end if
@@ -185,7 +218,7 @@ class ObjectTable:
         It does so by seeking an image +1 out of range of the maximum
         image count of a lane
         """
-        self.seek_image(self.image_num_max+1)
+        self.seek_image(self._image_num_max + 1)
     # end def
     
     def skip_to_lane_N(self,N):
@@ -193,7 +226,7 @@ class ObjectTable:
          skips at least to the end of the current lane
          need to read_entry in order to get the next image data
         """
-        ind = N-self.get_lane()
+        ind = N - self.get_lane()
         if ind > 0:
             for i in range(ind):
                 self.skip_to_next_lane()
@@ -207,7 +240,7 @@ class ObjectTable:
         It does so by seeking a lane +1 out of range of the maximum
         lane count of a flowcell
         """
-        self.skip_to_lane_N(self.lane_max+1)
+        self.skip_to_lane_N(self._lane_max + 1)
         
 # end class
         

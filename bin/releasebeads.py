@@ -97,7 +97,7 @@ def goto_flagged_images(self):
             
     """
     # now look up the base call file
-    polonator_data_dir = os.environ['HOME']+'/polonator/G.007/acquisition'
+    polonator_data_dir = os.environ['HOME'] + '/polonator/G.007/acquisition'
     acquire_exec_path = os.environ['POLONATOR_PATH'] + '/bin'
     base_dir = polonator_data_dir + 'output_data/'
     the_files = glob.glob(base_dir + '*.basecalls') # there is a basecall file 
@@ -114,7 +114,7 @@ def goto_flagged_images(self):
     #object_table = open(the_object_table_file,'rb')
     the_OT = ot.ObjectTable(the_object_table_file)
         
-    last_image = -1      # outside the range of possible image numbers
+    last_image = -1     # outside the range of possible image numbers
     last_cell = -1
     last_lane = -1
     last_bead = 0
