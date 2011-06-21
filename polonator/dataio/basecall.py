@@ -44,7 +44,7 @@ class BaseCall:
         self._flag_index = len(self._entry)-1
         
         # 
-        self._base_count = self._flag_index-6+1 # 6 fields minimum
+        self._base_count = self._flag_index - 6 + 1 # 6 fields minimum
     #end def
     
     def open(self,filename):
