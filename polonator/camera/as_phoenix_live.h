@@ -35,16 +35,4 @@ int phxlive(
 
 int py_camera_live(double exposure_time, int gain, unsigned short *frame_out);
 
-int buffer_ready_count(void);
-int buffer_overflow(void);
-
-/* Define an application specific structure to hold user information */
-typedef struct
-{
-   /* Event counters */
-   volatile ui32 nBufferReadyCount;
-
-   /* Control Flags */
-   volatile tFlag fFifoOverFlow;
-} tPhxLive;
 
