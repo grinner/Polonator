@@ -104,10 +104,10 @@ int main(int argc, char *argv[])
 
     if(argc == 4)
     {
-        camera_live(argc, argv, 0);
+        camera_live(argc, argv);
     }
     else{
-        camera_live(argc, argv, atoi(argv[4]));
+        camera_live(argc, argv);
     }
     maestro_darkfield_off(m_sock);
     }
@@ -262,8 +262,8 @@ void snap(float exposure, float gain, char *color, char *filename){
     wait_counter = 0;
 
     // open hardware and file
-    py_cameraInit(0); // use non-TDI config file
-    py_set_gain(gain);
+    camera_init(); // use non-TDI config file
+    set_gain(gain);
     maestro_open(&m_sock);
     outfile = fopen(filename, "w");
 
@@ -271,7 +271,7 @@ void snap(float exposure, float gain, char *color, char *filename){
     // configure hardware
     maestro_setcolor(m_sock, color);
     //maestro_darkfield_off(m_sock);
-    //py_set_gain(gain);moved to line 174
+    //set_gain(gain);moved to line 174
 
     // determine whether or not to use the shutter
     if(!strcmp(color, "none"))
@@ -286,7 +286,7 @@ void snap(float exposure, float gain, char *color, char *filename){
     }
 
     // setup the software to receive an image from the camera
-    py_setupSnap();
+    setup_snap();
 
 
     // snap the image
@@ -309,7 +309,7 @@ void snap(float exposure, float gain, char *color, char *filename){
     }
 
     // get pointer to image
-    image = py_getSnapImage();
+    image = get_snap_image();
 
 
     // calculate mean for informational purposes, then write image to file
@@ -321,6 +321,6 @@ void snap(float exposure, float gain, char *color, char *filename){
     if(!strcmp(color, "none")) maestro_darkfield_off(m_sock);
     fclose(outfile);
     fprintf(stdout, "closing camera");
-    py_cameraClose();
+    camera_close();
 } // end function
 

@@ -19,9 +19,9 @@
 %rename (py_camera_live) my_py_camera_live;
 
 %inline %{
-    void my_py_camera_live(double exposure_time, int gain, int tdiflag, int len1, unsigned short *frame_out)
+    void my_py_camera_live(double exposure_time, int gain, int len1, unsigned short *frame_out)
     { 
-        py_camera_live(exposure_time, gain, tdiflag, frame_out);
+        py_camera_live(exposure_time, gain, frame_out);
     }
 %}
 

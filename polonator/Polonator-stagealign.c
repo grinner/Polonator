@@ -165,25 +165,25 @@ void stagealign(int fcnum, int lane_num, int initialize)
     sprintf(command, "%s/stagealign-scorematrix%d_%d", output_directory, fcnum, lane_num);
     score_matrixfp = fopen(command, "w");
 #endif
-    p_log_simple("awesome2\n");
+    // p_log_simple("awesome2\n");
     /* Open config file */
     strcpy(acqcfgpath, getenv("POLONATOR_PATH"));
     strcat(acqcfgpath, "/config_files/polonator-acq.cfg");
     config_open(acqcfgpath);
-    p_log_simple("awesome1\n");
+    // p_log_simple("awesome1\n");
     /* Initialize variables */
     if(!config_getvalue("stagealign_logfilename", config_value)){
         fprintf(stderr, "ERROR:\tPolonator-stagealign: config_getval(key logfilename) returned no value\n");
         exit(0);
     }
-    p_log_simple("awesome0\n");
+    // p_log_simple("awesome0\n");
     strcpy(logfilename, log_dir);
     strcat(logfilename, "/");
     strcat(logfilename, config_value);
     sprintf(command, "%d", fcnum);
     strcat(logfilename, command);
     strcat(logfilename, ".log");
-    p_log_simple(logfilename);
+    // p_log_simple(logfilename);
     start_logger(logfilename, 1);
 
     strcpy(offsetfilename, log_dir);
@@ -197,14 +197,14 @@ void stagealign(int fcnum, int lane_num, int initialize)
     if this is being run in 'initialize mode' -- the first scan of a run --
     overwrite the offset logfile
     */
-    p_log_simple("awesome66\n");
+    // p_log_simple("awesome66\n");
     if(initialize){
         offsetfp = fopen(offsetfilename, "w");
     }
     else{
         offsetfp = fopen(offsetfilename, "a");
     }
-    p_log_simple("awesome00\n");
+    // p_log_simple("awesome00\n");
     if(!config_getvalue("stagealign_baseimgfilename", config_value)){
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_baseimgfilename) returned no value");
         exit(0);
@@ -216,32 +216,32 @@ void stagealign(int fcnum, int lane_num, int initialize)
         exit(0);
     }
     stagealign_integration_inmsec = atoi(config_value);
-    p_log_simple("awesome02\n");
+    // p_log_simple("awesome02\n");
     if(!config_getvalue("stagealign_gain", config_value)){
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_gain) returned no value");
         exit(0);
     }
     stagealign_gain = atoi(config_value);
-    p_log_simple("awesome03\n");
+    // p_log_simple("awesome03\n");
     if(!config_getvalue("stagealign_optical_mag", config_value)){
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_optical_mag) returned no value");
         exit(0);
     }
     stagealign_optical_mag = atoi(config_value);
-    p_log_simple("awesome04\n");
+    // p_log_simple("awesome04\n");
     if(!config_getvalue("stagealign_ccd_pixel_size", config_value)){
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_ccd_pixel_size) returned no value");
         exit(0);
     }
     ccd_pixel_size = atoi(config_value);
-    p_log_simple("awesome05\n");
+    // p_log_simple("awesome05\n");
     if(!config_getvalue("stagealign_wells_per_fc", config_value)){
         p_log("ERROR:\tPolonator-stagealign: config_getval(key stagealign_wells_per_fc) returned no value");
         exit(0);
     }
     stagealign_wells_per_fc = atoi(config_value);
     config_close();
-    p_log_simple("awesome06\n");
+    // p_log_simple("awesome06\n");
     stagealign_well = lane_num;
     lane_index = (fcnum * stagealign_wells_per_fc) + stagealign_well;
 
@@ -264,9 +264,9 @@ void stagealign(int fcnum, int lane_num, int initialize)
     // CAMERA SETUP
     /*/
     p_log_simple("STATUS:\tPolonator-stagealign: Opening camera handle...");
-    py_cameraInit(0); /* use non-TDI config file */
-    py_set_gain(stagealign_gain);
-    py_setupSnap(); /* setup capture software to wait for images from camera */
+    camera_init();
+    set_gain(stagealign_gain);
+    setup_snap(); /* setup capture software to wait for images from camera */
     /*
     //--------------------------------------------------------------------------
     */
@@ -319,7 +319,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     p_log("STATUS:\tPolonator-stagealign: Acquire image...");
     maestro_snap(m_sock, stagealign_integration_inmsec, 1); /*rolony*/
     while(!py_snapReceived()){;}
-    testimage = py_getSnapImage();
+    testimage = get_snap_image();
 
 
     /* IF INITIALIZING, RE-WRITE THE BASE IMAGE; THE OFFSET FOUND SHOULD BE ZERO */
@@ -406,7 +406,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     /* maestro_gotostagealign_position(m_sock, fcnum, lane_num);
     maestro_snap(m_sock, stagealign_integration_inmsec, 0);
     while(!py_snapReceived()){;}
-    testimage = py_getSnapImage();
+    testimage = get_snap_image();
     */
 
 #ifdef DEBUG_STAGEALIGN
@@ -457,7 +457,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     fprintf(offsetfp, "\n");
     fclose(offsetfp);
     /*maestro_darkfield_off(m_sock); rolony*/
-    py_cameraClose();
+    camera_close();
     free(baseimage);
     close_logger();
     p_log_simple("awesome fool02\n");

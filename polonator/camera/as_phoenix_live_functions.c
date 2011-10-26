@@ -90,8 +90,7 @@ int phxlive(
    etCamConfigLoad eCamConfigLoad,    /* Board number, ie 1, 2, or 0 for next available */
    char *pszConfigFileName,            /* Name of config file */
    double exposure_time,
-   int gain,
-   int tdiflag
+   int gain
 )
 {
    etStat         eStat     = PHX_OK;  /* Status variable */
@@ -112,15 +111,7 @@ int phxlive(
    if ( PHX_OK != eStat ) goto Error;
 
    /* set camera to live acquisition mode */
-   if(tdiflag==1){
-     init_camera_internal_trigger_TDI(hCamera);
-   }
-   else if(tdiflag==2){
-     init_camera_external_trigger_TDI(hCamera);
-   }
-   else{
-     init_camera_internal_trigger(hCamera);
-   }
+   init_camera_internal_trigger(hCamera);
    set_exposure(hCamera, exposure_time);
    set_gain(hCamera, gain);
 
@@ -256,24 +247,20 @@ Error:
    integration time in seconds is in argv[2], and EM
    gain is in argv[3]
 */
-int camera_live(int argc, char *argv[], int tdiflag)
+int camera_live(int argc, char *argv[])
 {
     tPhxCmd sPhxCmd;
     int     nStatus;
+    
+    // I don't think this lineis necessary, NC 11-2011, but whatever
     PhxCommonParseCmd( argc, argv, &sPhxCmd );
 
     char filepath_buffer[256];
     strcpy(filepath_buffer, getenv("POLONATOR_PATH"));
 
     /*PhxCommonKbInit();*/
-    if(tdiflag){
-        strcat(filepath_buffer, "/config_files/em9100-50.pcf");
-        nStatus = phxlive( sPhxCmd.eCamConfigLoad, filepath_buffer, atof(argv[2]), atoi(argv[3]), tdiflag);
-    }
-    else{
-        strcat(filepath_buffer, "/config_files/em9100-02.pcf");
-        nStatus = phxlive( sPhxCmd.eCamConfigLoad, filepath_buffer, atof(argv[2]), atoi(argv[3]), tdiflag);
-    }
+    strcat(filepath_buffer, "/config_files/em9100-02.pcf");
+    nStatus = phxlive( sPhxCmd.eCamConfigLoad, filepath_buffer, atof(argv[2]), atoi(argv[3]));
     /*PhxCommonKbClose();*/
     return nStatus;
 }

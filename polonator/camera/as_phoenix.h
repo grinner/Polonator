@@ -25,7 +25,7 @@ void py_14to8Image(unsigned short *image, unsigned char * image_copy, int len);
 
 unsigned short * snap(float exposure, float gain, char *color, char *filename);
 unsigned short * snapPtr(float exposure, float gain, char *color);
-int cameraLive(int argc, char **argv, int tdiflag);
+int cameraLive(float time, int gain);
 int freeImage(unsigned short * image);
 void copyImage(unsigned short *from_image, unsigned short *to_image);
 unsigned short getPixel(unsigned short *image, int i);

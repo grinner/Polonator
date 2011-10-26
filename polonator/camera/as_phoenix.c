@@ -80,15 +80,15 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
 	/* open hardware and file */
 	if (camera_open == -1) // for 0 and -1
 	{
-	    py_cameraInit(0); /* use non-TDI config file */
-	    py_set_gain(gain);
+	    camera_init();
+	    set_gain(gain);
 	    maestro_open(&m_sock);
 	    camera_open = 1;
-	    py_setupSnap();
+	    setupSnap();
 	}
         else
         {
-            py_set_gain(gain);
+            set_gain(gain);
         }
 
 	/* configure hardware */
@@ -110,7 +110,7 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
 	}
 
 	/* setup the software to receive an image from the camera */
-	//py_setupSnap();
+	//setup_snap();
 
 
 	/* snap the image */
@@ -118,11 +118,11 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
 
 
 	/* wait for image to be received by framegrabber */
-	while(!py_snapReceived()){;}
+	while(!snapReceived()){;}
 
 
 	/* get pointer to image */
-	image = py_getSnapImage();
+	image = getSnapImage();
 
 
 	/* calculate mean for informational purposes */
@@ -136,7 +136,7 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
     return image;
 }
 
-void py_snapPtr(unsigned short * raw_image, float exposure, float gain, char *color)
+void snapPtr(unsigned short * raw_image, float exposure, float gain, char *color)
 {
     //raw_image = snapPtr(exposure, gain, color);
     copyImage(snapPtr(exposure, gain, color), raw_image);
@@ -163,9 +163,23 @@ void cameraClose(void)
     }
 }
 
-int cameraLive(int argc, char **argv, int tdiflag)
+int cameraLive(float exposure, int gain)
 {
-	return camera_live(argc,argv,tdiflag);
+    /*
+    ReleaseFocus <exposure> <EM gain>
+    exposure AKA int. time  -  integration time in seconds floating point
+    EM gain    -  gain for electron-multiplied camera"
+    */
+    int argc = 3;
+    char *argv[4];
+    char timestring[16];
+    char gainstring[16];
+
+    sprintf(timestring,"%f", exposure);
+    sprintf(gainstring, "%d", gain);
+    argv[2] = timestring;
+    argv[3] = gainstring;
+    return camera_live(argc,argv);
 }
 
 unsigned short getPixel(unsigned short *image, int i)

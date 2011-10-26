@@ -48,5 +48,6 @@
 %}
 
 unsigned short * snapPtr(float exposure, float gain, char *color);
+int cameraLive(float exposure, int gain);
 void cameraClose(void);
 
