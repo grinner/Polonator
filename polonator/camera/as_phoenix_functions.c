@@ -174,7 +174,7 @@ int imagemean(short unsigned int* img)
    triggering the camera in software (e.g. single-shot mode during
    autoexposure).
 */
-static void init_camera_external_trigger(tHandle hCamera)
+void init_camera_external_trigger(tHandle hCamera)
 {
     p_log("initialize camera for external trigger area mode");
     /*phxser(hCamera, "INI");*/ /* initialize the camera*/
@@ -194,7 +194,7 @@ static void init_camera_external_trigger(tHandle hCamera)
    software fires a 'software trigger', which tells the camera to start integrating.
    Integration ends when 'exposure time' has elapsed (set w/ AET).
 */
-static void init_camera_internal_trigger(tHandle hCamera)
+void init_camera_internal_trigger(tHandle hCamera)
 {
     p_log("initialize camera for internal trigger area mode");
     phxser(hCamera, "AMD N"); /* set to internal ("normal") trigger mode from Phoenix*/
@@ -215,7 +215,7 @@ void setExposure(double time_inseconds)
  0.001 <= time <= 9.999;
  time must have <=3 decimal places (e.g. 0.0010 is not allowed)
 */
-static void set_exposure(tHandle hCamera, double time_inseconds)
+void set_exposure(tHandle hCamera, double time_inseconds)
 {
     char exposure_command[14];
     if(time_inseconds < 0.001)
@@ -246,7 +246,7 @@ void setGain(int gain)
 
 /* input must be EM gain setting between 0 and 255 inclusive
 */
-static void set_gain(tHandle hCamera, int gain)
+void set_gain(tHandle hCamera, int gain)
 {
     char gain_command[14];
 

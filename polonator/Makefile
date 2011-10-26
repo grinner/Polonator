@@ -116,9 +116,9 @@ CAMERA3_INC = -I$(CAM_DIR) -I$(MO_DIR) -I$(CAM_DIR)/common
 # adapted from PHXlive Makefile
 PHX_VER=5.59
 #PHX_VER=5.74
-PHX_INCDIR =/usr/local/active_silicon/phx_sdk-$(PHX_VER)/include
-COMMON_DIR=$(CAM_DIR)/common
-COMMON_SRC=$(CAM_DIR)/common/common.c
+PHX_INCDIR = /usr/local/active_silicon/phx_sdk-$(PHX_VER)/include
+COMMON_DIR = $(CAM_DIR)/common
+COMMON_SRC = $(CAM_DIR)/common/common.c
 SUBARCH := $(shell uname -m)
 ifeq ($(SUBARCH),x86_64)
 PHX_LIBDIR = /usr/local/active_silicon/phx_sdk-$(PHX_VER)/lib/linux64
