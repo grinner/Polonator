@@ -131,11 +131,11 @@ int main(int argc, char *argv[])
 		fprintf(stdout, "Live view starting");
         if(argc==5){
 			fprintf(stdout, "Live view argc == 5");
-            camera_live(argc, argv, 0);
+            camera_live(argc, argv);
         }
         else{
 			fprintf(stdout, "Live view argc != 5");
-            camera_live(argc, argv, atoi(argv[5]));
+            camera_live(argc, argv);
         }
 		fprintf(stdout, "Live view done");
         if(strcmp(argv[4],"none")==0) {
