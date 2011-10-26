@@ -16,9 +16,9 @@ CPPFLAGS = -I$(BASE_DIR) -O3 -msse -msse2 -fexpensive-optimizations -funroll-loo
 
 # for C SWIG wrapped Python
 SHARELIBFLAGS = -fPIC -shared
-#PYTHON_VER=2.5
+PYTHON_VER=2.5
 #PYTHON_VER := $(shell `python -V 2>&1 | sed -e 's/Python 2\.\([0-9]*\).*/python2.\1/'`)
-PYTHON_VER=2.7
+#PYTHON_VER=2.7
 PYINC		= /usr/include/python$(PYTHON_VER)
 PYLIB		= /usr/lib/python$(PYTHON_VER)
 SWIG_LIB = -I/usr/lib64
@@ -114,8 +114,8 @@ CAMERA3_INC = -I$(CAM_DIR) -I$(MO_DIR) -I$(CAM_DIR)/common
 #/////////////////////////////////////////////////////
 # includes for the Active Silicon Phoenix FrameGrabber
 # adapted from PHXlive Makefile
-#PHX_VER=5.59
-PHX_VER=5.74
+PHX_VER=5.59
+#PHX_VER=5.74
 PHX_INCDIR     = /usr/local/active_silicon/phx_sdk-$(PHX_VER)/include
 COMMON_DIR  = $(BASE_DIR)/common
 COMMON_SRC  = $(BASE_DIR)/common/common.c
