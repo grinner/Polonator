@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include "common/common.h"
 #include "global_parameters.h"
+#include <phx_api.h>
 #include "as_phoenix_functions.h"
 #include "as_phoenix_live_functions.h"
 #include "as_phoenix.h"
