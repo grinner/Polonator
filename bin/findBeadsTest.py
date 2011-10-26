@@ -531,7 +531,7 @@ def grid(grid_spacing=10, square_size=1):
 
 def startLive(exposure, gain, color):
     global MaestroF
-    Maestro.filter_goto(color)
+    MaestroF.filter_goto(color)
     pid = os.fork()        # this is a UNIX only syscall
     if pid == 0:
         #child process
