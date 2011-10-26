@@ -4,6 +4,7 @@
 #define _PHX_LINE_SIZE     256
 #define szDefaultCmdAppend "\r"
 
+#include "common/common.h"
 #include <phx_api.h>
 
 // private functions are declared with a trailing underscore
