@@ -238,7 +238,7 @@ class MappingFunctions:
         A_map = self.A_map
         # write mapping to file
         PL.p_log("Status:\tMF: writing camera to DMD map to file")
-        mapping_file = open('camera_to_DMD.map', 'w')
+        mapping_file = open(self.config_dir + '/camera_to_DMD.map', 'w')
         mapping_file.write('#This is the mapping file for the camera to DMD\n')
         mapping_file.write( '#Generated on: ' \
                             +  time.strftime("%Y-%m-%d %H:%M:%S") + '\n')
@@ -264,7 +264,7 @@ class MappingFunctions:
         """
         A_map = self.A_map
         PL.p_log("Status:\tMF: reading camera to DMD map to file")
-        mapping_file = open('camera_to_DMD.map', 'r')
+        mapping_file = open(self.config_dir + '/camera_to_DMD.map', 'r')
         for line in mapping_file:
             # the mapping data starts on the first line without a # to start it
             if line[0] != '#':  
