@@ -256,13 +256,20 @@ class MappingFunctions:
         mapping_file.close()
     # end def
     
-    def readMappingFile(self): 
+    def readMappingFile(self, useDefault=False): 
         """
             This reads a mapping data from file into memory.  Assumes the
             mapping file already exists
             TODO: Should add exception in the case the file does not exist
+            is useDefault then the system is configured as a 1:1 mapping
+            
+            setting A2 and A5 and maybe A0 an A1 for an offest
         """
         A_map = self.A_map
+        if useDefault:
+            A_map[2] = 1
+            A_map[5] = 1
+            return
         PL.p_log("Status:\tMF: reading camera to DMD map to file")
         mapping_file = open(self.config_dir + '/camera_to_DMD.map', 'r')
         for line in mapping_file:

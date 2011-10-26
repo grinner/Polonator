@@ -29,7 +29,7 @@ import polonator.image.imgTools as IT
 
 # assumes we've alreay created a mapping file
 MapFunc = MappingFunctions()
-MapFunc.readMappingFile()
+MapFunc.readMappingFile(useDefault=True)
 
 MaestroF = MaestroFunctions()
 
