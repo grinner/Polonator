@@ -21,8 +21,9 @@ typedef struct
    /* Control Flags */
    volatile tFlag fFifoOverFlow;
 } tPhxLive;
-#endif
 
 int buffer_ready_count(void);
 
 int buffer_overflow(void);
+
+#endif
