@@ -208,6 +208,7 @@ def on():
     Turns the DMD array entirely on pixel position
     """
     MapFunc.lightAll()
+    MaestroF.shutter_open()
 #end def
 
 def find():
