@@ -4,17 +4,6 @@
 #define _PHX_LINE_SIZE     256
 #define szDefaultCmdAppend "\r"
 
-
-/* Define an application specific structure to hold user information */
-typedef struct
-{
-   /* Event counters */
-   volatile ui32 nBufferReadyCount;
-
-   /* Control Flags */
-   volatile tFlag fFifoOverFlow;
-} tPhxLive;
-
 /* structure to hold info from callback */
 typedef struct
 {
