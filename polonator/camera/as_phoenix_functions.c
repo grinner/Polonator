@@ -892,32 +892,3 @@ int buffer_overflow(void)
 {
     return sPhxLive.fFifoOverFlow;
 }
-
-
-int camera_live(double exposure_time, int gain, unsigned short *frame_out)
-{
-    tPhxCmd sPhxCmd;
-    int     nStatus;
-    sPhxCmd.dwBoardNumber     = 1; 
-    sPhxCmd.pszConfigFileName = NULL;
-    sPhxCmd.pszOutputFileName = NULL;
-    sPhxCmd.dwBayerOption     = 11;
-    sPhxCmd.dwGammaOption     = 100;
-    sPhxCmd.dwFrameOption     = 300;
-    sPhxCmd.dwTimeOption      = 3;
-    sPhxCmd.dwSlowOption      = 10;
-    sPhxCmd.eCamConfigLoad = (etCamConfigLoad) ( PHX_DIGITAL | sPhxCmd.dwBoardNumber );
-
-    char filepath_buffer[256];
-    strcpy(filepath_buffer, getenv("POLONATOR_PATH"));
-   
-    /*PhxCommonKbInit();*/
-    strcat(filepath_buffer, "/config_files/em9100-02.pcf");
-    nStatus = phxlive( sPhxCmd.eCamConfigLoad, \
-                    filepath_buffer, \
-                    exposure_time, \
-                    gain, \
-                    frame_out);
-    /*PhxCommonKbClose();*/
-    return nStatus;
-}

@@ -247,17 +247,6 @@ Error:
     return 0;
 }
 
-int buffer_ready_count(void)
-{
-    return sPhxLive.nBufferReadyCount;
-}
-
-int buffer_overflow(void)
-{
-    return sPhxLive.fFifoOverFlow;
-}
-
-
 int py_camera_live(double exposure_time, int gain, unsigned short *frame_out)
 {
     tPhxCmd sPhxCmd;

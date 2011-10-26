@@ -71,8 +71,6 @@ int phxlive(
    unsigned short *frame_out 
 );
 
-int camera_live(double exposure_time, int gain, unsigned short *frame_out);
-
 int buffer_ready_count(void);
 int buffer_overflow(void);
 
