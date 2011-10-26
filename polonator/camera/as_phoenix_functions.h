@@ -33,8 +33,6 @@ short unsigned int* get_buffer_ptr(void);
 
 void cameraInitAcq(float exposure, int gain);
 
-static void acquirer_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
-
 void init_camera_external_trigger(tHandle hCamera);
 void init_camera_internal_trigger(tHandle hCamera);
 int phxser(tHandle hCamera, char *szCmdBuff);

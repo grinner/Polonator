@@ -39,6 +39,7 @@ typedef struct
 } tPhxLive;
 
 tPhxLive       sPhxLive;            /* User defined Event Context */
+static void phxlive_callback( tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
 
 /*
 phxlive_callback(ForBrief)

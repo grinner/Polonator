@@ -30,12 +30,13 @@ char log_string[500];
 stImageBuff py_img_buffer;
 ui32 PHX_buffersize; /* width of the framegrabber's circular image buffer */
 
+static void acquirer_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
+static void snap_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
+
 /*
 snap_callback(ForBrief)
 This is the callback function which handles the interrupt events
 */
-
-static void snap_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
 
 stImageBuff img_buffer;
 tPhxCallbackInfo sPCI;
@@ -422,7 +423,7 @@ void py_cameraInitAcq(float exposure, int gain)
 
 
 /*
-executed every time a BUFFER_READY event is registered by the Pheonix API
+executed every time a BUFFER_READY event is registered by the Phoenix API
 it is very important to release the callback quickly so it can be re-called
 upon the next interrupt event; if it is not released quickly enough,
 BUFFER_READY events can be missed
