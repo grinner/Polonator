@@ -2,7 +2,6 @@
 
 %{
     #define SWIG_FILE_WITH_INIT
-    #include "as_phoenix_functions.h"
     #include "as_phoenix.h"
 %}
    
@@ -12,7 +11,6 @@
     import_array();
 %}
 
-%include "as_phoenix_functions.h"
 %include "as_phoenix.h"
 
 %apply (int DIM1, unsigned short * IN_ARRAY1) { (int len1, unsigned short * raw_image) }

@@ -1,7 +1,8 @@
 %module asPhoenixFunctions
+%{
+#include "as_phoenix_functions.h"
+%}
 
-%include <phx_api.h>
-%include <common.h>
 %include "logger.h"
 %include "as_phoenix_functions.h"
 %include cpointer.i
