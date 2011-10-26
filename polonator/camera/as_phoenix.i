@@ -2,6 +2,7 @@
 
 %{
     #define SWIG_FILE_WITH_INIT
+    #include as_phoenix_functions.h
     #include "as_phoenix.h"
 %}
    
