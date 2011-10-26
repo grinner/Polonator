@@ -16,6 +16,7 @@ at the top of the file.
 ==============================================================================
 */
 
+#include <sys/socket.h>
 #include "as_phoenix_functions.h"
 #include "maestro_functions.h"
 #include "network_functions.h"
@@ -127,14 +128,19 @@ int main(int argc, char *argv[])
             maestro_darkfield_off(m_sock);
             maestro_shutteropen(m_sock);
         }
-
+		fprintf(stdout, "Live view starting");
         if(argc==5){
+			fprintf(stdout, "Live view argc == 5");
             camera_live(argc, argv, 0);
         }
         else{
+			fprintf(stdout, "Live view argc != 5");
             camera_live(argc, argv, atoi(argv[5]));
         }
-        if(strcmp(argv[4],"none")==0) maestro_darkfield_off(m_sock);
+		fprintf(stdout, "Live view done");
+        if(strcmp(argv[4],"none")==0) {
+			maestro_darkfield_off(m_sock);
+		}
         else{
             maestro_shutterclose(m_sock);
         }

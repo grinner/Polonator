@@ -26,6 +26,7 @@
 #include <math.h>
 #include <limits.h>
 #include <sys/stat.h>
+#include <sys/socket.h>
 #include "common.h"
 #include "as_phoenix_functions.h"
 #include "maestro_functions.h"
