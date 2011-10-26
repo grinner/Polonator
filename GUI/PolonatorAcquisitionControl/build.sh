@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/bash
 # Build instructions for Polonator Java source, as an alternative to netbeans
 # puts classes in a jar file and cleans up afterwards
 #

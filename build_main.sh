@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/bash
 # Build instructions for Polonator
 # this builds the python source and dependencies
 #
