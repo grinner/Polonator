@@ -300,7 +300,7 @@ void snap(float exposure, float gain, char *color, char *filename){
 
 
     // wait for image to be received by framegrabber
-    while(!py_snapReceived())
+    while(!snapReceived())
     {
         wait_counter++;
         usleep(1000);

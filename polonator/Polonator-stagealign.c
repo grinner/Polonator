@@ -319,7 +319,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     /* ACQUIRE IMAGE */
     p_log("STATUS:\tPolonator-stagealign: Acquire image...");
     maestro_snap(m_sock, stagealign_integration_inmsec, 1); /*rolony*/
-    while(!py_snapReceived()){;}
+    while(!snapReceived()){;}
     testimage = get_snap_image();
 
 
@@ -406,7 +406,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     /* MOVE, THEN ACQUIRE ANOTHER IMAGE TO VERIFY OFFSET WORKED */
     /* maestro_gotostagealign_position(m_sock, fcnum, lane_num);
     maestro_snap(m_sock, stagealign_integration_inmsec, 0);
-    while(!py_snapReceived()){;}
+    while(!snapReceived()){;}
     testimage = get_snap_image();
     */
 

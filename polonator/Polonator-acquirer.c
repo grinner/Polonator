@@ -411,13 +411,13 @@ int main(int argc, char *argv[])
 
     /*added
     maestro_setcolor(m_sock, "cy5");
-    while(!py_snapReceived()){;}
+    while(!snapReceived()){;}
     maestro_setcolor(m_sock, "cy3");
       maestro_snap(m_sock,60 * 1000.0, 1);
-    while(!py_snapReceived()){;}
+    while(!snapReceived()){;}
     maestro_setcolor(m_sock, "txred");
       maestro_snap(m_sock,60 * 1000.0, 1);
-    while(!py_snapReceived()){;}
+    while(!snapReceived()){;}
     */
 
 
