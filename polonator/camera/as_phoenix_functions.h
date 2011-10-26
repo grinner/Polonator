@@ -61,17 +61,4 @@ static int sPCI_num_imgs(void);
 static int sPCI_image_ready(void);
 static void sPCI_set_image_ready(int ready);
 
-// Define the live stuff
-//////////////////////////
-int phxlive(
-   etCamConfigLoad eCamConfigLoad, 
-   char *pszConfigFileName,          
-   double exposure_time,
-   int gain,
-   unsigned short *frame_out 
-);
-
-int buffer_ready_count(void);
-int buffer_overflow(void);
-
 #endif

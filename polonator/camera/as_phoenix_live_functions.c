@@ -28,12 +28,6 @@
 #include <common.h>
 #include "as_phoenix_functions.h"
 
-/*
-static void phxlive_callback(tHandle,ui32,void*);
-int phxlive(etCamConfigLoad,char *,double,int, int);
-*/
-
-
 /* Define an application specific structure to hold user information */
 typedef struct
 {
@@ -265,3 +259,12 @@ int camera_live(int argc, char *argv[])
     return nStatus;
 }
 
+int buffer_ready_count(void)
+{
+    return sPhxLive.nBufferReadyCount;
+}
+
+int buffer_overflow(void)
+{
+    return sPhxLive.fFifoOverFlow;
+}

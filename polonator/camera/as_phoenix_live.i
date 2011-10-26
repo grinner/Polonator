@@ -25,4 +25,7 @@
     }
 %}
 
+int buffer_ready_count(void);
+int buffer_overflow(void);
+
 

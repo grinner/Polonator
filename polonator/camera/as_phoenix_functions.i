@@ -48,15 +48,3 @@ extern void camera_initAcq(float exposure, int gain);
 // Live prototypes
 %apply (int DIM1, unsigned short * IN_ARRAY1) { (int len2, unsigned short * frame_out) }
 
-%rename (camera_live) my_camera_live;
-
-%inline %{
-    void my_camera_live(double exposure_time, int gain, int len2, unsigned short *frame_out)
-    { 
-        camera_live(exposure_time, gain, frame_out);
-    }
-%}
-
-int buffer_ready_count(void);
-int buffer_overflow(void);
-

@@ -25,7 +25,7 @@
 #include "as_phoenix_functions.h"
 
 
-int phxlive(
+int phxliveFrame(
    etCamConfigLoad eCamConfigLoad, 
    char *pszConfigFileName,          
    double exposure_time,
@@ -35,4 +35,5 @@ int phxlive(
 
 int py_camera_live(double exposure_time, int gain, unsigned short *frame_out);
 
-
+int buffer_ready_count(void);
+int buffer_overflow(void);

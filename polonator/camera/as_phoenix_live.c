@@ -29,17 +29,16 @@
 
 #include <common.h>
 #include "as_phoenix_functions.h"
-//#include <phx_api.h>
 #include "as_phoenix_live.h"
 
 
 /*
-phxlive_callback(ForBrief)
+phxliveFrame_callback(ForBrief)
 This is the callback function which handles the interrupt events
 */
 tPhxLive       sPhxLive;            /* User defined Event Context */
 
-static void phxlive_callback(
+static void phxliveFrame_callback(
     tHandle hCamera,        /* Camera handle. */
     ui32 dwInterruptMask,   /* Interrupt mask. */
     void *pvParams          /* Pointer to user supplied context */
@@ -78,7 +77,7 @@ static void phxlive_callback(
 phxlive(ForBrief)
 Simple live capture application code
 */
-int phxlive(
+int phxliveFrame(
     etCamConfigLoad eCamConfigLoad,    /* Board number, ie 1, 2, or 0 for next available */
     char *pszConfigFileName,            /* Name of config file */
     double exposure_time,
@@ -144,7 +143,7 @@ int phxlive(
 
 
     /* Now start our capture, using the callback method */
-    eStat = PHX_Acquire( hCamera, PHX_START, (void*) phxlive_callback );
+    eStat = PHX_Acquire( hCamera, PHX_START, (void*) phxliveFrame_callback );
     if ( PHX_OK != eStat ) goto Error;
 
 
@@ -266,7 +265,7 @@ int py_camera_live(double exposure_time, int gain, unsigned short *frame_out)
    
     /*PhxCommonKbInit();*/
     strcat(filepath_buffer, "/config_files/em9100-02.pcf");
-    nStatus = phxlive( sPhxCmd.eCamConfigLoad, \
+    nStatus = phxliveFrame( sPhxCmd.eCamConfigLoad, \
                     filepath_buffer, \
                     exposure_time, \
                     gain, \
@@ -275,3 +274,12 @@ int py_camera_live(double exposure_time, int gain, unsigned short *frame_out)
     return nStatus;
 }
 
+int buffer_ready_count(void)
+{
+    return sPhxLive.nBufferReadyCount;
+}
+
+int buffer_overflow(void)
+{
+    return sPhxLive.fFifoOverFlow;
+}

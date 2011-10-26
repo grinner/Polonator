@@ -21,10 +21,10 @@
 #include <stdio.h>
 #include "common/common.h"
 #include "global_parameters.h"
-#include "as_phoenix_functions.h"
-#include "maestro_functions.h"
 #include "as_phoenix.h"
-#include "as_phoenix_live.h"
+#include "as_phoenix_functions.h"
+#include "as_phoenix_live_functions.h"
+#include "maestro_functions.h"
 
 /* 14 bit to 8 bit converter */
 /* returns a shifted value of a 14 bit image at a given index */
