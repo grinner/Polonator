@@ -269,7 +269,7 @@ void snap(float exposure, float gain, char *color, char *filename){
 
     // open hardware and file
     camera_init(); // use non-TDI config file
-    set_gain(gain);
+    setGain(gain);
     maestro_open(&m_sock);
     outfile = fopen(filename, "w");
 
@@ -277,7 +277,7 @@ void snap(float exposure, float gain, char *color, char *filename){
     // configure hardware
     maestro_setcolor(m_sock, color);
     //maestro_darkfield_off(m_sock);
-    //set_gain(gain);moved to line 174
+    //setGain(gain);moved to line 174
 
     // determine whether or not to use the shutter
     if(!strcmp(color, "none"))

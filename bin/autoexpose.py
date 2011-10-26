@@ -136,7 +136,7 @@ class Autoexpose:
 
         # start with the first element of the arg list
         self.maestro.filter_goto(fluors[0])
-        self.camera.py_set_exposure(integration_times[0])
+        self.camera.setExposure(integration_times[0])
         #pick the best position in each chamber
         for i in range(0,2): #for each chamber
             # reset mean and gain arrays
@@ -156,7 +156,7 @@ class Autoexpose:
                 for k in range(0, 10): #for each gain setting from gain_min in 
                                        # increments of gain_incr
                     curr_gain = gain_min[fluors[0]] + (k * gain_incr)
-                    self.camera.set_gain(curr_gain)
+                    self.camera.setGain(curr_gain)
                     self.maestro.shutter_open()
                     curr_mean = self.camera.py_imagemean(self.camera.py_snapimage());
                     self.maestro.shutter_close()
@@ -209,7 +209,7 @@ class Autoexpose:
             if(fluor != fluors[0]): #we already did the cy5 autoexposure
                 
                 self.maestro.filter_goto(fluor)
-                self.camera.py_set_exposure(integration_times[fluors.index(fluor)])
+                self.camera.setExposure(integration_times[fluors.index(fluor)])
                 best_gain = []
                 best_mean = []
 
@@ -218,7 +218,7 @@ class Autoexpose:
                     for k in range(0, 10): # for each gain setting from gain_min 
                                            # in increments of gain_incr
                         curr_gain = gain_min[fluor] + (k * gain_incr)
-                        self.camera.set_gain(curr_gain)
+                        self.camera.setGain(curr_gain)
                         self.maestro.shutter_open()
                         curr_mean = self.camera.py_imagemean(self.camera.py_snapimage());
                         self.maestro.shutter_close()

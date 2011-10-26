@@ -205,7 +205,7 @@ static void init_camera_internal_trigger(tHandle hCamera)
     /*phxser(hCamera, "CEO 0");*/ /* set 'contrast enhancement' to maximum */
 }
 
-void set_exposure_(double time_inseconds)
+void setExposure(double time_inseconds)
 {
     sprintf(log_string, "STATUS:\tpy_set_exposure: Set exposure to <%f> seconds", time_inseconds);
     p_log_simple(log_string);
@@ -216,7 +216,7 @@ void set_exposure_(double time_inseconds)
  0.001 <= time <= 9.999;
  time must have <=3 decimal places (e.g. 0.0010 is not allowed)
 */
-static void set_exposure_(tHandle hCamera, double time_inseconds)
+static void set_exposure(tHandle hCamera, double time_inseconds)
 {
     char exposure_command[14];
     if(time_inseconds < 0.001)
@@ -237,7 +237,7 @@ static void set_exposure_(tHandle hCamera, double time_inseconds)
 }
 
 
-void set_gain(int gain)
+void setGain(int gain)
 {
     sprintf(log_string, "STATUS:\tpy_set_gain: Set EM gain to <%d>", gain);
     p_log_simple(log_string);
@@ -247,7 +247,7 @@ void set_gain(int gain)
 
 /* input must be EM gain setting between 0 and 255 inclusive
 */
-static void set_gain_(tHandle hCamera, int gain)
+static void set_gain(tHandle hCamera, int gain)
 {
     char gain_command[14];
 

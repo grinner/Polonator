@@ -81,14 +81,14 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
 	if (camera_open == -1) // for 0 and -1
 	{
 	    camera_init();
-	    set_gain(gain);
+	    setGain(gain);
 	    maestro_open(&m_sock);
 	    camera_open = 1;
 	    setupSnap();
 	}
         else
         {
-            set_gain(gain);
+            setGain(gain);
         }
 
 	/* configure hardware */

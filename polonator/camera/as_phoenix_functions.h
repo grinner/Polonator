@@ -31,11 +31,11 @@ void camera_close(void);
 
 int imagemean(short unsigned int*);
 
-void set_gain(int);
-static void set_gain_(tHandle, int);
+void setGain(int);
+static void set_gain(tHandle, int);
 
-void set_exposure(double time_inseconds);
-static void set_exposure_(tHandle, double time_inseconds);
+void setExposure(double time_inseconds);
+static void set_exposure(tHandle, double time_inseconds);
 
 void check_for_error(etStat, char *, char *);
 void setupSnap(void);

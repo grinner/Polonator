@@ -266,7 +266,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     /*/
     p_log_simple("STATUS:\tPolonator-stagealign: Opening camera handle...");
     camera_init();
-    set_gain(stagealign_gain);
+    setGain(stagealign_gain);
     setup_snap(); /* setup capture software to wait for images from camera */
     /*
     //--------------------------------------------------------------------------

@@ -11,8 +11,8 @@
 extern void camera_init(void);
 extern void camera_initAcq(void);
 extern void camera_close(void);
-extern void set_exposure(double);
-extern void set_gain(int);
+extern void setExposure(double);
+extern void setGain(int);
 extern short unsigned int* snapimage(void);
 extern int imagemean(short unsigned int*);
 
