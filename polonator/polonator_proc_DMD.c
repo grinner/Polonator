@@ -21,12 +21,11 @@
 
 #include <sys/time.h>
 #include <time.h>
-//#include "common.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "network_functions.h"
 #include "logger.h"
-//#include "Polonator_config.h"
 
 #define WAIT usleep(1000)
 #define DEBUG_POLONATORACQ /* for testing */
