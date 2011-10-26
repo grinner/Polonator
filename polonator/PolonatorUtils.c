@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
 void snap(float exposure, float gain, char *color, char *filename){
     int m_sock;
     short unsigned int *image;
-    int imagemean;
+    int imgmean;
     int shutterflag;
     FILE *outfile;
 
@@ -319,8 +319,8 @@ void snap(float exposure, float gain, char *color, char *filename){
 
 
     // calculate mean for informational purposes, then write image to file
-    imagemean = imagemean(image);
-    fprintf(stdout, "Image mean: %d\n", imagemean);
+    imgmean = imagemean(image);
+    fprintf(stdout, "Image mean: %d\n", imgmean);
     fwrite(image, sizeof(short unsigned int), 1000000, outfile);
     fprintf(stdout, "finish outputing image");
     // close hardware and file
