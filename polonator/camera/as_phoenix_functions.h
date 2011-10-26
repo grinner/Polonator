@@ -4,6 +4,8 @@
 #define _PHX_LINE_SIZE     256
 #define szDefaultCmdAppend "\r"
 
+#include <phx_api.h>
+
 /* structure to hold info from callback */
 typedef struct
 {
