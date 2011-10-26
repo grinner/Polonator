@@ -17,15 +17,15 @@ typedef struct
 void camera_init(void);
 void camera_close(void);
 
-int imagemean(short unsigned int*);
+int imagemean(short unsigned int* img);
 
-void setGain(int);
-static void set_gain(tHandle, int);
+void setGain(int gain);
+static void set_gain(tHandle hCamera, int gain);
 
 void setExposure(double time_inseconds);
-static void set_exposure(tHandle, double time_inseconds);
+static void set_exposure(tHandle hCamera, double time_inseconds);
 
-void check_for_error(etStat, char *, char *);
+void check_for_error(etStat eStat, char *fn_name, char *error_call);
 void setupSnap(void);
 int snapReceived(void);
 short unsigned int* getSnapImage(void);
@@ -40,9 +40,9 @@ void cameraInitAcq(float exposure, int gain);
 
 static void acquirer_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
 
-static void init_camera_external_trigger(tHandle);
-static void init_camera_internal_trigger(tHandle);
-static int phxser_(tHandle, char*);
+static void init_camera_external_trigger(tHandle hCamera);
+static void init_camera_internal_trigger(tHandle hCamera);
+static int phxser(tHandle hCamera, char *szCmdBuff);
 static int sPCI_readout_started(void);
 static void sPCI_set_readout(int startstop);
 static int sPCI_num_imgs(void);
