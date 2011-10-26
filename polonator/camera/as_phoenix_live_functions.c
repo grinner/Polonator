@@ -38,6 +38,7 @@ typedef struct
    volatile tFlag fFifoOverFlow;
 } tPhxLive;
 
+tPhxLive       sPhxLive;            /* User defined Event Context */
 
 /*
 phxlive_callback(ForBrief)

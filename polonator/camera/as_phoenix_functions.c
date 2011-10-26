@@ -34,7 +34,6 @@ ui32 PHX_buffersize; /* width of the framegrabber's circular image buffer */
 snap_callback(ForBrief)
 This is the callback function which handles the interrupt events
 */
-tPhxLive       sPhxLive;            /* User defined Event Context */
 
 static void snap_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
 
