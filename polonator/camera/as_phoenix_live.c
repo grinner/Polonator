@@ -20,14 +20,12 @@
   /* This is the modified version of active silicon source by Nick Conway*/
  
 /* Define to use the Phoenix Display library */
-//#define _PHX_DISPLAY    
-#define _USE_QT
+#define _PHX_DISPLAY    
+// #define _USE_QT
 
 /* Application & library headers */
 
 #include <stdio.h>
-
-
 
 #include <common.h>
 #include "as_phoenix_functions.h"
@@ -37,40 +35,40 @@
 
 /*
 phxlive_callback(ForBrief)
- * This is the callback function which handles the interrupt events
- */
+This is the callback function which handles the interrupt events
+*/
 tPhxLive       sPhxLive;            /* User defined Event Context */
 
 static void phxlive_callback(
-   tHandle hCamera,        /* Camera handle. */
-   ui32 dwInterruptMask,   /* Interrupt mask. */
-   void *pvParams          /* Pointer to user supplied context */
+    tHandle hCamera,        /* Camera handle. */
+    ui32 dwInterruptMask,   /* Interrupt mask. */
+    void *pvParams          /* Pointer to user supplied context */
 ) 
 {
     tPhxLive *psPhxLive = (tPhxLive*) pvParams;
 
-   (void) hCamera;
+    (void) hCamera;
 
-   /* Handle the Buffer Ready event */
-   if ( PHX_INTRPT_BUFFER_READY & dwInterruptMask ) 
-   {
+    /* Handle the Buffer Ready event */
+    if ( PHX_INTRPT_BUFFER_READY & dwInterruptMask ) 
+    {
       /* Increment the Display Buffer Ready Count */
       psPhxLive->nBufferReadyCount++;
-   }
+    }
 
-   /* Fifo Overflow */
-   if ( PHX_INTRPT_FIFO_OVERFLOW & dwInterruptMask ) 
-   {
+    /* Fifo Overflow */
+    if ( PHX_INTRPT_FIFO_OVERFLOW & dwInterruptMask ) 
+    {
       psPhxLive->fFifoOverFlow = TRUE;
-   }
+    }
 
-   /* Note:
+    /* Note:
     * The callback routine may be called with more than 1 event flag set.
     * Therefore all possible events must be handled here.
     */
-   if ( PHX_INTRPT_FRAME_END & dwInterruptMask )
-   {
-   }
+    if ( PHX_INTRPT_FRAME_END & dwInterruptMask )
+    {
+    }
 }
 
 
@@ -78,15 +76,14 @@ static void phxlive_callback(
 
 /*
 phxlive(ForBrief)
- * Simple live capture application code
- */
+Simple live capture application code
+*/
 int phxlive(
-   etCamConfigLoad eCamConfigLoad,    /* Board number, ie 1, 2, or 0 for next available */
-   char *pszConfigFileName,            /* Name of config file */
-   double exposure_time,
-   int gain,
-   int tdiflag,
-   unsigned short *frame_out          // added by NC to allow output to another window
+    etCamConfigLoad eCamConfigLoad,    /* Board number, ie 1, 2, or 0 for next available */
+    char *pszConfigFileName,            /* Name of config file */
+    double exposure_time,
+    int gain,
+    unsigned short *frame_out          // added by NC to allow output to another window
 )
 {
     etStat         eStat     = PHX_OK;  /* Status variable */
@@ -107,18 +104,7 @@ int phxlive(
     if ( PHX_OK != eStat ) goto Error;
 
     /* set camera to live acquisition mode */
-    if(tdiflag == 1)
-    {
-        init_camera_internal_trigger_TDI(hCamera);
-    }
-    else if(tdiflag == 2)
-    {
-        init_camera_external_trigger_TDI(hCamera);
-    }
-    else
-    {
-        init_camera_internal_trigger(hCamera);
-    }
+    init_camera_internal_trigger(hCamera);
     set_exposure(hCamera, exposure_time);
     set_gain(hCamera, gain);
 
@@ -272,45 +258,31 @@ int buffer_overflow(void)
 }
 
 
-int py_camera_live(double exposure_time, int gain, int tdiflag, unsigned short *frame_out)
+int py_camera_live(double exposure_time, int gain, unsigned short *frame_out)
 {
-   tPhxCmd sPhxCmd;
-   int     nStatus;
-   sPhxCmd.dwBoardNumber     = 1; 
-   sPhxCmd.pszConfigFileName = NULL;
-   sPhxCmd.pszOutputFileName = NULL;
-   sPhxCmd.dwBayerOption     = 11;
-   sPhxCmd.dwGammaOption     = 100;
-   sPhxCmd.dwFrameOption     = 300;
-   sPhxCmd.dwTimeOption      = 3;
-   sPhxCmd.dwSlowOption      = 10;
-   sPhxCmd.eCamConfigLoad = (etCamConfigLoad) ( PHX_DIGITAL | sPhxCmd.dwBoardNumber );
+    tPhxCmd sPhxCmd;
+    int     nStatus;
+    sPhxCmd.dwBoardNumber     = 1; 
+    sPhxCmd.pszConfigFileName = NULL;
+    sPhxCmd.pszOutputFileName = NULL;
+    sPhxCmd.dwBayerOption     = 11;
+    sPhxCmd.dwGammaOption     = 100;
+    sPhxCmd.dwFrameOption     = 300;
+    sPhxCmd.dwTimeOption      = 3;
+    sPhxCmd.dwSlowOption      = 10;
+    sPhxCmd.eCamConfigLoad = (etCamConfigLoad) ( PHX_DIGITAL | sPhxCmd.dwBoardNumber );
+
+    char filepath_buffer[256];
+    strcpy(filepath_buffer, getenv("POLONATOR_PATH"));
    
-   char filepath_buffer[256];
-   strcpy(filepath_buffer, getenv("POLONATOR_PATH"));
-   
-   /*PhxCommonKbInit();*/
-   if(tdiflag)
-   {
-     strcat(filepath_buffer, "/config_files/em9100-50.pcf");
-     nStatus = phxlive( sPhxCmd.eCamConfigLoad, \
-                        filepath_buffer, \
-                        exposure_time, \
-                        gain, \
-                        tdiflag, \
-                        frame_out);
-   }
-   else
-   {
-     strcat(filepath_buffer, "/config_files/em9100-02.pcf");
-     nStatus = phxlive( sPhxCmd.eCamConfigLoad, \
-                        filepath_buffer, \
-                        exposure_time, \
-                        gain, \
-                        tdiflag,\
-                        frame_out);
-   }
-   /*PhxCommonKbClose();*/
-   return nStatus;
+    /*PhxCommonKbInit();*/
+    strcat(filepath_buffer, "/config_files/em9100-02.pcf");
+    nStatus = phxlive( sPhxCmd.eCamConfigLoad, \
+                    filepath_buffer, \
+                    exposure_time, \
+                    gain, \
+                    frame_out);
+    /*PhxCommonKbClose();*/
+    return nStatus;
 }
 

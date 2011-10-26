@@ -346,8 +346,6 @@ def find():
     del img_1D_list
 # end def
 
-
-
 def collect():
     """
     1) Snaps 4 pictures at the "exposures" and "gains" settings
@@ -524,6 +522,22 @@ def laneProcess(flowcell,lane,column):
         #PC.cameraClose() # also frees up image buffer memory
     # end for
     print('done\n') 
-# end def 
+# end def
+
+def grid(grid_spacing=10, square_size=1):
+    global MapFunc
+    MapFunc.grid(grid_spacing, square_size)
+# end def
+
+def startLive(exposure, gain, color):
+    global MaestroF
+    Maestro.filter_goto(color)
+    pid = os.fork()        # this is a UNIX only syscall
+    if pid == 0:
+        #child process
+        PC.cameraLive(exposure, gain)
+        return 0;
+    # end if
+# end def
        
 

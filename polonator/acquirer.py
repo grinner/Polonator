@@ -136,7 +136,7 @@ def main(argv=None):
     # configure framegrabber
     exposure = float(argv[2])
     gain = int(arg[3])
-    PC.py_cameraInitAcq(0, exposure, gain)
+    PC.camera_initAcq(0, exposure, gain)
     
     """
     NETWORK TRANSFER SETUP
@@ -168,7 +168,7 @@ def main(argv=None):
             net.py_network_startserver(proc_portnum)
 
             autoe_gain = send_FL_images(array_string,15)
-            PC.py_set_gain(autoe_gain)
+            PC.set_gain(autoe_gain)
 
             log_string = "STATUS:\tPolonator-acquirer: using the auto-exposure gain %d..." % (autoe_gain)
             PL.p_log_simple(log_string)
@@ -362,7 +362,7 @@ def main(argv=None):
     mf.reset_flag()
 
     PL.p_log("STATUS:\tPolonator-acquirer: release camera handle...")
-    PC.py_cameraClose()
+    PC.camera_close()
         
     net.py_network_waitforsend()  # don't close connection until last image is transmitted
     net.py_network_stopserver()
@@ -373,7 +373,7 @@ def main(argv=None):
 def exit_on_error(maestro):
     PL.p_log_errorno("ERROR: we've had either a camera or network error; exiting prematurely and signalling PolonatorImager to retry the current scan")
     maestro.status()
-    PC.py_cameraClose()
+    PC.camera_close()
     net.py_network_stopserver()
     maestro.stop()
     PL.p_log_errorno("ERROR: exiting")

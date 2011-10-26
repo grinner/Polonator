@@ -1,25 +1,6 @@
 #ifndef _AS_PHOENIX_FUNC_LIVE_
 #define _AS_PHOENIX_FUNC_LIVE_
 
-/****************************************************************************
- *
- * ACTIVE SILICON LIMITED
- *
- * File name   : phxlive.c
- * Function    : Example Live display application
- * Project     : Phoenix
- *
- * Copyright (c) 2004-2006 Active Silicon Ltd.
- ****************************************************************************
- * Comments:
- * --------
- * This example shows how to initialise the Phoenix board and use the Display
- * library to run live double buffered (also known as ping-pong) acquisition,
- * using a callback function.
- *
- ****************************************************************************
- */
-
 /* Define to use the Phoenix Display library */
 #define _PHX_DISPLAY    
 
@@ -27,10 +8,9 @@
 #include "common.h"
 #include "as_phoenix_functions.h"
 
-
-static void phxlive_callback(tHandle,ui32,void*);
-int phxlive(etCamConfigLoad,char *,double,int, int);
-int camera_live(int, char**, int);
+static void phxlive_callback( tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
+int phxlive(etCamConfigLoad eCamConfigLoad, char *pszConfigFileName, double exposure_time, int gain);
+int camera_live(int argc, char *argv[]);
 
 /* Define an application specific structure to hold user information */
 typedef struct

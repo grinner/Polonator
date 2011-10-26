@@ -30,11 +30,10 @@ int phxlive(
    char *pszConfigFileName,          
    double exposure_time,
    int gain,
-   int tdiflag,
    unsigned short *frame_out 
 );
 
-int py_camera_live(double exposure_time, int gain, int tdiflag, unsigned short *frame_out);
+int py_camera_live(double exposure_time, int gain, unsigned short *frame_out);
 
 int buffer_ready_count(void);
 int buffer_overflow(void);

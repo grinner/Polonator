@@ -156,7 +156,7 @@ class Autoexpose:
                 for k in range(0, 10): #for each gain setting from gain_min in 
                                        # increments of gain_incr
                     curr_gain = gain_min[fluors[0]] + (k * gain_incr)
-                    self.camera.py_set_gain(curr_gain)
+                    self.camera.set_gain(curr_gain)
                     self.maestro.shutter_open()
                     curr_mean = self.camera.py_imagemean(self.camera.py_snapimage());
                     self.maestro.shutter_close()
@@ -218,7 +218,7 @@ class Autoexpose:
                     for k in range(0, 10): # for each gain setting from gain_min 
                                            # in increments of gain_incr
                         curr_gain = gain_min[fluor] + (k * gain_incr)
-                        self.camera.py_set_gain(curr_gain)
+                        self.camera.set_gain(curr_gain)
                         self.maestro.shutter_open()
                         curr_mean = self.camera.py_imagemean(self.camera.py_snapimage());
                         self.maestro.shutter_close()

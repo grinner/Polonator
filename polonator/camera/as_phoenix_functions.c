@@ -1,24 +1,24 @@
-/* =============================================================================
-//
-// Polonator G.007 Image Acquisition Software
-//
-// Church Lab, Harvard Medical School
-// Written by Greg Porreca
-//
-// as_phoenix_functions.c: functionality for dealing with the Hammamatsu
-// EMCCD C9100-02 camera and the Phoenix framegrabber
-//
-// Release 1.0 -- 04-15-2008
-//
-// This software may be modified and re-distributed, but this header must appear
-// at the top of the file.
-//
-// =============================================================================
-/*/
+/*
+Polonator G.007 Image Acquisition Software
 
-#include "as_phoenix_functions.h"
+Original source
+Church Lab, Harvard Medical School
+Written by Greg Porreca
+
+as_phoenix_functions.c: functionality for dealing with the Hammamatsu
+EMCCD C9100-02 camera and the Phoenix framegrabber
+Release 1.0 -- 04-15-2008
+
+This software may be modified and re-distributed, but this header must appear
+at the top of the file.
+*/
+
+#include <phx_api.h>
 #include "common.h"
+#include "logger.h"
+#include "as_phoenix_functions.h"
 #include "global_parameters.h"
+
 #define WAIT usleep(1000)
 
 tHandle pyHandle; /* camera handle for Python functions */
@@ -30,22 +30,18 @@ char log_string[500];
 stImageBuff py_img_buffer;
 ui32 PHX_buffersize; /* width of the framegrabber's circular image buffer */
 
-/* structure to hold info from callback */
-typedef struct
-{
-    volatile int num_imgs; /* number of images received so far */
-    volatile int image_ready; /* signals a new image has been received */
-    volatile int readout_started;
-} tPhxCallbackInfo;
+/*
+phxlive_callback(ForBrief)
+This is the callback function which handles the interrupt events
+*/
+tPhxLive       sPhxLive;            /* User defined Event Context */
 
 static void snap_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
-/*typedef struct{*/
-/*    volatile int image_ready;*/
-/*} tPhxCallbackInfo;*/
+
 stImageBuff img_buffer;
 tPhxCallbackInfo sPCI;
 
-void py_cameraInit(int tdiflag)
+void camera_init(void)
 {
     etStat eStat;
     char filepath_buffer[256];
@@ -54,19 +50,12 @@ void py_cameraInit(int tdiflag)
 
     p_log("STATUS:\tpy_cameraInit: Initialize internal camera handle");
     pyHandle = 0;
-    if(tdiflag)
-    {
-        p_log("Use 9100-50 config file");
-        strcat(filepath_buffer, "/config_files/em9100-50.pcf");
-        eStat = PHX_CameraConfigLoad(&pyHandle, filepath_buffer, PHX_BOARD_AUTO | PHX_DIGITAL, NULL);
-    }
-    else
-    {
-        p_log_simple("Use 9100-02 config file");
-        strcat(filepath_buffer, "/config_files/em9100-02.pcf");
-        eStat = PHX_CameraConfigLoad(&pyHandle, filepath_buffer,(etCamConfigLoad)(PHX_BOARD_AUTO|PHX_DIGITAL|PHX_NO_RECONFIGURE),PHX_ErrHandlerDefault);
-        /*eStat = PHX_CameraConfigLoad(&pyHandle, "/home/polonator/G.007/G.007_acquisition/em9100-02.pcf", PHX_BOARD_AUTO | PHX_DIGITAL, NULL);*/
-    }
+
+    p_log_simple("Use 9100-02 config file");
+    strcat(filepath_buffer, "/config_files/em9100-02.pcf");
+    eStat = PHX_CameraConfigLoad(&pyHandle, filepath_buffer,(etCamConfigLoad)(PHX_BOARD_AUTO|PHX_DIGITAL|PHX_NO_RECONFIGURE),PHX_ErrHandlerDefault);
+    /*eStat = PHX_CameraConfigLoad(&pyHandle, "/home/polonator/G.007/G.007_acquisition/em9100-02.pcf", PHX_BOARD_AUTO | PHX_DIGITAL, NULL);*/
+
     check_for_error(eStat, "py_cameraInit", "PHX_CameraConfigLoad");
 
     p_log_simple("STATUS:\tpy_cameraInit: Set camera to external (Maestro) triggering");
@@ -80,7 +69,7 @@ void py_cameraInit(int tdiflag)
     sPCI.image_ready = 0;
 }
 
-void py_cameraClose(void)
+void camera_close(void)
 {
     p_log_simple("STATUS:\tpy_cameraClose: Release internal camera handle");
     PHX_CameraRelease(&pyHandle);
@@ -89,21 +78,7 @@ void py_cameraClose(void)
     free(image_ptr);
 }
 
-void py_set_exposure(double time_inseconds)
-{
-    sprintf(log_string, "STATUS:\tpy_set_exposure: Set exposure to <%f> seconds", time_inseconds);
-    p_log_simple(log_string);
-    set_exposure(pyHandle, time_inseconds);
-}
-
-void py_set_gain(int gain)
-{
-    sprintf(log_string, "STATUS:\tpy_set_gain: Set EM gain to <%d>", gain);
-    p_log_simple(log_string);
-    set_gain(pyHandle, gain);
-}
-
-void py_setupSnap(void)
+void setup_snap(void)
 {
     etStat eStat;
     etParamValue dw;
@@ -130,30 +105,30 @@ void py_setupSnap(void)
 }
 
 
-int py_snapReceived(void){
+int snap_received(void){
     return sPCI.image_ready;
 }
 
 
-short unsigned int* py_getSnapImage(){
+short unsigned int* get_snap_image(void){
     stImageBuff stBuffer;
     etStat eStat;
     int i;
 
-    p_log_simple("STATUS:\tpy_getSnapImage(): get pointer to framegrabber image buffer");
+    p_log_simple("STATUS:\tget_snap_image(): get pointer to framegrabber image buffer");
     eStat = PHX_Acquire(pyHandle, PHX_BUFFER_GET, &stBuffer);
-    check_for_error(eStat, "py_getSnapImage()", "PHX_Acquire(PHX_BUFFER_GET)");
+    check_for_error(eStat, "get_snap_image()", "PHX_Acquire(PHX_BUFFER_GET)");
 
-    p_log_simple("STATUS:\tpy_getSnapImage(): copy image into user memory space");
+    p_log_simple("STATUS:\tget_snap_image(): copy image into user memory space");
     for(i = 0; i < 1000000; i++){
         *(image_ptr + i) = *((short unsigned int*)(stBuffer.pvAddress) + i);
     }
 
-    p_log_simple("STATUS:\tpy_getSnapImage(): release framegrabber buffer");
+    p_log_simple("STATUS:\tget_snap_image(): release framegrabber buffer");
     eStat = PHX_Acquire(pyHandle, PHX_BUFFER_RELEASE, &stBuffer);
-    check_for_error(eStat, "py_getSnapImage()", "PHX_Acquire(PHX_BUFFER_RELEASE)");
+    check_for_error(eStat, "get_snap_image()", "PHX_Acquire(PHX_BUFFER_RELEASE)");
 
-    p_log_simple("STATUS:\tpy_getSnapImage(): return pointer to image in user memory");
+    p_log_simple("STATUS:\tget_snap_image(): return pointer to image in user memory");
     sPCI.image_ready = 0;
     return image_ptr;
 }
@@ -164,7 +139,7 @@ short unsigned int* py_getSnapImage(){
 returns the mean of the 1mpix image pointed to by int* img.
 mean is cast as an integer
 */
-int py_imagemean(short unsigned int* img)
+int imagemean(short unsigned int* img)
 {
     int i;
     double sum = 0;
@@ -200,7 +175,7 @@ int py_imagemean(short unsigned int* img)
    triggering the camera in software (e.g. single-shot mode during
    autoexposure).
 */
-void init_camera_external_trigger(tHandle hCamera)
+static void init_camera_external_trigger(tHandle hCamera)
 {
     p_log("initialize camera for external trigger area mode");
     /*phxser(hCamera, "INI");*/ /* initialize the camera*/
@@ -220,7 +195,7 @@ void init_camera_external_trigger(tHandle hCamera)
    software fires a 'software trigger', which tells the camera to start integrating.
    Integration ends when 'exposure time' has elapsed (set w/ AET).
 */
-void init_camera_internal_trigger(tHandle hCamera)
+static void init_camera_internal_trigger(tHandle hCamera)
 {
     p_log("initialize camera for internal trigger area mode");
     phxser(hCamera, "AMD N"); /* set to internal ("normal") trigger mode from Phoenix*/
@@ -230,44 +205,18 @@ void init_camera_internal_trigger(tHandle hCamera)
     /*phxser(hCamera, "CEO 0");*/ /* set 'contrast enhancement' to maximum */
 }
 
-
-/* This mode is used when running TDI in normal TDI mode, triggering by controller
-*/
-void init_camera_external_trigger_TDI(tHandle hCamera){
-    p_log("initialize camera for external trigger TDI mode");
-    /*phxser(hCamera, "INI");*/ /* initialize the camera*/
-    /*phxser(hCamera, "RES Y");*/ /* return commands as part of response*/
-    phxser(hCamera, "AMD T"); /* set to TDI 'normal' mode*/
-    phxser(hCamera, "TMD E"); /* set to external TDI mode*/
-    phxser(hCamera, "ESC M"); /* set to trigger source "multi-pin"*/
-    phxser(hCamera, "ATP P"); /* set to positive polarity trigger*/
-    /*phxser(hCamera, "ACN 0");*/ /* acquire one image */
-    /*phxser(hCamera, "CEO 0");*/ /* set 'contrast enhancement' to maximum */
+void set_exposure_(double time_inseconds)
+{
+    sprintf(log_string, "STATUS:\tpy_set_exposure: Set exposure to <%f> seconds", time_inseconds);
+    p_log_simple(log_string);
+    set_exposure(pyHandle, time_inseconds);
 }
-
-
-/* This is used when running in TDI with internal triggering (for live debugging
-   purposes only
-*/
-void init_camera_internal_trigger_TDI(tHandle hCamera){
-    p_log("initialize camera for internal trigger TDI mode");
-    phxser(hCamera, "INI"); /* initialize the camera*/
-    phxser(hCamera, "RES Y"); /* return commands as part of response*/
-    phxser(hCamera, "AMD T"); /* set to internal ("normal") trigger mode from Phoenix*/
-    phxser(hCamera, "TMD I"); /* set to internal TDI mode*/
-    phxser(hCamera, "ESC M"); /* set to trigger source "multi-pin"*/
-    phxser(hCamera, "ATP P"); /* set to positive polarity trigger*/
-    phxser(hCamera, "ACN 0"); /* acquire cycling forever */
-    phxser(hCamera, "CEO 0"); /* set 'contrast enhancement' to maximum */
-}
-
-
 
 /* input must be exposure time in seconds;
  0.001 <= time <= 9.999;
  time must have <=3 decimal places (e.g. 0.0010 is not allowed)
 */
-void set_exposure(tHandle hCamera, double time_inseconds)
+static void set_exposure_(tHandle hCamera, double time_inseconds)
 {
     char exposure_command[14];
     if(time_inseconds < 0.001)
@@ -288,9 +237,17 @@ void set_exposure(tHandle hCamera, double time_inseconds)
 }
 
 
+void set_gain(int gain)
+{
+    sprintf(log_string, "STATUS:\tpy_set_gain: Set EM gain to <%d>", gain);
+    p_log_simple(log_string);
+    set_gain(pyHandle, gain);
+}
+
+
 /* input must be EM gain setting between 0 and 255 inclusive
 */
-void set_gain(tHandle hCamera, int gain)
+static void set_gain_(tHandle hCamera, int gain)
 {
     char gain_command[14];
 
@@ -348,26 +305,31 @@ static void snap_callback(tHandle hCamera,
 
 int sPCI_readout_started(void)
 {
+    //
     return sPCI.readout_started;
 }
 
 void sPCI_set_readout(int startstop)
 {
+    //
     sPCI.readout_started = startstop;
 }
 
 int sPCI_num_imgs(void)
 {
+    //returns 
     return sPCI.num_imgs;
 }
 
 int sPCI_image_ready(void)
 {
+    //returns 
     return sPCI.image_ready;
 }
 
 void sPCI_set_image_ready(int ready)
 {
+    //sets the image ready flag
     sPCI.image_ready = ready;
 }
 
@@ -380,32 +342,32 @@ void py_startAcquire(void)
 
 }
 
-void py_get_buffer(void)
+void get_buffer(void)
 {
     etStat eStat;
     /* get pointer to image so we can manipulate it */
     eStat = PHX_Acquire(pyHandle, PHX_BUFFER_GET, &py_img_buffer);
     check_for_error(eStat, "acquirer", "PHX_Acquire(PHX_BUFFER_GET)");
 }
-void py_release_buffer(void)
+void release_buffer(void)
 {
     //release buffer back to Phoenix's buffer pool
     PHX_Acquire(pyHandle, PHX_BUFFER_RELEASE, &py_img_buffer);
 }
 
-void py_get_buffer_cpy(unsigned short * raw_image)
+void get_buffer_cpy(unsigned short * raw_image)
 {
     memcpy(raw_image,py_img_buffer.pvAddress, 2*IMAGE_RESOLUTION_X*IMAGE_RESOLUTION_Y);
 }
 
-short unsigned int*  py_get_buffer_ptr(void)
+short unsigned int*  get_buffer_ptr(void)
 {
     return py_img_buffer.pvAddress;
 }
 
 // This function is explicitly for acquirer.py
 // NC 05-2011
-void py_cameraInitAcq(int tdiflag, float exposure, int gain)
+void py_cameraInitAcq(float exposure, int gain)
 {
     etStat eStat;
     char filepath_buffer[256];
@@ -417,19 +379,12 @@ void py_cameraInitAcq(int tdiflag, float exposure, int gain)
 
     p_log("STATUS:\tpy_cameraInit: Initialize internal camera handle");
     pyHandle = 0;
-    if(tdiflag)
-    {
-        p_log("Use 9100-50 config file");
-        strcat(filepath_buffer, "/config_files/em9100-50.pcf");
-        eStat = PHX_CameraConfigLoad(&pyHandle, filepath_buffer, PHX_BOARD_AUTO | PHX_DIGITAL, NULL);
-    }
-    else
-    {
-        p_log_simple("Use 9100-02 config file");
-        strcat(filepath_buffer, "/config_files/em9100-02.pcf");
-        eStat = PHX_CameraConfigLoad(&pyHandle, filepath_buffer,(etCamConfigLoad)(PHX_BOARD_AUTO|PHX_DIGITAL|PHX_NO_RECONFIGURE),PHX_ErrHandlerDefault);
-        /*eStat = PHX_CameraConfigLoad(&pyHandle, "/home/polonator/G.007/G.007_acquisition/em9100-02.pcf", PHX_BOARD_AUTO | PHX_DIGITAL, NULL);*/
-    }
+
+    p_log_simple("Use 9100-02 config file");
+    strcat(filepath_buffer, "/config_files/em9100-02.pcf");
+    eStat = PHX_CameraConfigLoad(&pyHandle, filepath_buffer,(etCamConfigLoad)(PHX_BOARD_AUTO|PHX_DIGITAL|PHX_NO_RECONFIGURE),PHX_ErrHandlerDefault);
+    /*eStat = PHX_CameraConfigLoad(&pyHandle, "/home/polonator/G.007/G.007_acquisition/em9100-02.pcf", PHX_BOARD_AUTO | PHX_DIGITAL, NULL);*/
+
     check_for_error(eStat, "py_cameraInit", "PHX_CameraConfigLoad");
 
     // this is the only difference from the py_cameraInit
@@ -721,3 +676,248 @@ int phxser(tHandle hCamera, char *szCmdBuff)
     return 0;
 }
 
+
+static void phxlive_callback(
+    tHandle hCamera,        /* Camera handle. */
+    ui32 dwInterruptMask,   /* Interrupt mask. */
+    void *pvParams          /* Pointer to user supplied context */
+) 
+{
+    tPhxLive *psPhxLive = (tPhxLive*) pvParams;
+
+    (void) hCamera;
+
+    /* Handle the Buffer Ready event */
+    if ( PHX_INTRPT_BUFFER_READY & dwInterruptMask ) 
+    {
+      /* Increment the Display Buffer Ready Count */
+      psPhxLive->nBufferReadyCount++;
+    }
+
+    /* Fifo Overflow */
+    if ( PHX_INTRPT_FIFO_OVERFLOW & dwInterruptMask ) 
+    {
+      psPhxLive->fFifoOverFlow = TRUE;
+    }
+
+    /* Note:
+    * The callback routine may be called with more than 1 event flag set.
+    * Therefore all possible events must be handled here.
+    */
+    if ( PHX_INTRPT_FRAME_END & dwInterruptMask )
+    {
+    }
+}
+
+
+/*
+phxlive(ForBrief)
+Simple live capture application code
+*/
+int phxlive(
+    etCamConfigLoad eCamConfigLoad,    /* Board number, ie 1, 2, or 0 for next available */
+    char *pszConfigFileName,            /* Name of config file */
+    double exposure_time,
+    int gain,
+    unsigned short *frame_out          // added by NC to allow output to another window
+)
+{
+    etStat         eStat     = PHX_OK;  /* Status variable */
+    etParamValue   eParamValue;         /* Parameter for use with PHX_ParameterSet/Get calls */
+    tHandle        hCamera   = 0;       /* Camera Handle  */
+    tPHX           hDisplay  = 0;       /* Display handle */
+    tPHX           hBuffer1  = 0;       /* First Image buffer handle  */
+    tPHX           hBuffer2  = 0;       /* Second Image buffer handle */
+    //tPhxLive       sPhxLive;            /* User defined Event Context */
+    ui32           nBufferReadyLast = 0;/* Previous BufferReady count value */
+    int i,length;
+
+    /* Initialise the user defined Event context structure */
+    memset( &sPhxLive, 0, sizeof( tPhxLive ) );
+
+    /* Allocate the board with the config file */
+    eStat = PHX_CameraConfigLoad( &hCamera, pszConfigFileName, eCamConfigLoad, PHX_ErrHandlerDefault );
+    if ( PHX_OK != eStat ) goto Error;
+
+    /* set camera to live acquisition mode */
+    init_camera_internal_trigger(hCamera);
+    set_exposure(hCamera, exposure_time);
+    set_gain(hCamera, gain);
+
+
+#ifndef _USE_QT
+    // We create our display with a NULL hWnd, this will automatically create an image window. 
+    eStat = PDL_DisplayCreate( &hDisplay, NULL, hCamera, PHX_ErrHandlerDefault );
+    if ( PHX_OK != eStat ) goto Error;
+
+    // We create two display buffers for our double buffering 
+    eStat = PDL_BufferCreate( &hBuffer1, hDisplay, (etBufferMode)PDL_BUFF_SYSTEM_MEM_DIRECT );
+    if ( PHX_OK != eStat ) goto Error;
+    eStat = PDL_BufferCreate( &hBuffer2, hDisplay, (etBufferMode)PDL_BUFF_SYSTEM_MEM_DIRECT );
+    if ( PHX_OK != eStat ) goto Error;
+
+    // Initialise the display, this associates the display buffers with the display 
+    eStat =  PDL_DisplayInit( hDisplay );
+    if ( PHX_OK != eStat ) goto Error;
+
+    // The above code has created 2 display (acquisition) buffers.
+    // Therefore ensure that the Phoenix is configured to use 2 buffers, by overwriting
+    // the value already loaded from the config file.
+    eParamValue = (etParamValue) 2;
+    eStat = PHX_ParameterSet( hCamera, PHX_ACQ_NUM_IMAGES, &eParamValue );
+    if ( PHX_OK != eStat ) goto Error;
+#endif
+
+
+    /* Enable FIFO Overflow events */
+    eParamValue = PHX_INTRPT_FIFO_OVERFLOW;
+    eStat = PHX_ParameterSet( hCamera, PHX_INTRPT_SET, &eParamValue );
+    if ( PHX_OK != eStat ) goto Error;
+
+    /* Setup our own event context */
+    eStat = PHX_ParameterSet( hCamera, PHX_EVENT_CONTEXT, (void *) &sPhxLive );
+    if ( PHX_OK != eStat ) goto Error;
+
+
+    /* Now start our capture, using the callback method */
+    eStat = PHX_Acquire( hCamera, PHX_START, (void*) phxlive_callback );
+    if ( PHX_OK != eStat ) goto Error;
+
+
+    /* Continue processing data until the user presses a key in the console window
+    * or Phoenix detects a FIFO overflow
+    */
+    //printf("Press a key to exit\n");
+    /*   while(!PhxCommonKbHit() && !sPhxLive.fFifoOverFlow)*/
+    while(!sPhxLive.fFifoOverFlow)
+    {
+        /* Temporarily sleep, to avoid burning CPU cycles.
+        * An alternative method is to wait on a semaphore, which is signalled
+        * within the callback function.  This approach would ensure that the
+        * data processing would only start when there was data to process
+        */
+        _PHX_SleepMs(10);
+
+        /* If there are any buffers waiting to display, then process them here */
+        if ( nBufferReadyLast != sPhxLive.nBufferReadyCount ) 
+        {
+            stImageBuff stBuffer; 
+            int nStaleBufferCount;
+
+            /* If the processing is too slow to keep up with acquisition,
+            * then there may be more than 1 buffer ready to process.
+            * The application can either be designed to process all buffers
+            * knowing that it will catch up, or as here, throw away all but the
+            * latest
+            */
+            nStaleBufferCount = sPhxLive.nBufferReadyCount - nBufferReadyLast;
+            nBufferReadyLast += nStaleBufferCount;
+
+            /* Throw away all but the last image */
+            while ( nStaleBufferCount-- > 1 )
+            {
+                eStat = PHX_Acquire( hCamera, PHX_BUFFER_RELEASE, NULL );
+                if ( PHX_OK != eStat ) goto Error;
+            }
+
+
+            /* Get the info for the last acquired buffer */
+            eStat = PHX_Acquire( hCamera, PHX_BUFFER_GET, &stBuffer );
+            if ( PHX_OK != eStat ) goto Error;
+
+            /* Process the newly acquired buffer,
+            * which in this simple example is a call to display the data.
+            * For our display function we use the pvContext member variable to
+            * pass a display buffer handle.
+            * Alternatively the actual video data can be accessed at stBuffer.pvAddress
+            */
+#ifndef _USE_QT
+            PDL_BufferPaint( (tPHX)stBuffer.pvContext );
+#elif defined _USE_QT
+            // Load a numpy array here!!!!
+            for(i = 0; i < 1000000; i++)
+            {
+                *(frame_out + i) = *((short unsigned int*)(stBuffer.pvAddress) + i);
+            }
+            //fflush(stdout);
+            //length = sizeof(frame_out);
+            //write(1, frame_out, length);
+
+#else
+            printf("EventCount = %5d\r", sPhxLive.nBufferReadyCount );
+#endif
+
+            /* Having processed the data, release the buffer ready for further image data */
+            eStat = PHX_Acquire( hCamera, PHX_BUFFER_RELEASE, NULL );
+            if ( PHX_OK != eStat ) goto Error;
+        }
+    }
+    printf("\n");
+
+
+    /* In this simple example we abort the processing loop on an error condition (FIFO overflow).
+    * However handling of this condition is application specific, and generally would involve
+    * aborting the current acquisition, and then restarting.
+    */
+    if ( sPhxLive.fFifoOverFlow )
+    {
+      printf("FIFO OverFlow detected..Aborting\n");
+    }
+Error:
+   /* Now cease all captures */
+    if ( hCamera ) PHX_Acquire( hCamera, PHX_ABORT, NULL );
+
+#if defined _PHX_DISPLAY
+    /* Free our display double buffering resources */
+    if ( hBuffer1 ) PDL_BufferDestroy( (tPHX*) &hBuffer1 );
+    if ( hBuffer2 ) PDL_BufferDestroy( (tPHX*) &hBuffer2 );
+
+    /* Destroy our display */
+    if ( hDisplay ) PDL_DisplayDestroy( (tPHX*) &hDisplay );
+#endif
+
+    /* Release the Phoenix board */
+    if ( hCamera ) PHX_CameraRelease( &hCamera );
+
+    printf("Exiting\n");
+    return 0;
+}
+
+int buffer_ready_count(void)
+{
+    return sPhxLive.nBufferReadyCount;
+}
+
+int buffer_overflow(void)
+{
+    return sPhxLive.fFifoOverFlow;
+}
+
+
+int camera_live(double exposure_time, int gain, unsigned short *frame_out)
+{
+    tPhxCmd sPhxCmd;
+    int     nStatus;
+    sPhxCmd.dwBoardNumber     = 1; 
+    sPhxCmd.pszConfigFileName = NULL;
+    sPhxCmd.pszOutputFileName = NULL;
+    sPhxCmd.dwBayerOption     = 11;
+    sPhxCmd.dwGammaOption     = 100;
+    sPhxCmd.dwFrameOption     = 300;
+    sPhxCmd.dwTimeOption      = 3;
+    sPhxCmd.dwSlowOption      = 10;
+    sPhxCmd.eCamConfigLoad = (etCamConfigLoad) ( PHX_DIGITAL | sPhxCmd.dwBoardNumber );
+
+    char filepath_buffer[256];
+    strcpy(filepath_buffer, getenv("POLONATOR_PATH"));
+   
+    /*PhxCommonKbInit();*/
+    strcat(filepath_buffer, "/config_files/em9100-02.pcf");
+    nStatus = phxlive( sPhxCmd.eCamConfigLoad, \
+                    filepath_buffer, \
+                    exposure_time, \
+                    gain, \
+                    frame_out);
+    /*PhxCommonKbClose();*/
+    return nStatus;
+}
