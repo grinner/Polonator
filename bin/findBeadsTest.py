@@ -524,8 +524,9 @@ def laneProcess(flowcell,lane,column):
     print('done\n') 
 # end def
 
-def grid():
-    pass
+def grid(grid_spacing=10, square_size=1):
+    global MapFunc
+    MapFunc.grid(grid_spacing, square_size)
 # end def
 
 def startLive(exposure, gain, color):
