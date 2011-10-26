@@ -136,7 +136,7 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
     return image;
 }
 
-void snapPtr(unsigned short * raw_image, float exposure, float gain, char *color)
+void py_snapPtr(unsigned short * raw_image, float exposure, float gain, char *color)
 {
     //raw_image = snapPtr(exposure, gain, color);
     copyImage(snapPtr(exposure, gain, color), raw_image);
