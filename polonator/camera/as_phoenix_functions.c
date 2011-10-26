@@ -71,14 +71,14 @@ void camera_init(void)
 
 void camera_close(void)
 {
-    p_log_simple("STATUS:\tpy_cameraClose: Release internal camera handle");
+    p_log_simple("STATUS:\tcameraClose: Release internal camera handle");
     PHX_CameraRelease(&pyHandle);
 
-    p_log_simple("STATUS:\tpy_cameraClose: Free image buffer");
+    p_log_simple("STATUS:\tcameraClose: Free image buffer");
     free(image_ptr);
 }
 
-void setup_snap(void)
+void setupSnap(void)
 {
     etStat eStat;
     etParamValue dw;
@@ -105,30 +105,30 @@ void setup_snap(void)
 }
 
 
-int snap_received(void){
+int snapReceived(void){
     return sPCI.image_ready;
 }
 
 
-short unsigned int* get_snap_image(void){
+short unsigned int* getSnapImage(void){
     stImageBuff stBuffer;
     etStat eStat;
     int i;
 
-    p_log_simple("STATUS:\tget_snap_image(): get pointer to framegrabber image buffer");
+    p_log_simple("STATUS:\tgetSnapImage(): get pointer to framegrabber image buffer");
     eStat = PHX_Acquire(pyHandle, PHX_BUFFER_GET, &stBuffer);
-    check_for_error(eStat, "get_snap_image()", "PHX_Acquire(PHX_BUFFER_GET)");
+    check_for_error(eStat, "getSnapImage()", "PHX_Acquire(PHX_BUFFER_GET)");
 
-    p_log_simple("STATUS:\tget_snap_image(): copy image into user memory space");
+    p_log_simple("STATUS:\tgetSnapImage(): copy image into user memory space");
     for(i = 0; i < 1000000; i++){
         *(image_ptr + i) = *((short unsigned int*)(stBuffer.pvAddress) + i);
     }
 
-    p_log_simple("STATUS:\tget_snap_image(): release framegrabber buffer");
+    p_log_simple("STATUS:\tgetSnapImage(): release framegrabber buffer");
     eStat = PHX_Acquire(pyHandle, PHX_BUFFER_RELEASE, &stBuffer);
-    check_for_error(eStat, "get_snap_image()", "PHX_Acquire(PHX_BUFFER_RELEASE)");
+    check_for_error(eStat, "getSnapImage()", "PHX_Acquire(PHX_BUFFER_RELEASE)");
 
-    p_log_simple("STATUS:\tget_snap_image(): return pointer to image in user memory");
+    p_log_simple("STATUS:\tgetSnapImage(): return pointer to image in user memory");
     sPCI.image_ready = 0;
     return image_ptr;
 }

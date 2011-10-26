@@ -292,7 +292,7 @@ void snap(float exposure, float gain, char *color, char *filename){
     }
 
     // setup the software to receive an image from the camera
-    setup_snap();
+    setupSnap();
 
 
     // snap the image
@@ -315,7 +315,7 @@ void snap(float exposure, float gain, char *color, char *filename){
     }
 
     // get pointer to image
-    image = get_snap_image();
+    image = getSnapImage();
 
 
     // calculate mean for informational purposes, then write image to file

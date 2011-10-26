@@ -267,7 +267,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     p_log_simple("STATUS:\tPolonator-stagealign: Opening camera handle...");
     camera_init();
     setGain(stagealign_gain);
-    setup_snap(); /* setup capture software to wait for images from camera */
+    setupSnap(); /* setup capture software to wait for images from camera */
     /*
     //--------------------------------------------------------------------------
     */
@@ -320,7 +320,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     p_log("STATUS:\tPolonator-stagealign: Acquire image...");
     maestro_snap(m_sock, stagealign_integration_inmsec, 1); /*rolony*/
     while(!snapReceived()){;}
-    testimage = get_snap_image();
+    testimage = getSnapImage();
 
 
     /* IF INITIALIZING, RE-WRITE THE BASE IMAGE; THE OFFSET FOUND SHOULD BE ZERO */
@@ -407,7 +407,7 @@ void stagealign(int fcnum, int lane_num, int initialize)
     /* maestro_gotostagealign_position(m_sock, fcnum, lane_num);
     maestro_snap(m_sock, stagealign_integration_inmsec, 0);
     while(!snapReceived()){;}
-    testimage = get_snap_image();
+    testimage = getSnapImage();
     */
 
 #ifdef DEBUG_STAGEALIGN
