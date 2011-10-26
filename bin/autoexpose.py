@@ -158,7 +158,7 @@ class Autoexpose:
                     curr_gain = gain_min[fluors[0]] + (k * gain_incr)
                     self.camera.setGain(curr_gain)
                     self.maestro.shutter_open()
-                    curr_mean = self.camera.py_imagemean(self.camera.py_snapimage());
+                    curr_mean = self.camera.imagemean(self.camera.py_snapimage());
                     self.maestro.shutter_close()
                     self.logger.log('For position %d,%d, chamber %d, gain of '+ \
                                     '%d gave mean of %d' % \
@@ -220,7 +220,7 @@ class Autoexpose:
                         curr_gain = gain_min[fluor] + (k * gain_incr)
                         self.camera.setGain(curr_gain)
                         self.maestro.shutter_open()
-                        curr_mean = self.camera.py_imagemean(self.camera.py_snapimage());
+                        curr_mean = self.camera.imagemean(self.camera.py_snapimage());
                         self.maestro.shutter_close()
                         self.logger.log('For fluor %s, chamber %d, gain of %d '+ \
                                         'gave mean of %d' % \

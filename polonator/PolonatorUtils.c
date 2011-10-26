@@ -319,7 +319,7 @@ void snap(float exposure, float gain, char *color, char *filename){
 
 
     // calculate mean for informational purposes, then write image to file
-    imagemean = py_imagemean(image);
+    imagemean = imagemean(image);
     fprintf(stdout, "Image mean: %d\n", imagemean);
     fwrite(image, sizeof(short unsigned int), 1000000, outfile);
     fprintf(stdout, "finish outputing image");

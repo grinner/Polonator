@@ -126,7 +126,7 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
 
 
 	/* calculate mean for informational purposes */
-	//imagemean = py_imagemean(image);
+	//imagemean = imagemean(image);
 	//fprintf(stdout, "Image mean: %d\n", imagemean);
 
 	/* close hardware */
