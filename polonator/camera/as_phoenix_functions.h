@@ -6,14 +6,6 @@
 
 #include <phx_api.h>
 
-/* structure to hold info from callback */
-typedef struct
-{
-    volatile int num_imgs; /* number of images received so far */
-    volatile int image_ready; /* signals a new image has been received */
-    volatile int readout_started;
-} tPhxCallbackInfo;
-
 // private functions are declared with a trailing underscore
 
 void camera_init(void);
@@ -50,5 +42,13 @@ static void sPCI_set_readout(int startstop);
 static int sPCI_num_imgs(void);
 static int sPCI_image_ready(void);
 static void sPCI_set_image_ready(int ready);
+
+/* structure to hold info from callback */
+typedef struct
+{
+    volatile int num_imgs; /* number of images received so far */
+    volatile int image_ready; /* signals a new image has been received */
+    volatile int readout_started;
+} tPhxCallbackInfo;
 
 #endif
