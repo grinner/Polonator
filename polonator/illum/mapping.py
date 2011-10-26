@@ -481,7 +481,7 @@ class MappingFunctions:
                 num_sub += 1
             # end if
             else:
-                print("found(%d,%d)" % \ 
+                print("found(%d,%d)" % \
                         (points_found_x[idx],points_found_y[idx]) )
             # end else
             
@@ -808,7 +808,7 @@ class MappingFunctions:
         points_illum = self.n_ccd_to_dmd(itemind[1],itemind[0])
 
         PI.py_illuminate_enable()
-        PI.py_illuminate_vector(points_illum[0],points_illum[1], \ 
+        PI.py_illuminate_vector(points_illum[0],points_illum[1], \
                                 self.mask_number1, points_illum[0].size)
         PI.py_illuminate_expose()
     # end def    
