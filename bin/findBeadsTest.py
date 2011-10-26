@@ -284,7 +284,7 @@ def find():
     print("value at 1st point: %d at point %d, %d" % \
            (img_array_out[beadpos_xcol[0]+1000*beadpos_yrow[0]], \
             beadpos_xcol[0], beadpos_yrow[0]))
-    print("value at 2nd point: %d at point %d, %d" % \ 
+    print("value at 2nd point: %d at point %d, %d" % \
             (img_array_out[beadpos_xcol[1]+1000*beadpos_yrow[1]], \
              beadpos_xcol[1], beadpos_yrow[1]))
     print("value at 3rd point: %d at point %d, %d" % \
