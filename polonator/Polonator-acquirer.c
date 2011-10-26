@@ -42,14 +42,6 @@ int send_FL_images(char *, int, int);
 /**/
 char log_string[500];
 
-/* structure to hold info from callback */
-typedef struct
-{
-    volatile int num_imgs; /* number of images received so far */
-    volatile int image_ready; /* signals a new image has been received */
-    volatile int readout_started;
-} tPhxCallbackInfo;
-
 /* Phoenix image buffer */
 stImageBuff img_buffer;
 ui32 PHX_buffersize; /* width of the framegrabber's circular image buffer */
