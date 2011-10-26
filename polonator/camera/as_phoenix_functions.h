@@ -12,7 +12,6 @@ typedef struct
     volatile int readout_started;
 } tPhxCallbackInfo;
 
-
 // private functions are declared with a trailing underscore
 
 void camera_init(void);
