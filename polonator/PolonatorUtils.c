@@ -131,11 +131,11 @@ int main(int argc, char *argv[])
 		fprintf(stdout, "Live view starting");
         if(argc==5){
 			fprintf(stdout, "Live view argc == 5");
-            camera_live(argc, argv, 0);
+            camera_live(argc, argv);
         }
         else{
 			fprintf(stdout, "Live view argc != 5");
-            camera_live(argc, argv, atoi(argv[5]));
+            camera_live(argc, argv);
         }
 		fprintf(stdout, "Live view done");
         if(strcmp(argv[4],"none")==0) {
@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
 void snap(float exposure, float gain, char *color, char *filename){
     int m_sock;
     short unsigned int *image;
-    int imagemean;
+    int imgmean;
     int shutterflag;
     FILE *outfile;
 
@@ -269,7 +269,7 @@ void snap(float exposure, float gain, char *color, char *filename){
 
     // open hardware and file
     camera_init(); // use non-TDI config file
-    set_gain(gain);
+    setGain(gain);
     maestro_open(&m_sock);
     outfile = fopen(filename, "w");
 
@@ -277,7 +277,7 @@ void snap(float exposure, float gain, char *color, char *filename){
     // configure hardware
     maestro_setcolor(m_sock, color);
     //maestro_darkfield_off(m_sock);
-    //set_gain(gain);moved to line 174
+    //setGain(gain);moved to line 174
 
     // determine whether or not to use the shutter
     if(!strcmp(color, "none"))
@@ -292,7 +292,7 @@ void snap(float exposure, float gain, char *color, char *filename){
     }
 
     // setup the software to receive an image from the camera
-    setup_snap();
+    setupSnap();
 
 
     // snap the image
@@ -300,7 +300,7 @@ void snap(float exposure, float gain, char *color, char *filename){
 
 
     // wait for image to be received by framegrabber
-    while(!py_snapReceived())
+    while(!snapReceived())
     {
         wait_counter++;
         usleep(1000);
@@ -315,12 +315,12 @@ void snap(float exposure, float gain, char *color, char *filename){
     }
 
     // get pointer to image
-    image = get_snap_image();
+    image = getSnapImage();
 
 
     // calculate mean for informational purposes, then write image to file
-    imagemean = py_imagemean(image);
-    fprintf(stdout, "Image mean: %d\n", imagemean);
+    imgmean = imagemean(image);
+    fprintf(stdout, "Image mean: %d\n", imgmean);
     fwrite(image, sizeof(short unsigned int), 1000000, outfile);
     fprintf(stdout, "finish outputing image");
     // close hardware and file

@@ -1,18 +1,18 @@
 %module asPhoenixFunctions
+%{
+#include "as_phoenix_functions.h"
+%}
 
-%include <phx_api.h>
-%include <common.h>
 %include "logger.h"
-%include as_phoenix_functions.h
-%include logger.h
+%include "as_phoenix_functions.h"
 %include cpointer.i
 %allocators(void, voidp);
 
 extern void camera_init(void);
 extern void camera_initAcq(void);
 extern void camera_close(void);
-extern void set_exposure(double);
-extern void set_gain(int);
+extern void setExposure(double);
+extern void setGain(int);
 extern short unsigned int* snapimage(void);
 extern int imagemean(short unsigned int*);
 
@@ -47,16 +47,4 @@ extern void camera_initAcq(float exposure, int gain);
 
 // Live prototypes
 %apply (int DIM1, unsigned short * IN_ARRAY1) { (int len2, unsigned short * frame_out) }
-
-%rename (camera_live) my_camera_live;
-
-%inline %{
-    void my_camera_live(double exposure_time, int gain, int len2, unsigned short *frame_out)
-    { 
-        camera_live(exposure_time, gain, frame_out);
-    }
-%}
-
-int buffer_ready_count(void);
-int buffer_overflow(void);
 

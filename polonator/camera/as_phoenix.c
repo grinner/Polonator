@@ -22,9 +22,9 @@
 #include "common/common.h"
 #include "global_parameters.h"
 #include "as_phoenix_functions.h"
-#include "maestro_functions.h"
+#include "as_phoenix_live_functions.h"
 #include "as_phoenix.h"
-#include "as_phoenix_live.h"
+#include "maestro_functions.h"
 
 /* 14 bit to 8 bit converter */
 /* returns a shifted value of a 14 bit image at a given index */
@@ -81,14 +81,14 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
 	if (camera_open == -1) // for 0 and -1
 	{
 	    camera_init();
-	    set_gain(gain);
+	    setGain(gain);
 	    maestro_open(&m_sock);
 	    camera_open = 1;
 	    setupSnap();
 	}
         else
         {
-            set_gain(gain);
+            setGain(gain);
         }
 
 	/* configure hardware */
@@ -126,7 +126,7 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
 
 
 	/* calculate mean for informational purposes */
-	//imagemean = py_imagemean(image);
+	//imagemean = imagemean(image);
 	//fprintf(stdout, "Image mean: %d\n", imagemean);
 
 	/* close hardware */
@@ -136,7 +136,7 @@ unsigned short * snapPtr(float exposure, float gain, char *color)
     return image;
 }
 
-void snapPtr(unsigned short * raw_image, float exposure, float gain, char *color)
+void py_snapPtr(unsigned short * raw_image, float exposure, float gain, char *color)
 {
     //raw_image = snapPtr(exposure, gain, color);
     copyImage(snapPtr(exposure, gain, color), raw_image);
@@ -158,7 +158,7 @@ void cameraClose(void)
 {
     if (camera_open == 1) // not sure if we want this in case of a crash
     {
-        py_cameraClose();
+        camera_close();
         camera_open = 0;
     }
 }

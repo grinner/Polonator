@@ -29,7 +29,7 @@ import polonator.image.imgTools as IT
 
 # assumes we've alreay created a mapping file
 MapFunc = MappingFunctions()
-MapFunc.readMappingFile()
+MapFunc.readMappingFile(useDefault=True)
 
 MaestroF = MaestroFunctions()
 
@@ -208,6 +208,7 @@ def on():
     Turns the DMD array entirely on pixel position
     """
     MapFunc.lightAll()
+    MaestroF.shutter_open()
 #end def
 
 def find():
@@ -284,7 +285,7 @@ def find():
     print("value at 1st point: %d at point %d, %d" % \
            (img_array_out[beadpos_xcol[0]+1000*beadpos_yrow[0]], \
             beadpos_xcol[0], beadpos_yrow[0]))
-    print("value at 2nd point: %d at point %d, %d" % \ 
+    print("value at 2nd point: %d at point %d, %d" % \
             (img_array_out[beadpos_xcol[1]+1000*beadpos_yrow[1]], \
              beadpos_xcol[1], beadpos_yrow[1]))
     print("value at 3rd point: %d at point %d, %d" % \
@@ -531,7 +532,8 @@ def grid(grid_spacing=10, square_size=1):
 
 def startLive(exposure, gain, color):
     global MaestroF
-    Maestro.filter_goto(color)
+    MaestroF.filter_goto(color)
+    MaestroF.shutter_open()
     pid = os.fork()        # this is a UNIX only syscall
     if pid == 0:
         #child process

@@ -30,13 +30,13 @@ char log_string[500];
 stImageBuff py_img_buffer;
 ui32 PHX_buffersize; /* width of the framegrabber's circular image buffer */
 
+static void acquirer_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
+static void snap_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
+
 /*
-phxlive_callback(ForBrief)
+snap_callback(ForBrief)
 This is the callback function which handles the interrupt events
 */
-tPhxLive       sPhxLive;            /* User defined Event Context */
-
-static void snap_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
 
 stImageBuff img_buffer;
 tPhxCallbackInfo sPCI;
@@ -71,14 +71,14 @@ void camera_init(void)
 
 void camera_close(void)
 {
-    p_log_simple("STATUS:\tpy_cameraClose: Release internal camera handle");
+    p_log_simple("STATUS:\tcameraClose: Release internal camera handle");
     PHX_CameraRelease(&pyHandle);
 
-    p_log_simple("STATUS:\tpy_cameraClose: Free image buffer");
+    p_log_simple("STATUS:\tcameraClose: Free image buffer");
     free(image_ptr);
 }
 
-void setup_snap(void)
+void setupSnap(void)
 {
     etStat eStat;
     etParamValue dw;
@@ -105,30 +105,30 @@ void setup_snap(void)
 }
 
 
-int snap_received(void){
+int snapReceived(void){
     return sPCI.image_ready;
 }
 
 
-short unsigned int* get_snap_image(void){
+short unsigned int* getSnapImage(void){
     stImageBuff stBuffer;
     etStat eStat;
     int i;
 
-    p_log_simple("STATUS:\tget_snap_image(): get pointer to framegrabber image buffer");
+    p_log_simple("STATUS:\tgetSnapImage(): get pointer to framegrabber image buffer");
     eStat = PHX_Acquire(pyHandle, PHX_BUFFER_GET, &stBuffer);
-    check_for_error(eStat, "get_snap_image()", "PHX_Acquire(PHX_BUFFER_GET)");
+    check_for_error(eStat, "getSnapImage()", "PHX_Acquire(PHX_BUFFER_GET)");
 
-    p_log_simple("STATUS:\tget_snap_image(): copy image into user memory space");
+    p_log_simple("STATUS:\tgetSnapImage(): copy image into user memory space");
     for(i = 0; i < 1000000; i++){
         *(image_ptr + i) = *((short unsigned int*)(stBuffer.pvAddress) + i);
     }
 
-    p_log_simple("STATUS:\tget_snap_image(): release framegrabber buffer");
+    p_log_simple("STATUS:\tgetSnapImage(): release framegrabber buffer");
     eStat = PHX_Acquire(pyHandle, PHX_BUFFER_RELEASE, &stBuffer);
-    check_for_error(eStat, "get_snap_image()", "PHX_Acquire(PHX_BUFFER_RELEASE)");
+    check_for_error(eStat, "getSnapImage()", "PHX_Acquire(PHX_BUFFER_RELEASE)");
 
-    p_log_simple("STATUS:\tget_snap_image(): return pointer to image in user memory");
+    p_log_simple("STATUS:\tgetSnapImage(): return pointer to image in user memory");
     sPCI.image_ready = 0;
     return image_ptr;
 }
@@ -175,7 +175,7 @@ int imagemean(short unsigned int* img)
    triggering the camera in software (e.g. single-shot mode during
    autoexposure).
 */
-static void init_camera_external_trigger(tHandle hCamera)
+void init_camera_external_trigger(tHandle hCamera)
 {
     p_log("initialize camera for external trigger area mode");
     /*phxser(hCamera, "INI");*/ /* initialize the camera*/
@@ -195,7 +195,7 @@ static void init_camera_external_trigger(tHandle hCamera)
    software fires a 'software trigger', which tells the camera to start integrating.
    Integration ends when 'exposure time' has elapsed (set w/ AET).
 */
-static void init_camera_internal_trigger(tHandle hCamera)
+void init_camera_internal_trigger(tHandle hCamera)
 {
     p_log("initialize camera for internal trigger area mode");
     phxser(hCamera, "AMD N"); /* set to internal ("normal") trigger mode from Phoenix*/
@@ -205,7 +205,7 @@ static void init_camera_internal_trigger(tHandle hCamera)
     /*phxser(hCamera, "CEO 0");*/ /* set 'contrast enhancement' to maximum */
 }
 
-void set_exposure_(double time_inseconds)
+void setExposure(double time_inseconds)
 {
     sprintf(log_string, "STATUS:\tpy_set_exposure: Set exposure to <%f> seconds", time_inseconds);
     p_log_simple(log_string);
@@ -216,7 +216,7 @@ void set_exposure_(double time_inseconds)
  0.001 <= time <= 9.999;
  time must have <=3 decimal places (e.g. 0.0010 is not allowed)
 */
-static void set_exposure_(tHandle hCamera, double time_inseconds)
+void set_exposure(tHandle hCamera, double time_inseconds)
 {
     char exposure_command[14];
     if(time_inseconds < 0.001)
@@ -237,7 +237,7 @@ static void set_exposure_(tHandle hCamera, double time_inseconds)
 }
 
 
-void set_gain(int gain)
+void setGain(int gain)
 {
     sprintf(log_string, "STATUS:\tpy_set_gain: Set EM gain to <%d>", gain);
     p_log_simple(log_string);
@@ -247,7 +247,7 @@ void set_gain(int gain)
 
 /* input must be EM gain setting between 0 and 255 inclusive
 */
-static void set_gain_(tHandle hCamera, int gain)
+void set_gain(tHandle hCamera, int gain)
 {
     char gain_command[14];
 
@@ -423,7 +423,7 @@ void py_cameraInitAcq(float exposure, int gain)
 
 
 /*
-executed every time a BUFFER_READY event is registered by the Pheonix API
+executed every time a BUFFER_READY event is registered by the Phoenix API
 it is very important to release the callback quickly so it can be re-called
 upon the next interrupt event; if it is not released quickly enough,
 BUFFER_READY events can be missed
@@ -488,8 +488,6 @@ static void acquirer_callback(tHandle hCamera,
     }
     */
 }
-
-
 
 /****************************************************************************
  *
@@ -674,250 +672,4 @@ int phxser(tHandle hCamera, char *szCmdBuff)
 
     Finish:
     return 0;
-}
-
-
-static void phxlive_callback(
-    tHandle hCamera,        /* Camera handle. */
-    ui32 dwInterruptMask,   /* Interrupt mask. */
-    void *pvParams          /* Pointer to user supplied context */
-) 
-{
-    tPhxLive *psPhxLive = (tPhxLive*) pvParams;
-
-    (void) hCamera;
-
-    /* Handle the Buffer Ready event */
-    if ( PHX_INTRPT_BUFFER_READY & dwInterruptMask ) 
-    {
-      /* Increment the Display Buffer Ready Count */
-      psPhxLive->nBufferReadyCount++;
-    }
-
-    /* Fifo Overflow */
-    if ( PHX_INTRPT_FIFO_OVERFLOW & dwInterruptMask ) 
-    {
-      psPhxLive->fFifoOverFlow = TRUE;
-    }
-
-    /* Note:
-    * The callback routine may be called with more than 1 event flag set.
-    * Therefore all possible events must be handled here.
-    */
-    if ( PHX_INTRPT_FRAME_END & dwInterruptMask )
-    {
-    }
-}
-
-
-/*
-phxlive(ForBrief)
-Simple live capture application code
-*/
-int phxlive(
-    etCamConfigLoad eCamConfigLoad,    /* Board number, ie 1, 2, or 0 for next available */
-    char *pszConfigFileName,            /* Name of config file */
-    double exposure_time,
-    int gain,
-    unsigned short *frame_out          // added by NC to allow output to another window
-)
-{
-    etStat         eStat     = PHX_OK;  /* Status variable */
-    etParamValue   eParamValue;         /* Parameter for use with PHX_ParameterSet/Get calls */
-    tHandle        hCamera   = 0;       /* Camera Handle  */
-    tPHX           hDisplay  = 0;       /* Display handle */
-    tPHX           hBuffer1  = 0;       /* First Image buffer handle  */
-    tPHX           hBuffer2  = 0;       /* Second Image buffer handle */
-    //tPhxLive       sPhxLive;            /* User defined Event Context */
-    ui32           nBufferReadyLast = 0;/* Previous BufferReady count value */
-    int i,length;
-
-    /* Initialise the user defined Event context structure */
-    memset( &sPhxLive, 0, sizeof( tPhxLive ) );
-
-    /* Allocate the board with the config file */
-    eStat = PHX_CameraConfigLoad( &hCamera, pszConfigFileName, eCamConfigLoad, PHX_ErrHandlerDefault );
-    if ( PHX_OK != eStat ) goto Error;
-
-    /* set camera to live acquisition mode */
-    init_camera_internal_trigger(hCamera);
-    set_exposure(hCamera, exposure_time);
-    set_gain(hCamera, gain);
-
-
-#ifndef _USE_QT
-    // We create our display with a NULL hWnd, this will automatically create an image window. 
-    eStat = PDL_DisplayCreate( &hDisplay, NULL, hCamera, PHX_ErrHandlerDefault );
-    if ( PHX_OK != eStat ) goto Error;
-
-    // We create two display buffers for our double buffering 
-    eStat = PDL_BufferCreate( &hBuffer1, hDisplay, (etBufferMode)PDL_BUFF_SYSTEM_MEM_DIRECT );
-    if ( PHX_OK != eStat ) goto Error;
-    eStat = PDL_BufferCreate( &hBuffer2, hDisplay, (etBufferMode)PDL_BUFF_SYSTEM_MEM_DIRECT );
-    if ( PHX_OK != eStat ) goto Error;
-
-    // Initialise the display, this associates the display buffers with the display 
-    eStat =  PDL_DisplayInit( hDisplay );
-    if ( PHX_OK != eStat ) goto Error;
-
-    // The above code has created 2 display (acquisition) buffers.
-    // Therefore ensure that the Phoenix is configured to use 2 buffers, by overwriting
-    // the value already loaded from the config file.
-    eParamValue = (etParamValue) 2;
-    eStat = PHX_ParameterSet( hCamera, PHX_ACQ_NUM_IMAGES, &eParamValue );
-    if ( PHX_OK != eStat ) goto Error;
-#endif
-
-
-    /* Enable FIFO Overflow events */
-    eParamValue = PHX_INTRPT_FIFO_OVERFLOW;
-    eStat = PHX_ParameterSet( hCamera, PHX_INTRPT_SET, &eParamValue );
-    if ( PHX_OK != eStat ) goto Error;
-
-    /* Setup our own event context */
-    eStat = PHX_ParameterSet( hCamera, PHX_EVENT_CONTEXT, (void *) &sPhxLive );
-    if ( PHX_OK != eStat ) goto Error;
-
-
-    /* Now start our capture, using the callback method */
-    eStat = PHX_Acquire( hCamera, PHX_START, (void*) phxlive_callback );
-    if ( PHX_OK != eStat ) goto Error;
-
-
-    /* Continue processing data until the user presses a key in the console window
-    * or Phoenix detects a FIFO overflow
-    */
-    //printf("Press a key to exit\n");
-    /*   while(!PhxCommonKbHit() && !sPhxLive.fFifoOverFlow)*/
-    while(!sPhxLive.fFifoOverFlow)
-    {
-        /* Temporarily sleep, to avoid burning CPU cycles.
-        * An alternative method is to wait on a semaphore, which is signalled
-        * within the callback function.  This approach would ensure that the
-        * data processing would only start when there was data to process
-        */
-        _PHX_SleepMs(10);
-
-        /* If there are any buffers waiting to display, then process them here */
-        if ( nBufferReadyLast != sPhxLive.nBufferReadyCount ) 
-        {
-            stImageBuff stBuffer; 
-            int nStaleBufferCount;
-
-            /* If the processing is too slow to keep up with acquisition,
-            * then there may be more than 1 buffer ready to process.
-            * The application can either be designed to process all buffers
-            * knowing that it will catch up, or as here, throw away all but the
-            * latest
-            */
-            nStaleBufferCount = sPhxLive.nBufferReadyCount - nBufferReadyLast;
-            nBufferReadyLast += nStaleBufferCount;
-
-            /* Throw away all but the last image */
-            while ( nStaleBufferCount-- > 1 )
-            {
-                eStat = PHX_Acquire( hCamera, PHX_BUFFER_RELEASE, NULL );
-                if ( PHX_OK != eStat ) goto Error;
-            }
-
-
-            /* Get the info for the last acquired buffer */
-            eStat = PHX_Acquire( hCamera, PHX_BUFFER_GET, &stBuffer );
-            if ( PHX_OK != eStat ) goto Error;
-
-            /* Process the newly acquired buffer,
-            * which in this simple example is a call to display the data.
-            * For our display function we use the pvContext member variable to
-            * pass a display buffer handle.
-            * Alternatively the actual video data can be accessed at stBuffer.pvAddress
-            */
-#ifndef _USE_QT
-            PDL_BufferPaint( (tPHX)stBuffer.pvContext );
-#elif defined _USE_QT
-            // Load a numpy array here!!!!
-            for(i = 0; i < 1000000; i++)
-            {
-                *(frame_out + i) = *((short unsigned int*)(stBuffer.pvAddress) + i);
-            }
-            //fflush(stdout);
-            //length = sizeof(frame_out);
-            //write(1, frame_out, length);
-
-#else
-            printf("EventCount = %5d\r", sPhxLive.nBufferReadyCount );
-#endif
-
-            /* Having processed the data, release the buffer ready for further image data */
-            eStat = PHX_Acquire( hCamera, PHX_BUFFER_RELEASE, NULL );
-            if ( PHX_OK != eStat ) goto Error;
-        }
-    }
-    printf("\n");
-
-
-    /* In this simple example we abort the processing loop on an error condition (FIFO overflow).
-    * However handling of this condition is application specific, and generally would involve
-    * aborting the current acquisition, and then restarting.
-    */
-    if ( sPhxLive.fFifoOverFlow )
-    {
-      printf("FIFO OverFlow detected..Aborting\n");
-    }
-Error:
-   /* Now cease all captures */
-    if ( hCamera ) PHX_Acquire( hCamera, PHX_ABORT, NULL );
-
-#if defined _PHX_DISPLAY
-    /* Free our display double buffering resources */
-    if ( hBuffer1 ) PDL_BufferDestroy( (tPHX*) &hBuffer1 );
-    if ( hBuffer2 ) PDL_BufferDestroy( (tPHX*) &hBuffer2 );
-
-    /* Destroy our display */
-    if ( hDisplay ) PDL_DisplayDestroy( (tPHX*) &hDisplay );
-#endif
-
-    /* Release the Phoenix board */
-    if ( hCamera ) PHX_CameraRelease( &hCamera );
-
-    printf("Exiting\n");
-    return 0;
-}
-
-int buffer_ready_count(void)
-{
-    return sPhxLive.nBufferReadyCount;
-}
-
-int buffer_overflow(void)
-{
-    return sPhxLive.fFifoOverFlow;
-}
-
-
-int camera_live(double exposure_time, int gain, unsigned short *frame_out)
-{
-    tPhxCmd sPhxCmd;
-    int     nStatus;
-    sPhxCmd.dwBoardNumber     = 1; 
-    sPhxCmd.pszConfigFileName = NULL;
-    sPhxCmd.pszOutputFileName = NULL;
-    sPhxCmd.dwBayerOption     = 11;
-    sPhxCmd.dwGammaOption     = 100;
-    sPhxCmd.dwFrameOption     = 300;
-    sPhxCmd.dwTimeOption      = 3;
-    sPhxCmd.dwSlowOption      = 10;
-    sPhxCmd.eCamConfigLoad = (etCamConfigLoad) ( PHX_DIGITAL | sPhxCmd.dwBoardNumber );
-
-    char filepath_buffer[256];
-    strcpy(filepath_buffer, getenv("POLONATOR_PATH"));
-   
-    /*PhxCommonKbInit();*/
-    strcat(filepath_buffer, "/config_files/em9100-02.pcf");
-    nStatus = phxlive( sPhxCmd.eCamConfigLoad, \
-                    filepath_buffer, \
-                    exposure_time, \
-                    gain, \
-                    frame_out);
-    /*PhxCommonKbClose();*/
-    return nStatus;
 }

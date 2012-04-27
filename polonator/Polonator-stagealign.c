@@ -266,8 +266,8 @@ void stagealign(int fcnum, int lane_num, int initialize)
     /*/
     p_log_simple("STATUS:\tPolonator-stagealign: Opening camera handle...");
     camera_init();
-    set_gain(stagealign_gain);
-    setup_snap(); /* setup capture software to wait for images from camera */
+    setGain(stagealign_gain);
+    setupSnap(); /* setup capture software to wait for images from camera */
     /*
     //--------------------------------------------------------------------------
     */
@@ -319,8 +319,8 @@ void stagealign(int fcnum, int lane_num, int initialize)
     /* ACQUIRE IMAGE */
     p_log("STATUS:\tPolonator-stagealign: Acquire image...");
     maestro_snap(m_sock, stagealign_integration_inmsec, 1); /*rolony*/
-    while(!py_snapReceived()){;}
-    testimage = get_snap_image();
+    while(!snapReceived()){;}
+    testimage = getSnapImage();
 
 
     /* IF INITIALIZING, RE-WRITE THE BASE IMAGE; THE OFFSET FOUND SHOULD BE ZERO */
@@ -406,8 +406,8 @@ void stagealign(int fcnum, int lane_num, int initialize)
     /* MOVE, THEN ACQUIRE ANOTHER IMAGE TO VERIFY OFFSET WORKED */
     /* maestro_gotostagealign_position(m_sock, fcnum, lane_num);
     maestro_snap(m_sock, stagealign_integration_inmsec, 0);
-    while(!py_snapReceived()){;}
-    testimage = get_snap_image();
+    while(!snapReceived()){;}
+    testimage = getSnapImage();
     */
 
 #ifdef DEBUG_STAGEALIGN

@@ -168,7 +168,7 @@ def main(argv=None):
             net.py_network_startserver(proc_portnum)
 
             autoe_gain = send_FL_images(array_string,15)
-            PC.set_gain(autoe_gain)
+            PC.setGain(autoe_gain)
 
             log_string = "STATUS:\tPolonator-acquirer: using the auto-exposure gain %d..." % (autoe_gain)
             PL.p_log_simple(log_string)

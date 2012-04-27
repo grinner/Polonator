@@ -8,7 +8,6 @@
 #include "common.h"
 #include "as_phoenix_functions.h"
 
-static void phxlive_callback( tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
 int phxlive(etCamConfigLoad eCamConfigLoad, char *pszConfigFileName, double exposure_time, int gain);
 int camera_live(int argc, char *argv[]);
 
@@ -21,4 +20,9 @@ typedef struct
    /* Control Flags */
    volatile tFlag fFifoOverFlow;
 } tPhxLive;
+
+int buffer_ready_count(void);
+
+int buffer_overflow(void);
+
 #endif

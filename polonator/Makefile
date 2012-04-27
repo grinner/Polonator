@@ -16,9 +16,9 @@ CPPFLAGS = -I$(BASE_DIR) -O3 -msse -msse2 -fexpensive-optimizations -funroll-loo
 
 # for C SWIG wrapped Python
 SHARELIBFLAGS = -fPIC -shared
-#PYTHON_VER=2.5
+PYTHON_VER=2.5
 #PYTHON_VER := $(shell `python -V 2>&1 | sed -e 's/Python 2\.\([0-9]*\).*/python2.\1/'`)
-PYTHON_VER=2.7
+#PYTHON_VER=2.7
 PYINC		= /usr/include/python$(PYTHON_VER)
 PYLIB		= /usr/lib/python$(PYTHON_VER)
 SWIG_LIB = -I/usr/lib64
@@ -114,11 +114,11 @@ CAMERA3_INC = -I$(CAM_DIR) -I$(MO_DIR) -I$(CAM_DIR)/common
 #/////////////////////////////////////////////////////
 # includes for the Active Silicon Phoenix FrameGrabber
 # adapted from PHXlive Makefile
-#PHX_VER=5.59
-PHX_VER=5.74
-PHX_INCDIR     = /usr/local/active_silicon/phx_sdk-$(PHX_VER)/include
-COMMON_DIR  = $(BASE_DIR)/common
-COMMON_SRC  = $(BASE_DIR)/common/common.c
+PHX_VER=5.59
+#PHX_VER=5.74
+PHX_INCDIR = /usr/local/active_silicon/phx_sdk-$(PHX_VER)/include
+COMMON_DIR = $(CAM_DIR)/common
+COMMON_SRC = $(CAM_DIR)/common/common.c
 SUBARCH := $(shell uname -m)
 ifeq ($(SUBARCH),x86_64)
 PHX_LIBDIR = /usr/local/active_silicon/phx_sdk-$(PHX_VER)/lib/linux64
@@ -199,47 +199,34 @@ python_illum: $(ILLUMFUNCTIONS_DEP) $(ILL_DIR)/control_D4000.i
 	swig -python $(ILL_DIR)/control_D4000.i
 	gcc $(ILLUMFUNCTIONS_SRC) $(ILL_DIR)/control_D4000_wrap.c $(NUMPY_FLAGS) $(PYTHONFLAGS) \
 		$(CFLAGS) $(ILLUMFUNCTIONS_INC) -o $(ILL_DIR)/_D4000.so $(LIB_DMD_FLAGS) $(SHARELIBFLAGS)
-    #rm *.o
 
 python_camA: $(CAMERA2_DEP) $(LOG_DEP) $(CAM_DIR)/as_phoenix.i
 	swig -python $(CAM_DIR)/as_phoenix.i
 	gcc $(CAMERA2_SRC) $(MAESTRO_SRC) $(LOG_SRC) $(CAM_DIR)/as_phoenix_wrap.c $(NUMPY_FLAGS) $(PYTHONFLAGS) \
 	    $(CFLAGS) $(CAMERA2_INC) -o $(CAM_DIR)/_asPhoenix.so \
-	    $(PHX_CFLAGS) $(PHX_INCLUDE) $(PHX_LIBS) $(SHARELIBFLAGS) \
-     #rm *.o
+	    $(PHX_CFLAGS) $(PHX_INCLUDE) $(PHX_LIBS) $(SHARELIBFLAGS)
 
 python_camB: $(CAMERA2_DEP) $(LOG_DEP) $(CAM_DIR)/as_phoenix_functions.i
 	swig -python $(CAM_DIR)/as_phoenix_functions.i
 	gcc $(CAMERA2_SRC) $(MAESTRO_SRC) $(LOG_SRC) $(CAM_DIR)/as_phoenix_wrap.c $(NUMPY_FLAGS) $(PYTHONFLAGS) \
 	    $(CFLAGS) $(CAMERA2_INC) -o $(CAM_DIR)/_asPhoenixFunctions.so \
-	    $(PHX_CFLAGS) $(PHX_INCLUDE) $(PHX_LIBS) $(SHARELIBFLAGS) \
-     #rm *.o
-
-python_camC: $(CAMERA3_DEP) $(LOG_DEP) $(CAM_DIR)/as_phoenix_live.i
-	swig -python $(CAM_DIR)/as_phoenix_live.i
-	gcc $(CAMERA3_SRC) $(MAESTRO_SRC) $(LOG_SRC) $(CAM_DIR)/as_phoenix_live_wrap.c $(NUMPY_FLAGS) $(PYTHONFLAGS) \
-	    $(CFLAGS) $(CAMERA3_INC) -o $(CAM_DIR)/_asPhoenixLive.so \
 	    $(PHX_CFLAGS) $(PHX_INCLUDE) $(PHX_LIBS) $(SHARELIBFLAGS)
-     #rm *.o
 
 python_maestro: $(MAESTRO_DEP) $(LOG_DEP) $(MO_DIR)/maestro_functions.i
 	swig -python -lcpointer.i $(MO_DIR)/maestro_functions.i
 	gcc $(MAESTRO_SRC) $(LOG_SRC) $(MO_DIR)/maestro_functions_wrap.c $(PYTHONFLAGS) \
 	$(CFLAGS) $(MAESTRO_INC) -o $(MO_DIR)/_maestroFunctions.so  $(SHARELIBFLAGS)
-	#rm *.o
 
 python_proc_dmd: $(PROCDMD_DEP) $(BASE_DIR)/polonator_proc_DMD.i
 	swig -python -lcpointer.i $(BASE_DIR)/polonator_proc_DMD.i
 	gcc $(PROCDMD_SRC) $(BASE_DIR)/polonator_proc_DMD_wrap.c $(PYTHONFLAGS) \
 	$(CFLAGS) $(PROCDMD_INC) -o $(BASE_DIR)/_polProcDMD.so  \
 	$(SHARELIBFLAGS)
-	#rm *.o
 
 python_log: $(BASE_DIR)/logger.c $(BASE_DIR)/logger.h $(BASE_DIR)/logger.i
 	swig -python -lcpointer.i $(BASE_DIR)/logger.i
 	gcc $(BASE_DIR)/logger.c $(BASE_DIR)/logger_wrap.c $(PYTHONFLAGS) \
 	$(CFLAGS) -o $(BASE_DIR)/_logger.so  $(SHARELIBFLAGS)
-	#rm *.o
 
 python_network: $(NET_DEP)  $(BASE_DIR)/network_functions.i
 	swig -python $(BASE_DIR)/network_functions.i
@@ -259,13 +246,11 @@ python_find_obj: $(FINDOBJ_DEP) $(IMG_DIR)/find_objects.i
 	swig -c++ -python $(IMG_DIR)/find_objects.i
 	g++ $(FINDOBJ_SRC) $(IMG_DIR)/find_objects_wrap.cxx $(NUMPY_FLAGS) $(PYTHONFLAGS) \
 		$(CPPFLAGS) $(FINDOBJ_INC) -o $(IMG_DIR)/_findObjects.so $(LIBFLAGS) $(SHARELIBFLAGS)
-    #rm *.o
 
 python_img_tools: $(IMGTOOLS_DEP) $(IMG_DIR)/img_tools.i
 	swig -c++ -python $(IMG_DIR)/img_tools.i
 	g++ $(IMGTOOLS_SRC) $(IMG_DIR)/img_tools_wrap.cxx $(NUMPY_FLAGS) $(PYTHONFLAGS) \
 		$(CPPFLAGS) $(IMGTOOLS_INC) -o $(IMG_DIR)/_imgTools.so $(LIBFLAGS) $(SHARELIBFLAGS)
-    #rm *.o
 
 clean :
 	-rm -r -f *.o *_wrap.c *.so *.pyc

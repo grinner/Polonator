@@ -42,14 +42,6 @@ int send_FL_images(char *, int, int);
 /**/
 char log_string[500];
 
-/* structure to hold info from callback */
-typedef struct
-{
-    volatile int num_imgs; /* number of images received so far */
-    volatile int image_ready; /* signals a new image has been received */
-    volatile int readout_started;
-} tPhxCallbackInfo;
-
 /* Phoenix image buffer */
 stImageBuff img_buffer;
 ui32 PHX_buffersize; /* width of the framegrabber's circular image buffer */
@@ -411,13 +403,13 @@ int main(int argc, char *argv[])
 
     /*added
     maestro_setcolor(m_sock, "cy5");
-    while(!py_snapReceived()){;}
+    while(!snapReceived()){;}
     maestro_setcolor(m_sock, "cy3");
       maestro_snap(m_sock,60 * 1000.0, 1);
-    while(!py_snapReceived()){;}
+    while(!snapReceived()){;}
     maestro_setcolor(m_sock, "txred");
       maestro_snap(m_sock,60 * 1000.0, 1);
-    while(!py_snapReceived()){;}
+    while(!snapReceived()){;}
     */
 
 

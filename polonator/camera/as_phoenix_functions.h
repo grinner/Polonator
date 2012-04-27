@@ -4,40 +4,23 @@
 #define _PHX_LINE_SIZE     256
 #define szDefaultCmdAppend "\r"
 
-
-/* Define an application specific structure to hold user information */
-typedef struct
-{
-   /* Event counters */
-   volatile ui32 nBufferReadyCount;
-
-   /* Control Flags */
-   volatile tFlag fFifoOverFlow;
-} tPhxLive;
-
-/* structure to hold info from callback */
-typedef struct
-{
-    volatile int num_imgs; /* number of images received so far */
-    volatile int image_ready; /* signals a new image has been received */
-    volatile int readout_started;
-} tPhxCallbackInfo;
-
+#include <phx_api.h>
+#include "common/common.h"
 
 // private functions are declared with a trailing underscore
 
 void camera_init(void);
 void camera_close(void);
 
-int imagemean(short unsigned int*);
+int imagemean(short unsigned int* img);
 
-void set_gain(int);
-static void set_gain_(tHandle, int);
+void setGain(int gain);
+void set_gain(tHandle hCamera, int gain);
 
-void set_exposure(double time_inseconds);
-static void set_exposure_(tHandle, double time_inseconds);
+void setExposure(double time_inseconds);
+void set_exposure(tHandle hCamera, double time_inseconds);
 
-void check_for_error(etStat, char *, char *);
+void check_for_error(etStat eStat, char *fn_name, char *error_call);
 void setupSnap(void);
 int snapReceived(void);
 short unsigned int* getSnapImage(void);
@@ -50,30 +33,21 @@ short unsigned int* get_buffer_ptr(void);
 
 void cameraInitAcq(float exposure, int gain);
 
-static void acquirer_callback(tHandle hCamera, ui32 dwInterruptMask, void *pvParams);
+void init_camera_external_trigger(tHandle hCamera);
+void init_camera_internal_trigger(tHandle hCamera);
+int phxser(tHandle hCamera, char *szCmdBuff);
+int sPCI_readout_started(void);
+void sPCI_set_readout(int startstop);
+int sPCI_num_imgs(void);
+int sPCI_image_ready(void);
+void sPCI_set_image_ready(int ready);
 
-static void init_camera_external_trigger(tHandle);
-static void init_camera_internal_trigger(tHandle);
-static int phxser_(tHandle, char*);
-static int sPCI_readout_started(void);
-static void sPCI_set_readout(int startstop);
-static int sPCI_num_imgs(void);
-static int sPCI_image_ready(void);
-static void sPCI_set_image_ready(int ready);
-
-// Define the live stuff
-//////////////////////////
-int phxlive(
-   etCamConfigLoad eCamConfigLoad, 
-   char *pszConfigFileName,          
-   double exposure_time,
-   int gain,
-   unsigned short *frame_out 
-);
-
-int camera_live(double exposure_time, int gain, unsigned short *frame_out);
-
-int buffer_ready_count(void);
-int buffer_overflow(void);
+/* structure to hold info from callback */
+typedef struct
+{
+    volatile int num_imgs; /* number of images received so far */
+    volatile int image_ready; /* signals a new image has been received */
+    volatile int readout_started;
+} tPhxCallbackInfo;
 
 #endif
