@@ -27,6 +27,7 @@ def main(argv=None):
     argc = len(argv)
     if argc < 2:
         installdriver()
+        return
     # end if
     if argv[1] == "start":
         start(argv[2]) if argc == 3 else start("")
